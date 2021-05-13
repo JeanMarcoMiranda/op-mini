@@ -10,7 +10,7 @@
     "build": "nest build",
     "build-client": "cd client && yarn run build",
     "install-client": "cd client && yarn install",
-    "heroku-postbuild": "yarn run install-client && yarn run build-client",
+    "heroku-postbuild": "yarn run install-client && yarn run build-client && yarn run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main",
     "start:dev": "nest start --watch",

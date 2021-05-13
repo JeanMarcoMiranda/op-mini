@@ -8,7 +8,7 @@ const myModules = []
 if(process.env.NODE_ENV === "production") {
   myModules.push(ServeStaticModule.forRoot({
     rootPath: join(__dirname, "..", "client", "build"),
-    renderPath: "/"
+    renderPath: "/app"
   }))
 }
 
