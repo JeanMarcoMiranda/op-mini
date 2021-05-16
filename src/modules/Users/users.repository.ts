@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Db } from 'mongodb';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserRepository {
+  constructor(@Inject('MONGO_CONNECTION') private readonly database: Db) {}
   private readonly users: User[] = [];
 
   public async saveUser(user: User): Promise<void> {
@@ -10,7 +12,8 @@ export class UserRepository {
   }
 
   public async findAllUsers(): Promise<User[]> {
-    return this.users;
+    const usersCollection = this.database.collection('users');
+    return usersCollection.find().toArray();
   }
 
   public async get(id: number): Promise<User> {

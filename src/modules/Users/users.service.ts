@@ -1,6 +1,6 @@
 import { User } from './entities/user.entity';
 import { CreateUserData } from './dtos/user.dto';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from './users.repository';
 import { randomInt } from 'crypto';
 
