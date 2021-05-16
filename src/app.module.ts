@@ -3,13 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
 
 import { UsersModule } from './modules/Users/users.module';
-import { ConfigModule } from '@nestjs/config';
 import { enviroments } from './enviroments';
 import { DatabaseModule } from './database/database.module';
-
 import config from './config'
+
 
 const myModules = [
   ConfigModule.forRoot({

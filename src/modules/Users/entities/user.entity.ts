@@ -1,8 +1,16 @@
-export class User {
-  constructor(
-    public id_user: number,
-    private name_user: string,
-    private password_user: string,
-    private state_user: string,
-  ) {}
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose'
+
+@Schema()
+export class User extends Document {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop()
+  password: string;
+
+  @Prop()
+  state: string;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);

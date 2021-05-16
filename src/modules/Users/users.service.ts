@@ -1,30 +1,35 @@
-import { User } from './entities/user.entity';
-import { CreateUserData } from './dtos/user.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { UserRepository } from './users.repository';
-import { randomInt } from 'crypto';
+import { User } from './entities/user.entity';
+import { CreateUserDto, UpdateUserDto } from './dtos/user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly usersRespository: UserRepository) {}
+  constructor(
+    private readonly usersRespository: UserRepository,
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) {}
 
-  public async add(data: CreateUserData): Promise<User> {
-    const id = randomInt(0, 100);
-    const user = new User(
-      id,
-      data.name_user,
-      data.password_user,
-      data.state_user,
-    );
-    await this.usersRespository.saveUser(user);
-    return user;
+  public async create(data: CreateUserDto): Promise<User> {
+    return this.usersRespository.saveUser(data)
   }
 
-  public async list(): Promise<User[]> {
-    return await this.usersRespository.findAllUsers();
+  public async findAll(): Promise<User[]> {
+    return await this.usersRespository.getAllUsers();
   }
 
-  public async get(id: number): Promise<User> {
-    return await this.usersRespository.get(id);
+  public async findOne(id: string): Promise<User> {
+    return await this.usersRespository.getOneUser(id);
+  }
+
+  public async update(id: string, documentUpdate: UpdateUserDto): Promise<User> {
+    return await this.usersRespository.editUser(id, documentUpdate)
+  }
+
+  public async delete(id: string): Promise<User> {
+    return await this.usersRespository.removeUser(id)
   }
 }
