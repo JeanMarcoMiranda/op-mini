@@ -1,9 +1,9 @@
 import { Module, Global } from '@nestjs/common';
 import { MongoClient } from 'mongodb';
-import {MongooseModule} from '@nestjs/mongoose'
+import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigType } from '@nestjs/config';
 
-import config from '../config';
+import config from '../common/config';
 
 @Global()
 @Module({

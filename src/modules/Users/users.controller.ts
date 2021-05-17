@@ -7,7 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import {ApiTags} from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 
 import { CreateUserDto, UpdateUserDto } from './dtos/user.dto';
 import { User } from './entities/user.entity';
@@ -19,7 +19,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  public async createUser(@Body() data: CreateUserDto): Promise<User> {
+  public async createUser(
+    @Body() data: CreateUserDto
+  ): Promise<User> {
     return this.userService.create(data);
   }
 
