@@ -9,7 +9,7 @@ import { User } from './entities/user.entity';
 @Injectable()
 export class UserRepository {
   constructor(
-    @Inject('MONGO_CONNECTION') private readonly database: Db,
+    /* @Inject('MONGO_CONNECTION') private readonly database: Db, */
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
@@ -52,6 +52,7 @@ export class UserRepository {
 
     return updatedUser;
   }
+
 
   public async removeUser(id: string): Promise<User> {
     return this.userModel.findByIdAndDelete(id)

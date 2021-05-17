@@ -6,9 +6,9 @@ import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 
 import { UsersModule } from './modules/Users/users.module';
-import { enviroments } from './enviroments';
+import { enviroments } from './common/enviroments';
 import { DatabaseModule } from './database/database.module';
-import config from './config'
+import config from './common/config'
 
 
 const myModules = [
