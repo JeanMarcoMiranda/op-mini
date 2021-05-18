@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 
 import { UsersModule } from './modules/Users/users.module';
 import { ProductsModule } from './modules/Products/products.module';
-import { enviroments } from './common/enviroments';
+import { SuppliersModule } from './modules/Suppliers/suppliers.module';
 import { DatabaseModule } from './database/database.module';
+
+import { enviroments } from './common/enviroments';
 import config from './common/config'
 
 const myModules = [
@@ -17,9 +17,10 @@ const myModules = [
     load: [config],
     isGlobal: true
   }),
+  DatabaseModule,
   UsersModule,
   ProductsModule,
-  DatabaseModule
+  SuppliersModule,
 ];
 
 if (process.env.NODE_ENV === 'production') {
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 
 @Module({
   imports: myModules,
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Category } from './categories.entity';
 
+import { Category } from './categories.entity';
 
 @Schema()
 export class Product extends Document {
@@ -28,7 +28,7 @@ export class Product extends Document {
   description: string;
 
   @Prop({ required: true })
-  state: boolean;
+  active: boolean;
 
   @Prop({ type: Types.ObjectId, ref: Category.name })
   category: Category | Types.ObjectId;

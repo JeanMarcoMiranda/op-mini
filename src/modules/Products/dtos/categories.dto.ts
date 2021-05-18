@@ -10,4 +10,5 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   active: boolean;
 }
+
 export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {}
