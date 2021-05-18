@@ -1,38 +1,35 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 
 import { ProductRepository } from '../repositories/products.repository';
-import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
+import { Product } from '../entities/product.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     private readonly productRepository: ProductRepository,
-    @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  public async create(data: CreateProductDto): Promise<Product> {
-    return this.productRepository.saveProduct(data);
+  public async createProduct(data: CreateProductDto): Promise<Product> {
+    return this.productRepository.createProduct(data);
   }
 
-  public async findAll(): Promise<Product[]> {
-    return this.productRepository.getAllProducts();
+  public async findAllProducts(): Promise<Product[]> {
+    return this.productRepository.findAllProducts();
   }
 
-  public async findOne(id: string): Promise<Product> {
-    return this.productRepository.getOneProduct(id);
+  public async findOneProduct(id: string): Promise<Product> {
+    return this.productRepository.findOneProduct(id);
   }
 
-  public async update(
+  public async updateProduct(
     id: string,
     documentUpdate: UpdateProductDto,
   ): Promise<Product> {
-    return await this.productRepository.editProduct(id, documentUpdate);
+    return await this.productRepository.updateProduct(id, documentUpdate);
   }
 
-  public async delete(id: string): Promise<Product> {
+  public async removeProduct(id: string): Promise<Product> {
     return await this.productRepository.removeProduct(id);
   }
 }

@@ -32,12 +32,11 @@ export class CreateProductDto {
   
   @IsBoolean()
   @IsNotEmpty()
-  readonly state: boolean
+  readonly active: boolean
 
   @IsMongoId()
   @IsNotEmpty()
   readonly category: string
-
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

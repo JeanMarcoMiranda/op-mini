@@ -1,6 +1,5 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Db } from 'mongodb';
 import { Model } from 'mongoose';
 
 import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dto';
@@ -13,18 +12,18 @@ export class CategoryRepository {
   ) {}
 
 
-  public async saveCategory(category: CreateCategoryDto): Promise<Category> {
+  public async createCategory(category: CreateCategoryDto): Promise<Category> {
     const createdCategory = new this.categoryModel(category);
     return createdCategory.save();
   }
 
 
-  public async getAllCategories(): Promise<Category[]> {
+  public async findAllCategories(): Promise<Category[]> {
     return this.categoryModel.find().exec();
   }
   
 
-  public async getOneCategory(id: string): Promise<Category> {
+  public async findOneCategory(id: string): Promise<Category> {
     const category = this.categoryModel.findById(id).exec();
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -33,7 +32,7 @@ export class CategoryRepository {
   }
   
 
-  public async editCategory(
+  public async updateCategory(
     id: string,
     updateDocument: UpdateCategoryDto,
   ): Promise<Category> {
@@ -49,6 +48,7 @@ export class CategoryRepository {
 
     return updatedCategory;
   }
+
 
   public async removeCategory(id: string): Promise<Category> {
     return this.categoryModel.findByIdAndDelete(id)

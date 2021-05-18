@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { ProductController } from './controllers/products.controller';
 import { ProductRepository } from './repositories/products.repository';
 import { ProductService } from './services/products.service';
+
 import { CategoryController } from './controllers/categories.controller';
 import { CategoryRepository } from './repositories/categories.repository';
 import { CategoryService } from './services/categories.service';
