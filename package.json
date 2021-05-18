@@ -32,6 +32,7 @@
     "@nestjs/platform-express": "^7.6.15",
     "@nestjs/serve-static": "^2.1.4",
     "@nestjs/swagger": "^4.8.0",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "mongodb": "^3.6.6",
     "mongoose": "^5.12.9",

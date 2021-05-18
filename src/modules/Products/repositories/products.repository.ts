@@ -9,7 +9,6 @@ import { Product } from '../entities/product.entity';
 @Injectable()
 export class ProductRepository {
   constructor(
-    @Inject('MONGO_CONNECTION') private readonly database: Db,
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 

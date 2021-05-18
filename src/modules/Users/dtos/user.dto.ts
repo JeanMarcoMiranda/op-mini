@@ -1,18 +1,46 @@
-import { IsNotEmpty, IsString } from 'class-validator'
-import { ApiProperty, PartialType } from '@nestjs/swagger'
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  readonly name_user: string
+  @ApiProperty()
+  readonly name: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly password_user: string
+  @ApiProperty()
+  readonly password: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly isActive: boolean;
 
   @IsString()
   @IsNotEmpty()
-  readonly state_user: string
+  @ApiProperty()
+  readonly documentType: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly documentNumber: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  readonly phone: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly email: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  readonly currentAddress: string;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

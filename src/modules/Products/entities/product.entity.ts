@@ -2,10 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Category } from './categories.entity';
 
-
 @Schema()
 export class Product extends Document {
-
   @Prop({ required: true })
   barcode: number;
 

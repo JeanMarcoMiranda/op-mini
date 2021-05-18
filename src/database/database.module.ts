@@ -26,7 +26,7 @@ import config from '../common/config';
     },
     inject: [config.KEY]
   })],
-  providers: [
+  /* providers: [
     {
       provide: 'MONGO_CONNECTION',
       useFactory: async (configService: ConfigType<typeof config>) => {
@@ -45,6 +45,6 @@ import config from '../common/config';
       inject: [config.KEY],
     },
   ],
-  exports: ['MONGO_CONNECTION'],
+  exports: ['MONGO_CONNECTION'], */
 })
 export class DatabaseModule {}

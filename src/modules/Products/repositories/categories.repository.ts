@@ -9,7 +9,6 @@ import { Category } from '../entities/categories.entity';
 @Injectable()
 export class CategoryRepository {
   constructor(
-    @Inject('MONGO_CONNECTION') private readonly database: Db,
     @InjectModel(Category.name) private categoryModel: Model<Category>,
   ) {}
 

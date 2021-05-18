@@ -1,10 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Db } from 'mongodb';
 import { Model } from 'mongoose';
 
-import { CreateUserDto, UpdateUserDto } from './dtos/user.dto';
-import { User } from './entities/user.entity';
+import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserRepository {
@@ -13,17 +12,14 @@ export class UserRepository {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
-
   public async saveUser(user: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(user);
     return createdUser.save();
   }
 
-
   public async getAllUsers(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find().populate("role").exec();
   }
-  
 
   public async getOneUser(id: string): Promise<User> {
     const user = this.userModel.findById(id).exec();
@@ -32,7 +28,6 @@ export class UserRepository {
     }
     return user;
   }
-  
 
   public async editUser(
     id: string,
@@ -53,8 +48,7 @@ export class UserRepository {
     return updatedUser;
   }
 
-
   public async removeUser(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id)
+    return this.userModel.findByIdAndDelete(id);
   }
 }

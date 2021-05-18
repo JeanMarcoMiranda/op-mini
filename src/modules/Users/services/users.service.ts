@@ -1,16 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 
-import { UserRepository } from './users.repository';
-import { User } from './entities/user.entity';
-import { CreateUserDto, UpdateUserDto } from './dtos/user.dto';
+import { UserRepository } from '../respositories/users.repository';
+import { User } from '../entities/user.entity';
+import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly usersRespository: UserRepository,
-    @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
   public async create(data: CreateUserDto): Promise<User> {
