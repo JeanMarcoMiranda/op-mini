@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { User } from '../entities/user.entity';
@@ -12,13 +13,18 @@ export class UserRepository {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
-  public async saveUser(user: CreateUserDto): Promise<User> {
+  public async saveUser(user: CreateUserDto) {
     const createdUser = new this.userModel(user);
-    return createdUser.save();
+    const hashPassword = await bcrypt.hash(createdUser.password, 10);
+    createdUser.password = hashPassword;
+    const savedModel = await createdUser.save();
+
+    const { password, ...model } = savedModel.toJSON();
+    return model;
   }
 
   public async getAllUsers(): Promise<User[]> {
-    return this.userModel.find().populate("role").exec();
+    return this.userModel.find().populate('role').exec();
   }
 
   public async getOneUser(id: string): Promise<User> {
@@ -27,6 +33,10 @@ export class UserRepository {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  public async getUserByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({email}).exec()
   }
 
   public async editUser(

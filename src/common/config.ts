@@ -11,5 +11,6 @@ export default registerAs('config', () => {
       connection: process.env.MONGO_CONNECTION
     },
     port: parseInt(process.env.PORT),
+    jwt_secret: process.env.JWT_SECRET
   }
 })

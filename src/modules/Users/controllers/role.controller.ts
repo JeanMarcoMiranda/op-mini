@@ -12,6 +12,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateRoleDto, UpdateRoleDto } from '../dtos/role.dto';
 import { Role } from '../entities/role.entity';
 import { RoleService } from '../services/role.service';
+import { MongoIdPipe } from '../../../common/pipes/mongo-id.pipe';
 
 @ApiTags('Role')
 @Controller('roles')
@@ -29,7 +30,7 @@ export class RoleController {
   }
 
   @Get(':id')
-  public async getOneUser(@Param('id') id: string): Promise<Role> {
+  public async getOneUser(@Param('id') id: string, MongoIdPipe): Promise<Role> {
     return this.roleService.findOne(id);
   }
 

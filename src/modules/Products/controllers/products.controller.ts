@@ -6,22 +6,24 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ProductService } from '../services/products.service';
 import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
 import { Product } from '../entities/product.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('Products')
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  public async postProduct(
-    @Body() data: CreateProductDto
-  ): Promise<Product> {
+  public async postProduct(@Body() data: CreateProductDto): Promise<Product> {
     return this.productService.createProduct(data);
   }
 
@@ -31,9 +33,8 @@ export class ProductController {
   }
 
   @Get(':id')
-  public async getOneProduct(
-    @Param('id') id: string
-  ): Promise<Product> {
+  @Public()
+  public async getOneProduct(@Param('id') id: string): Promise<Product> {
     return this.productService.findOneProduct(id);
   }
 
@@ -46,9 +47,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  public async deleteProduct(
-    @Param('id') id: string
-  ) {
+  public async deleteProduct(@Param('id') id: string) {
     return this.productService.removeProduct(id);
   }
 }

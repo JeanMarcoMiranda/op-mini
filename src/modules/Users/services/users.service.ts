@@ -10,7 +10,7 @@ export class UserService {
     private readonly usersRespository: UserRepository,
   ) {}
 
-  public async create(data: CreateUserDto): Promise<User> {
+  public async create(data: CreateUserDto) {
     return this.usersRespository.saveUser(data)
   }
 
@@ -20,6 +20,10 @@ export class UserService {
 
   public async findOne(id: string): Promise<User> {
     return await this.usersRespository.getOneUser(id);
+  }
+
+  public async findByEmail(email: string): Promise<User> {
+    return await this.usersRespository.getUserByEmail(email)
   }
 
   public async update(id: string, documentUpdate: UpdateUserDto): Promise<User> {
