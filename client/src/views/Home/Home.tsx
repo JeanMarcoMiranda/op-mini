@@ -1,9 +1,7 @@
-import React from 'react'
-
 const Home = () => {
   return (
-    <div>
-      Hola Mundo
+    <div className="container">
+      <h1>Hola Mundo</h1>
     </div>
   )
 }

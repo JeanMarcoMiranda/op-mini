@@ -1,6 +1,6 @@
 import React from "react";
 
-import Home from "./pages/Home";
+import Home from "../views/Home/Home";
 
 interface RouteData {
   path: string,
