@@ -1,6 +1,6 @@
 import React from 'react';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { appRoutes } from './routes'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { appRoutes } from './Routes'
 
 import './App.css';
 
@@ -10,7 +10,7 @@ const App = () => {
       <Router>
         <Switch>
           { appRoutes.map( ({path, component, exact}) =>
-            <Route exact={exact} path={path} component={component}/>
+            <Route exact={exact} path={path} component={component} key={path}/>
           )}
         </Switch>
       </Router>
