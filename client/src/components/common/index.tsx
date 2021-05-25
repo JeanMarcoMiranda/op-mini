@@ -1,5 +1,4 @@
-import React from "react";
-//import Example from "./example";
-//import Example2 from "./example";
+import InputSimple from "./InputSimple";
 
-//export { Example, Example2 }
+export { InputSimple }
+
