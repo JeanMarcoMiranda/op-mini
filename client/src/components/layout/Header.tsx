@@ -2,7 +2,7 @@ const Header = () => {
   return (
     <>
       <footer className="relative bg-blueGray-200 pt-8 pb-6">
-        <a>Soy un header</a>
+        <h1>Soy un header</h1>
       </footer>
     </>
   );

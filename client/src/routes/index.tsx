@@ -1,7 +1,8 @@
 import React from "react";
 
-import Home from "../views/Home";
 import Login from "../views/Login";
+import Home from "../views/Home";
+import Supplier from "../views/Suppliers";
 
 interface RouteData {
   path: string,
@@ -18,6 +19,11 @@ export const appRoutes: RouteData[] = [
   {
     path: '/login',
     component: Login,
+    exact: true
+  },
+  {
+    path: '/supplier',
+    component: Supplier,
     exact: true
   }
 ]
