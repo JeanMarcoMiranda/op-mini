@@ -1,21 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { InputSimple } from '../../components/common';
+import { InputComponent, SelectComponent } from '../../components/common';
 
 const url = 'http://localhost:5000/suppliers/';
 
+const options = [
+  { id: 1, label: 'Activo'},
+  { id: 2, label: 'Inactivo'}
+];
+
 const Supplier = () => {
-  const [name, setName] = useState("buenas2");
+  const [data, setData] = useState({
+    _id: '',
+    name: '',
+    phone: 0,
+    email: '',
+    doctype: '',
+    docnum: 0,
+    address: '',
+    active: false,
+  });
+
+  const [selectedStatus, setSelectedStatus] = useState(options[data.active?0:1])
+
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setData({
+      ...data,
+      [e.target.name]: e.currentTarget.value,
+    });
+  };
 
   useEffect(() => {
     fetch(url)
-    .then((response) => response.json())
-    .then(data =>  console.log(data))
-  },[]);
+      .then((response) => response.json())
+      .then((data) => {
+        const supplierData = data[0];
+        setData({
+          _id: supplierData._id,
+          name: supplierData.name,
+          phone: supplierData.phone,
+          email: supplierData.email,
+          doctype: supplierData.doctype,
+          docnum: supplierData.docnum,
+          address: supplierData.address,
+          active: supplierData.active,
+        });
+        console.log(data);
+      }).catch((err) => {
+        console.log("Error con el servidor " + err)
+      });
+  }, []);
 
   return (
     <>
       <div className="container mx-auto">
-        <div className="w-full lg:w-8/12 px-4 py-4 mx-auto">
+        <div className="grid grid-cols-1 gap-4 px-4 py-4 mx-auto">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
             <div className="rounded-t bg-white mb-0 px-6 py-6">
               <div className="text-center flex justify-between">
@@ -33,46 +72,42 @@ const Supplier = () => {
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Informacion del proveedor
                 </h6>
-                <div className="flex flex-wrap">
-                  <div className="w-full lg:w-6/12 px-4">
-                    <InputSimple label={"nombre"} value={name} onChange={setName} />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="px-4">
+                    <InputComponent
+                      type="text"
+                      label="Nombre"
+                      name="name"
+                      value={data.name}
+                      onChange={handleOnChange}
+                    />
                   </div>
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-                        Tipo de Documento
-                      </label>
-                      <input
-                        type="text"
-                        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        defaultValue="Mis huevos morenos"
-
-                      />
-                    </div>
+                  <div className="px-4">
+                    <InputComponent
+                      type="text"
+                      label="Tipo de documento"
+                      name="doctype"
+                      value={data.doctype}
+                      onChange={handleOnChange}
+                    />
                   </div>
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-                        Numero de Documento
-                      </label>
-                      <input
-                        type="text"
-                        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        defaultValue="Mis huevos morenos"
-                      />
-                    </div>
+                  <div className="px-4">
+                    <InputComponent
+                      type="number"
+                      label="Numero de documento"
+                      name="docnum"
+                      value={data.docnum}
+                      onChange={handleOnChange}
+                    />
                   </div>
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-                        Estado
-                      </label>
-                      <input
-                        type="text"
-                        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        defaultValue="Mis huevos morenos"
-                      />
-                    </div>
+                  <div className="px-4">
+                    <SelectComponent
+                      label="Estado"
+                      val={data.active}
+                      options={options}
+                      valDef={selectedStatus}
+                      onChange={setSelectedStatus}
+                    />
                   </div>
                 </div>
 
@@ -81,42 +116,33 @@ const Supplier = () => {
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Informacion de Contacto
                 </h6>
-                <div className="flex flex-wrap">
-                  <div className="w-full lg:w-12/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-                        Direccion
-                      </label>
-                      <input
-                        type="text"
-                        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        defaultValue="Mi casa"
-                      />
-                    </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2 px-4">
+                    <InputComponent
+                      type="text"
+                      label="Direccion"
+                      name="address"
+                      value={data.address}
+                      onChange={handleOnChange}
+                    />
                   </div>
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-                        Telefono
-                      </label>
-                      <input
-                        type="email"
-                        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        defaultValue="#buenas"
-                      />
-                    </div>
+                  <div className=" px-4">
+                    <InputComponent
+                      type="number"
+                      label="Telefono"
+                      name="phone"
+                      value={data.phone}
+                      onChange={handleOnChange}
+                    />
                   </div>
-                  <div className="w-full lg:w-6/12 px-4">
-                    <div className="relative w-full mb-3">
-                      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-                        Correo
-                      </label>
-                      <input
-                        type="email"
-                        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        defaultValue="buenas@gmail.com"
-                      />
-                    </div>
+                  <div className=" px-4">
+                    <InputComponent
+                      type="email"
+                      label="Correo"
+                      name="email"
+                      value={data.email}
+                      onChange={handleOnChange}
+                    />
                   </div>
                 </div>
               </form>

@@ -1,5 +1,5 @@
-import React from "react";
 //import Example from "./example";
 //import Example2 from "./example";
+import { useForm } from './useForm';
 
-//export { Example, Example2 }
+export { useForm };

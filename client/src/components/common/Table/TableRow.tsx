@@ -1,5 +1,5 @@
 import React from 'react'
-import { TableField } from './TableComponent'
+import { TableField } from './Table'
 
 interface TableRowProps {
   data: any,

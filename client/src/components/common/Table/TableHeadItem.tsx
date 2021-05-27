@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TableField } from './TableComponent';
+import { TableField } from './Table';
 
 
 const TableHeadItem: React.FC<TableField> = ({

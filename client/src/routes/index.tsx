@@ -1,4 +1,6 @@
 import React from "react";
+
+import Login from "../views/Login";
 import Home from "../views/Home";
 import ProductsPage from "../views/Products";
 import Supplier from "../views/Suppliers";
@@ -13,6 +15,11 @@ export const appRoutes: RouteData[] = [
   {
     path: '/',
     component: Home,
+    exact: true
+  },
+  {
+    path: '/login',
+    component: Login,
     exact: true
   },
   {
