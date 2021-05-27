@@ -10,6 +10,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port: number = configService.get('PORT') || 3000;
   app.useGlobalPipes(new ValidationPipe()); // to acitve class-validator for the API client
+  app.enableCors();
 
   // to add auto-documentation to our project with swagger
   const swaggerConfig = new DocumentBuilder()

@@ -1,4 +1,5 @@
-import InputSimple from "./InputSimple";
+import InputComponent from "./InputSimple";
+import SelectComponent from "./InputSelect";
 
-export { InputSimple }
+export { InputComponent, SelectComponent}
 
