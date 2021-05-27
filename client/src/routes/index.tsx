@@ -1,5 +1,6 @@
 import React from "react";
 import Home from "../views/Home";
+import ProductsPage from "../views/Products";
 import Supplier from "../views/Suppliers";
 
 interface RouteData {
@@ -17,6 +18,11 @@ export const appRoutes: RouteData[] = [
   {
     path: '/supplier',
     component: Supplier,
+    exact: true
+  },
+  {
+    path: '/product',
+    component: ProductsPage,
     exact: true
   }
 ]
