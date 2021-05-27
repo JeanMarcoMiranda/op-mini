@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { InputSimple, ButtonComponent } from '../../components/common';
+import { InputComponent, ButtonComponent } from '../../components/common';
 import { useForm } from '../../components/hooks';
 
 function toHoverStyle(stylesOnHover: string): string {
@@ -93,8 +93,8 @@ const LoginView: React.FC = () => {
             quaerat enim voluptate debitis possimus voluptatum sit assumenda
             quo.
           </p>
-          <InputSimple label="Email" name="email" onChange={onChange} />
-          <InputSimple label="Password" name="password" onChange={onChange} />
+          <InputComponent type="email" label="Email" name="email" onChange={onChange} />
+          <InputComponent type="password" label="Password" name="password" onChange={onChange} />
           <div className="mt-16 flex justify-start">
             <ButtonComponent
               label={loginButtonStyles.BUTTON_LABEL}

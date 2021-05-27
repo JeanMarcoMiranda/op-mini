@@ -1,5 +1,6 @@
-import InputSimple from "./InputSimple";
+import InputComponent from "./InputSimple";
+import SelectComponent from "./InputSelect";
 import ButtonComponent from './Button'
 
-export { InputSimple, ButtonComponent }
+export { InputComponent, SelectComponent, ButtonComponent}
 

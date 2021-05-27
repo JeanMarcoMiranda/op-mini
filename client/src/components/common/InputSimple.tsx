@@ -1,13 +1,15 @@
 import React, { ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 //Dispatch<SetStateAction<string>>
-interface InputSimpleProps {
+interface InputComponentProps {
+  type: string
   label: string;
   name: string,
-  value?: string;
+  value?: string | number;
   onChange: ChangeEventHandler<HTMLInputElement>
 }
 
-const InputSimple: React.FC<InputSimpleProps> = ({
+const InputComponent: React.FC<InputComponentProps> = ({
+  type,
   label,
   name,
   value,
@@ -16,13 +18,18 @@ const InputSimple: React.FC<InputSimpleProps> = ({
 
   return (
     <div className="relative w-full mb-3">
-      <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
-        {label}
-      </label>
+      {label ? (
+        <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
+          {label}
+        </label>
+      ) : (
+        false
+      )}
       <input
-        type="text"
-        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+        type={type}
         name={name}
+        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white text-sm shadow focus:outline-none focus:ring w-full"
+        placeholder={label}
         value={value}
         onChange={onChange}
       />
@@ -30,4 +37,4 @@ const InputSimple: React.FC<InputSimpleProps> = ({
   );
 };
 
-export default InputSimple;
+export default InputComponent;
