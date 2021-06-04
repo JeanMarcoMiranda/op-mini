@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
-export const useForm = (callback: any, initialState = {}) => {
+export const useForm = (callback: any, initialState:any) => {
   const [values, setValues] = useState(initialState);
-
+  console.log("initialState", initialState)
+  console.log("values", values)
   //onChange - method for all our inputs
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [event.target.name]: event.target.value });

@@ -1,21 +1,22 @@
-import React, { ChangeEventHandler, Dispatch, SetStateAction } from 'react';
+import React, { ChangeEventHandler, LegacyRef} from 'react';
+import { Controller, Control, FieldName, useForm } from 'react-hook-form';
+
 //Dispatch<SetStateAction<string>>
 interface InputComponentProps {
-  type: string
+  type: string;
   label: string;
-  name: string,
+  name: string;
   value?: string | number;
-  onChange: ChangeEventHandler<HTMLInputElement>
+  onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-const InputComponent: React.FC<InputComponentProps> = ({
+export const InputComponent: React.FC<InputComponentProps> = ({
   type,
   label,
   name,
   value,
   onChange,
 }) => {
-
   return (
     <div className="relative w-full mb-3">
       {label ? (
@@ -37,4 +38,34 @@ const InputComponent: React.FC<InputComponentProps> = ({
   );
 };
 
-export default InputComponent;
+interface IInputProps<T> {
+  register?: LegacyRef<HTMLInputElement>;
+  name: any;//FieldName<IFormSupplier>;
+  control: any;//Control<T>;
+}
+
+export const Input = <T extends {}>({
+  register,
+  name,
+  control,
+}: IInputProps<T>) => {
+  //const { setValue } = useForm();
+  //let namecontroller: string = name!;
+  //setValue(name, value)
+  return (
+    <div className="relative w-full mb-3">
+      <Controller
+        control={control}
+        name={name}
+        render={({ field: { onChange, value } }) => (
+          <input
+            name={name}
+            value={value}
+            onChange={onChange}
+            ref={register}
+          />
+        )}
+      />
+    </div>
+  );
+};
