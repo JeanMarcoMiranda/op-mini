@@ -5,6 +5,7 @@ import Home from "../views/Home";
 import ProductsPage from "../views/Products";
 import Supplier from "../views/Suppliers";
 import FormProduct from "../views/Products/Form";
+import SupplierForm from "../views/Suppliers/supplierForm";
 
 interface RouteData {
   path: string,
@@ -24,8 +25,18 @@ export const appRoutes: RouteData[] = [
     exact: true
   },
   {
-    path: '/supplier',
+    path: '/suppliers',
     component: Supplier,
+    exact: true
+  },
+  {
+    path: '/supplier/form/:id',
+    component: SupplierForm,
+    exact: true
+  },
+  {
+    path: '/supplier/form',
+    component: SupplierForm,
     exact: true
   },
   {
@@ -34,7 +45,7 @@ export const appRoutes: RouteData[] = [
     exact: true
   },
   {
-    path: '/product/create',
+    path: '/product/form',
     component: FormProduct,
     exact: true
   }

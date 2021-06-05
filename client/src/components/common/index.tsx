@@ -1,4 +1,4 @@
-import InputComponent from "./Input";
+import {InputComponent, Input} from "./Input";
 import SelectComponent from "./InputSelect";
 import ButtonComponent from './Button';
 import IconComponent from "./Icon";
@@ -8,6 +8,7 @@ import TextInputComponent from "./Input/TextInput";
 import SelectInputComponent from "./Input/SelectInput";
 
 export {
+  Input,
   InputComponent,
   SelectComponent,
   ButtonComponent,

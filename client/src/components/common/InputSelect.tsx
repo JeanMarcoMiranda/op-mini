@@ -1,41 +1,44 @@
-import React, { Fragment, Dispatch, SetStateAction } from 'react';
+import React, { Fragment, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
+import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 
-//Dispatch<SetStateAction<string>>
 interface InputSelectProps {
   label?: string;
-  val: string | number | boolean;
-  valDef: {
-    id: number;
-    label: string;
-  };
-  options: {
-    id: number;
-    label: string;
-  }[];
-  onChange: Dispatch<SetStateAction<any>>;
+  name: string;
+  value: any;
+  options: IFormOptions[];
+  onChange: ChangeEventHandler<HTMLSelectElement>;
+  handleChange: Dispatch<SetStateAction<any>>;
 }
 
 const SelectComponent: React.FC<InputSelectProps> = ({
   label,
-  val,
-  valDef,
+  name,
+  value,
   options,
   onChange,
+  handleChange
 }) => {
   return (
     <div className="relative mb-3">
-      {label ? (
+      {label && (
         <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
           {label}
         </label>
-      ) : (
-        false
       )}
-      <Listbox value={valDef} onChange={onChange}>
+      <Listbox value={value} refName={name} onChange={(e) => {
+        onChange(e)
+        handleChange(e)
+      }}>
         <Listbox.Button className="relative w-full border-0 px-3 py-3 text-gray-600 bg-white text-sm text-left shadow focus:outline-none focus:ring">
           <span className="block truncate">
-            {typeof val === 'boolean' ? valDef.label : 'Categorias aqui'}
+            {value.label}
+          </span>
+          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+            <SelectorIcon
+              className="w-5 h-5 text-gray-400"
+              aria-hidden="true"
+            />
           </span>
         </Listbox.Button>
         <Transition
@@ -44,13 +47,13 @@ const SelectComponent: React.FC<InputSelectProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {options.map((option, optionIdx) => (
+          <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none text-sm">
+            {options.map((option:IFormOptions, index:number) => (
               <Listbox.Option
-                key={optionIdx}
+                key={index}
                 value={option}
                 className={({ active }) =>
-                  `${active ? 'text-amber-900 bg-amber-100' : 'text-gray-900'}
+                  `${active ? 'text-blue-700 bg-blue-100' : 'text-gray-600'}
                   cursor-default select-none relative py-2 pr-4`
                 }
               >
@@ -66,10 +69,11 @@ const SelectComponent: React.FC<InputSelectProps> = ({
                     {selected ? (
                       <span
                         className={`${
-                          active ? 'text-amber-600' : 'text-amber-600'
+                          active ? 'text-blue-600' : 'text-blue-600'
                         }
                                 absolute inset-y-0 left-0 flex items-center pl-3`}
                       >
+                        <CheckIcon className="w-5 h-5" aria-hidden="true" />
                       </span>
                     ) : null}
                   </>

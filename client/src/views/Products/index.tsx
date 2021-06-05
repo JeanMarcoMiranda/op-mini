@@ -121,7 +121,7 @@ const ProductsPage = () => {
   }
 
   const createProduct = () => {
-    history.push(`/product/create`)
+    history.push(`/product/form`)
   }
 
   const renderActions = (idProduct: string) => (
