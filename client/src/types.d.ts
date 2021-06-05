@@ -15,14 +15,10 @@ interface IFormSupplier {
   doctype: string;
   docnum: number;
   address: string;
-  active: boolean;
+  active: IFormSupplierOptions;
 };
 
-interface IFormSupplierIOptions {
-  id: number;
+interface IFormOptions {
   label: string;
-  value: string | number | boolena ;
+  value: string | number | boolean;
 };
-
-interface IFormSupplierOptions extends Array<IFormSupplierIOptions>{}
-

@@ -97,7 +97,7 @@ const ProductsPage = () => {
                   Icon={AnnotationIcon}
                   hover
                 />
-                <Link to={`/supplier/update/${_id}`}>
+                <Link to={`/supplier/form/${_id}`}>
                 <IconComponent
                   width={5}
                   color="purple"

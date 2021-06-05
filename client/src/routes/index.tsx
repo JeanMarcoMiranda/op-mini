@@ -28,8 +28,13 @@ export const appRoutes: RouteData[] = [
     component: Supplier,
     exact: true
   },
-    {
-    path: '/supplier/update/:id',
+  {
+    path: '/supplier/form/:id',
+    component: SupplierForm,
+    exact: true
+  },
+  {
+    path: '/supplier/form',
     component: SupplierForm,
     exact: true
   },

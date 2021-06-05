@@ -7,9 +7,9 @@ import {
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-const options: IFormSupplierOptions = [
-  { id: 1, label: 'Activo', value: true },
-  { id: 2, label: 'Inactivo', value: false },
+const options: IFormOptions[] = [
+  { label: 'Activo', value: true },
+  { label: 'Inactivo', value: false },
 ];
 
 const SupplierView: React.FC = () => {
@@ -37,6 +37,8 @@ const SupplierView: React.FC = () => {
     return hoverStyles;
   }
 
+  const [show, setShow] = useState(false);
+  const [selActive, setSelActive] = useState<IFormOptions>(options[0]);
   const { control, handleSubmit, setValue } = useForm<
     TFormValues<IFormSupplier>
   >({
@@ -48,18 +50,16 @@ const SupplierView: React.FC = () => {
         doctype: '',
         docnum: 0,
         address: '',
-        active: false,
+        active: options[0],
       },
     },
   });
-  //console.log(watch());
-
-  const [init, setInit] = useState<IFormSupplierIOptions>();
 
   async function supplierGet() {
     const URL: RequestInfo = `http://localhost:5000/suppliers/${id}`;
     const response = await fetch(URL);
     const data = await response.json();
+    let active = data.active ? options[0] : options[1];
     if (response.ok) {
       setValue('values', {
         name: data.name,
@@ -68,10 +68,10 @@ const SupplierView: React.FC = () => {
         doctype: data.doctype,
         docnum: data.docnum,
         address: data.address,
-        active: data.active,
+        active: active,
       });
-      setInit(data.active)
-      //console.log("valinit", init)
+      setSelActive(active)
+      setShow(true)
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -80,10 +80,10 @@ const SupplierView: React.FC = () => {
   const onSubmit: SubmitHandler<IFormSupplier> = (data) => console.log(data);
 
   useEffect(() => {
-    supplierGet();
+    id ? supplierGet() : setShow(true)
   }, []);
 
-  return (
+  return show ? (
     <>
       <div className="container mx-auto">
         <div className="grid grid-cols-1 gap-4 px-4 py-4 mx-auto">
@@ -155,10 +155,19 @@ const SupplierView: React.FC = () => {
                     />
                   </div>
                   <div className="px-4">
-                    <SelectComponent
-                      label="Estado"
-                      valinit={init}
-                      options={options}
+                    <Controller
+                      control={control}
+                      name="values.active"
+                      render={({ field: { onChange, name } }) => (
+                        <SelectComponent
+                          label="Estado"
+                          name={name}
+                          value={selActive}
+                          options={options}
+                          onChange={onChange}
+                          handleChange={setSelActive}
+                        />
+                      )}
                     />
                   </div>
                 </div>
@@ -215,13 +224,15 @@ const SupplierView: React.FC = () => {
                     />
                   </div>
                 </div>
+                <button type="submit">Pensalidad de tigre</button>
               </form>
             </div>
           </div>
         </div>
       </div>
     </>
-  );
+  ): <></>;
+
 };
 
 export default SupplierView;

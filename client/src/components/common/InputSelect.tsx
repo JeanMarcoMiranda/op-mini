@@ -1,43 +1,38 @@
-import React, { Fragment, Dispatch, SetStateAction, useState } from 'react';
+import React, { Fragment, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 
-//Dispatch<SetStateAction<string>>
 interface InputSelectProps {
   label?: string;
-  valinit?: IFormSupplierIOptions;
-  options: IFormSupplierOptions;
+  name: string;
+  value: any;
+  options: IFormOptions[];
+  onChange: ChangeEventHandler<HTMLSelectElement>;
+  handleChange: Dispatch<SetStateAction<any>>;
 }
 
 const SelectComponent: React.FC<InputSelectProps> = ({
   label,
-  valinit,
+  name,
+  value,
   options,
+  onChange,
+  handleChange
 }) => {
-
-  //console.log(valDef.label)
-  const found = options.find(opt => opt.value === valinit);
-  const [selected, setSelected] = useState<IFormSupplierIOptions>(options[0]);
-  //console.log("selected", selected)
-  //console.log("selected.value", selected.value)
-  console.log("found", found)
-  console.log("selected", selected)
-  console.log("options", options)
-
-
   return (
     <div className="relative mb-3">
-      {label ? (
+      {label && (
         <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
           {label}
         </label>
-      ) : (
-        false
       )}
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={value} refName={name} onChange={(e) => {
+        onChange(e)
+        handleChange(e)
+      }}>
         <Listbox.Button className="relative w-full border-0 px-3 py-3 text-gray-600 bg-white text-sm text-left shadow focus:outline-none focus:ring">
           <span className="block truncate">
-            {selected.label}
+            {value.label}
           </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
             <SelectorIcon
@@ -53,9 +48,9 @@ const SelectComponent: React.FC<InputSelectProps> = ({
           leaveTo="opacity-0"
         >
           <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none text-sm">
-            {options.map((option, optionIdx) => (
+            {options.map((option:IFormOptions, index:number) => (
               <Listbox.Option
-                key={optionIdx}
+                key={index}
                 value={option}
                 className={({ active }) =>
                   `${active ? 'text-blue-700 bg-blue-100' : 'text-gray-600'}

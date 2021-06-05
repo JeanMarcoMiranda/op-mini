@@ -19,12 +19,10 @@ export const InputComponent: React.FC<InputComponentProps> = ({
 }) => {
   return (
     <div className="relative w-full mb-3">
-      {label ? (
+      {label && (
         <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
           {label}
         </label>
-      ) : (
-        false
       )}
       <input
         type={type}
