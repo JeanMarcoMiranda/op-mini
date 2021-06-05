@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { AnnotationIcon, PencilAltIcon,ArchiveIcon } from '@heroicons/react/outline';
 import { ChipComponent, IconComponent, TableComponent } from '../../components/common';
+import { useHistory } from 'react-router-dom';
 
 interface Product {
   _id: string,
@@ -56,28 +57,22 @@ const dateFormat = (dateToFormat: Date) => {
 }
 
 const ProductsPage = () => {
-  const [tableData, setTableData] = useState<Product[]>([])
-  const [tableBodyData, setTableBodyData] = useState<ProductDataTable[]>([])
+  const [productData, setProductData] = useState<Product[]>([])
+  const [tableData, setTableData] = useState<ProductDataTable[]>([])
 
-  const url = 'http://localhost:8000/products'
+  const history = useHistory()
+
+  const url: RequestInfo = 'http://localhost:8000/products'
 
   useEffect(() => {
-    fetch(url,{
-      method: 'GET',
-      headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjE5NjU4ODQsImV4cCI6MTYyMjgyOTg4NH0.tXAtOmjHsBd_z0DlSYPd-V-rNOqsJSiNiLK0zcJLUgM",
-        "Content-Type": "application/json",
-      }
-    })
-      .then( res => res.json() )
-      .then( data => setTableData(data) )
+    getProductData()
   }, [])
 
   useEffect(() => {
-    if (tableData === []) return
+    if (productData.length === 0) return
 
     const prepareTableData = () => {
-      let newTableData: ProductDataTable[] = tableData.map(({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active }: Product) => {
+      let newTableData: ProductDataTable[] = productData.map(({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active }) => {
         let newData: ProductDataTable= {
           _id,
           barcode,
@@ -86,29 +81,64 @@ const ProductsPage = () => {
           stock,
           pricebuy,
           pricesell,
-          active: (
-            <ChipComponent
-              label={active ? 'Activo' : 'Inactivo'}
-              bgColor="purple"
-              txtColor="purple"
-            />
-          ),
-          actions: (
-            <div className="flex item-center justify-center">
-              <IconComponent width={5} color="purple" Icon={AnnotationIcon} hover />
-              <IconComponent width={5} color="purple" Icon={PencilAltIcon} hover />
-              <IconComponent width={5} color="purple" Icon={ArchiveIcon} hover />
-            </div>
-          ),
+          active: renderActiveChip(active),
+          actions: renderActions(_id),
         }
         return newData
       })
-
-      setTableBodyData(newTableData)
+      setTableData(newTableData)
     }
 
     prepareTableData()
-  }, [tableData])
+  }, [productData])
+
+  const getProductData = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac",
+        "Content-Type": "application/json",
+      }
+    }
+    const res = await fetch(url, requestInit)
+    const data = await res.json()
+    setProductData(data)
+  }
+
+  const deleteProduct = async (idProduct: string) => {
+    const urlDelete: RequestInfo = url + '/' + idProduct
+    const requestInit: RequestInit = {
+      method: 'DELETE',
+      headers: {
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjE5NjU4ODQsImV4cCI6MTYyMjgyOTg4NH0.tXAtOmjHsBd_z0DlSYPd-V-rNOqsJSiNiLK0zcJLUgM",
+        "Content-Type": "application/json",
+      }
+    }
+    const res = await fetch(urlDelete, requestInit)
+    const data = await res.json()
+    console.log(data)
+    getProductData()
+  }
+
+  const createProduct = () => {
+    history.push(`/product/create`)
+  }
+
+  const renderActions = (idProduct: string) => (
+    <div className="flex item-center justify-center">
+      <IconComponent width={5} color="blue" Icon={AnnotationIcon} hover />
+      <IconComponent width={5} color="blue" Icon={PencilAltIcon} hover />
+      <IconComponent width={5} color="red" Icon={ArchiveIcon} hover clickHandler={ () => deleteProduct(idProduct) }/>
+    </div>
+  )
+
+  const renderActiveChip = (isActive: boolean) => (
+    <ChipComponent
+      label={isActive ? 'Activo' : 'Inactivo'}
+      bgColor="blue"
+      txtColor="blue"
+    />
+  )
 
   return (
     <>
@@ -121,12 +151,13 @@ const ProductsPage = () => {
                 <button
                   className="bg-blue-500 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow outline-none focus:outline-none"
                   type="button"
+                  onClick={createProduct}
                 >
-                  Nuevo Producto
+                  Agregar Producto
                 </button>
               </div>
             </div>
-            <TableComponent theadData={tableFieldData} tbodyData={tableBodyData} />
+            <TableComponent theadData={tableFieldData} tbodyData={tableData} />
           </div>
         </div>
       </div>

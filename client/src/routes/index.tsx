@@ -4,6 +4,7 @@ import Login from "../views/Login";
 import Home from "../views/Home";
 import ProductsPage from "../views/Products";
 import Supplier from "../views/Suppliers";
+import FormProduct from "../views/Products/Form";
 
 interface RouteData {
   path: string,
@@ -30,6 +31,11 @@ export const appRoutes: RouteData[] = [
   {
     path: '/product',
     component: ProductsPage,
+    exact: true
+  },
+  {
+    path: '/product/create',
+    component: FormProduct,
     exact: true
   }
 ]
