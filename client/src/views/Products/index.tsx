@@ -1,36 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { AnnotationIcon, PencilAltIcon,ArchiveIcon } from '@heroicons/react/outline';
-import { ChipComponent, IconComponent, TableComponent } from '../../components/common';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
-interface Product {
-  _id: string,
-  barcode: number,
-  name: string,
-  stock: number,
-  pricebuy: number,
-  pricesell: number,
-  date: Date,
-  description: string,
-  active: boolean,
-  category: {
-    _id: string,
-    name: string,
-    active: boolean,
-  }
-}
-
-interface ProductDataTable {
-    _id: string;
-    barcode: number;
-    name: string;
-    category: string;
-    stock: number;
-    pricebuy: number;
-    pricesell: number;
-    active: JSX.Element;
-    actions: JSX.Element;
-}
+import {
+  AnnotationIcon,
+  PencilAltIcon,
+  ArchiveIcon,
+  PlusIcon,
+} from '@heroicons/react/outline';
+import {
+  ButtonComponent as Button,
+  ChipComponent as Chip,
+  IconComponent as Icon,
+  TableComponent as Table,
+} from '../../components/common';
 
 const tableFieldData = [
   { text: 'Codigo de Barras', width: 2, name: 'barcode' },
@@ -43,23 +25,10 @@ const tableFieldData = [
   { text: 'Acciones', width: 2, name: 'actions' },
 ]
 
-const dateFormat = (dateToFormat: Date) => {
-  let date = new Date(dateToFormat)
-  let day = date.getDay()
-  let month = date.getMonth() + 1
-  let year = date.getFullYear()
+const ProductsView: React.FC = () => {
 
-  const lessThanTen = (val: number) => {
-    return val > 10 ? val + '' : '0' + val
-  }
-
-  return `${ lessThanTen(day) }/${ lessThanTen(month) }/${ year }`
-}
-
-const ProductsPage = () => {
-  const [productData, setProductData] = useState<Product[]>([])
-  const [tableData, setTableData] = useState<ProductDataTable[]>([])
-
+  const [productData, setProductData] = useState<IProduct[]>([])
+  const [tableData, setTableData] = useState<IProductTableData[]>([])
   const history = useHistory()
 
   const url: RequestInfo = 'http://localhost:8000/products'
@@ -72,8 +41,9 @@ const ProductsPage = () => {
     if (productData.length === 0) return
 
     const prepareTableData = () => {
-      let newTableData: ProductDataTable[] = productData.map(({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active }) => {
-        let newData: ProductDataTable= {
+      let newTableData: IProductTableData[] = productData.map(
+        ({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active } : IProduct) => {
+        let newData: IProductTableData= {
           _id,
           barcode,
           name,
@@ -116,24 +86,38 @@ const ProductsPage = () => {
     }
     const res = await fetch(urlDelete, requestInit)
     const data = await res.json()
-    console.log(data)
+    console.log('Product Deleted', data)
     getProductData()
-  }
-
-  const createProduct = () => {
-    history.push(`/product/form`)
   }
 
   const renderActions = (idProduct: string) => (
     <div className="flex item-center justify-center">
-      <IconComponent width={5} color="blue" Icon={AnnotationIcon} hover />
-      <IconComponent width={5} color="blue" Icon={PencilAltIcon} hover />
-      <IconComponent width={5} color="red" Icon={ArchiveIcon} hover clickHandler={ () => deleteProduct(idProduct) }/>
+      <Icon
+        width={5}
+        color="blue"
+        Icon={AnnotationIcon}
+        hover
+      />
+      <Link to={`/product/form/${idProduct}`}>
+        <Icon
+          width={5}
+          color="blue"
+          Icon={PencilAltIcon}
+          hover
+        />
+      </Link>
+      <Icon
+        width={5}
+        color="red"
+        Icon={ArchiveIcon}
+        hover
+        onClick={ () => deleteProduct(idProduct) }
+      />
     </div>
   )
 
   const renderActiveChip = (isActive: boolean) => (
-    <ChipComponent
+    <Chip
       label={isActive ? 'Activo' : 'Inactivo'}
       bgColor="blue"
       txtColor="blue"
@@ -148,16 +132,16 @@ const ProductsPage = () => {
             <div className="rounded-t bg-white mb-0 px-6 py-6">
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-xl font-bold">Productos</h6>
-                <button
-                  className="bg-blue-500 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow outline-none focus:outline-none"
-                  type="button"
-                  onClick={createProduct}
-                >
-                  Agregar Producto
-                </button>
+                <Link to={`/product/form`}>
+                  <Button
+                    label="Agregar"
+                    textColor="white"
+                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                  />
+                </Link>
               </div>
             </div>
-            <TableComponent theadData={tableFieldData} tbodyData={tableData} />
+            <Table theadData={tableFieldData} tbodyData={tableData} />
           </div>
         </div>
       </div>
@@ -165,4 +149,4 @@ const ProductsPage = () => {
   )
 }
 
-export default ProductsPage
+export default ProductsView

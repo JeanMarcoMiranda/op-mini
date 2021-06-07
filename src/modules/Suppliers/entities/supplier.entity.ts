@@ -8,7 +8,7 @@ export class Supplier extends Document {
   name: string;
 
   @Prop({ required: true })
-  phone: number;
+  phone: string;
 
   @Prop()
   email: string;
@@ -17,7 +17,7 @@ export class Supplier extends Document {
   doctype: string;
 
   @Prop()
-  docnum: number;
+  docnum: string;
 
   @Prop()
   address: string;

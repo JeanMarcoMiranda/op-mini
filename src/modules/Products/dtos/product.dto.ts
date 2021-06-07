@@ -1,35 +1,35 @@
-import { IsDate, IsNumber, IsNotEmpty, IsString, IsBoolean, IsMongoId} from 'class-validator'
+import { IsDate, IsNotEmpty, IsString, IsBoolean, IsMongoId} from 'class-validator'
 import { ApiProperty, PartialType } from '@nestjs/swagger'
 
 export class CreateProductDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  readonly barcode: number
+  readonly barcode: string
 
   @IsString()
   @IsNotEmpty()
   readonly name: string
-  
-  @IsNumber()
-  @IsNotEmpty()
-  readonly stock: number
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  readonly pricebuy: number
-  
-  @IsNumber()
-  @IsNotEmpty()
-  readonly pricesell: number
+  readonly stock: string
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  readonly date: Date
+  readonly pricebuy: string
+
+  @IsString()
+  @IsNotEmpty()
+  readonly pricesell: string
+
+  @IsString()
+  @IsNotEmpty()
+  readonly date: string
 
   @IsString()
   @IsNotEmpty()
   readonly description: string
-  
+
   @IsBoolean()
   @IsNotEmpty()
   readonly active: boolean

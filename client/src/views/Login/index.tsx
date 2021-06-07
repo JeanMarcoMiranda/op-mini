@@ -99,14 +99,12 @@ const LoginView: React.FC = () => {
             <ButtonComponent
               label={loginButtonStyles.BUTTON_LABEL}
               bgColor={loginButtonStyles.BACKGROUND_COLOR}
-              bgTransparent={loginButtonStyles.IS_TRANSPARENT}
               textColor={loginButtonStyles.TEXT_COLOR}
               onHoverStyles={toHoverStyle(loginButtonStyles.ON_HOVER_STYLES)}
             />
             <ButtonComponent
               label={registerButtonStyles.BUTTON_LABEL}
               bgColor={registerButtonStyles.BACKGROUND_COLOR}
-              bgTransparent={registerButtonStyles.IS_TRANSPARENT}
               textColor={registerButtonStyles.TEXT_COLOR}
               onHoverStyles={toHoverStyle(registerButtonStyles.ON_HOVER_STYLES)}
             />

@@ -1,14 +1,16 @@
 import React, { Fragment, ChangeEventHandler, Dispatch, SetStateAction } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
+import { generateString } from '../../utils';
 
 interface InputSelectProps {
   label?: string;
   name: string;
   value: any;
-  options: IFormOptions[];
+  options: ISelectOption[];
   onChange: ChangeEventHandler<HTMLSelectElement>;
   handleChange: Dispatch<SetStateAction<any>>;
+  placeholder?: string,
 }
 
 const SelectComponent: React.FC<InputSelectProps> = ({
@@ -17,7 +19,8 @@ const SelectComponent: React.FC<InputSelectProps> = ({
   value,
   options,
   onChange,
-  handleChange
+  handleChange,
+  placeholder = 'Seleccione...',
 }) => {
   return (
     <div className="relative mb-3">
@@ -29,10 +32,10 @@ const SelectComponent: React.FC<InputSelectProps> = ({
       <Listbox value={value} refName={name} onChange={(e) => {
         onChange(e)
         handleChange(e)
-      }}>
+      }} key={generateString(5)}>
         <Listbox.Button className="relative w-full border-0 px-3 py-3 text-gray-600 bg-white text-sm text-left shadow focus:outline-none focus:ring">
           <span className="block truncate">
-            {value.label}
+            {value ? value.label : placeholder}
           </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
             <SelectorIcon
@@ -48,7 +51,7 @@ const SelectComponent: React.FC<InputSelectProps> = ({
           leaveTo="opacity-0"
         >
           <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none text-sm">
-            {options.map((option:IFormOptions, index:number) => (
+            {options.map((option:ISelectOption, index:number) => (
               <Listbox.Option
                 key={index}
                 value={option}

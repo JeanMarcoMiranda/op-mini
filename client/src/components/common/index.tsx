@@ -1,21 +1,18 @@
-import {InputComponent, Input} from "./Input";
-import SelectComponent from "./InputSelect";
+import InputComponent from "./Input/Input";
+import SelectComponent from "./Input/Select";
+import TextAreaComponent from "./Input/TextArea";
 import ButtonComponent from './Button';
 import IconComponent from "./Icon";
 import ChipComponent from "./Chip";
 import TableComponent from "./Table/Table";
-import TextInputComponent from "./Input/TextInput";
-import SelectInputComponent from "./Input/SelectInput";
 
 export {
-  Input,
   InputComponent,
   SelectComponent,
   ButtonComponent,
   IconComponent,
   ChipComponent,
   TableComponent,
-  TextInputComponent,
-  SelectInputComponent,
+  TextAreaComponent,
 }
 

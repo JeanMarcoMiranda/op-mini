@@ -6,22 +6,22 @@ import { Category } from './categories.entity';
 @Schema()
 export class Product extends Document {
   @Prop({ required: true })
-  barcode: number;
+  barcode: string;
 
   @Prop({ required: true })
   name: string;
 
   @Prop({ required: true })
-  stock: number;
+  stock: string;
 
   @Prop()
-  pricebuy: number;
+  pricebuy: string;
 
   @Prop()
-  pricesell: number;
+  pricesell: string;
 
   @Prop()
-  date: Date;
+  date: string;
 
   @Prop()
   description: string;

@@ -1,70 +1,99 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-import { ButtonComponent, TextInputComponent, SelectInputComponent } from '../../components/common';
+import {
+  ButtonComponent as Button,
+  InputComponent as Input,
+  SelectComponent as Select,
+  TextAreaComponent as TextArea,
+} from '../../components/common';
+import { toHoverStyle } from '../../components/utils';
 
-interface IFormProduct {
-  barcode: number;
-  name: string;
-  stock: number;
-  pricebuy: number;
-  pricesell: number;
-  date: Date;
-  description: string;
-  active: boolean;
-  category: ICategoryOption;
-}
+const activeOptions: ISelectOption[] = [
+  { label: 'Activo', value: true },
+  { label: 'Inactivo', value: false },
+];
 
-interface ICategory {
-  _id: string;
-  name: string;
-  active: boolean;
-}
+const urlPro: RequestInfo = 'http://localhost:8000/products'
+const urlCat: RequestInfo = 'http://localhost:8000/categories'
 
-interface ICategoryOption {
-  name: string;
-  value: string;
-}
+const ProductForm: React.FC = () => {
 
-const FormProduct = () => {
-  const [categoryData, setCategoryData] = useState<ICategory[]>([])
-  const [categoryOptions, setCategoryOptions] = useState<ICategoryOption[]>([])
-  const { control, handleSubmit } = useForm<IFormProduct>({
+  const [show, setShow] = useState(false)
+  const [categoryOptions, setCategoryOptions] = useState<ISelectOption[]>([])
+  const [selActive, setSelActive] = useState<ISelectOption>(activeOptions[0])
+  const [selCategory, setSelCategory] = useState<ISelectOption>()
+  const { control, handleSubmit, setValue } = useForm<TFormValues<IFormProduct>>({
     defaultValues: {
-      category: {name: 'buenas',
-      value: 'cg',}
+      values: {
+        barcode: '0',
+        name: '',
+        stock: '0',
+        pricebuy: '0',
+        pricesell: '0',
+        description: '',
+        active: activeOptions[0],
+      }
     }
   })
-  const history = useHistory()
-
-  const onSubmit: SubmitHandler<IFormProduct> = data => {
-    console.log(data)
-  }
-
-  const urlPro: RequestInfo = 'http://localhost:8000/products'
-  const urlCat: RequestInfo = 'http://localhost:8000/categories'
+  const { id } = useParams<IParamTypes>();
 
   useEffect(() => {
-    getCategoriesData()
+    const initialRender = async () => {
+      const catData = await getCategories()
+      prepareCatOptions(catData)
+    }
+    initialRender()
   }, [])
 
   useEffect(() => {
-    const catOptions: ICategoryOption[] = []
-    categoryData.map((cat) => {
+    if (categoryOptions.length === 0) return
+    id ? getProduct() : setShow(true)
+  }, [categoryOptions])
+
+  const getProduct = async () => {
+    const urlReq: RequestInfo = urlPro + `/${id}`;
+    const response = await fetch(urlReq);
+    const { name, barcode, stock, pricebuy, pricesell, description, active, category }: IProductResponse = await response.json();
+    const activeOption = active ? activeOptions[0] : activeOptions[1];
+    const categoryOption = categoryOptions.find(cat => cat.value == category)
+    const dateNow = new Date()
+    if (response.ok) {
+      setValue('values', {
+        barcode,
+        name,
+        stock,
+        pricebuy,
+        pricesell,
+        description,
+        date: dateNow.toString(),
+        active: activeOption,
+        category: categoryOption,
+      });
+      setSelCategory(categoryOption)
+      setSelActive(activeOption)
+      setShow(true)
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
+
+  const prepareCatOptions = (data: ICategory[]) => {
+    const catOptions: ISelectOption[] = []
+    data.map((cat) => {
       if (cat.active) {
-        const newObject: ICategoryOption = {
-          name: cat.name,
+        const newObject: ISelectOption = {
+          label: cat.name,
           value: cat._id,
         }
         catOptions.push(newObject)
       }
     })
     setCategoryOptions(catOptions)
-    console.log(catOptions)
-  }, [categoryData])
+  }
 
-  const getCategoriesData = async () => {
+  const getCategories = async () => {
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -73,29 +102,70 @@ const FormProduct = () => {
       }
     }
     const res = await fetch(urlCat, requestInit)
-    const data = await res.json()
-    setCategoryData(data as ICategory[])
+    const data: ICategory[] = await res.json()
+    return data
   }
 
-  /* async function createFormCallback () {
-    const now = new Date()
+  const onSubmit: SubmitHandler<TFormValues<IFormProduct>> = ({ values }) => {
+    if (id) {
+      updateProduct(values)
+    } else {
+      createProduct(values)
+    }
+    console.log('onsubmit', values)
+  }
+
+  const updateProduct = async (data: IFormProduct) => {
+    const dateNow = new Date()
+    const url: RequestInfo = urlPro + `/${id}`;
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...data,
+        ['date']: dateNow.toString(),
+        ['active']: data.active.value,
+        ['category']: data.category?.value,
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    console.log(res)
+    const dataRes: IProductResponse = await res.json()
+    if (res.ok) {
+      console.log('Product Updated', dataRes)
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
+
+  const createProduct = async (data: IFormProduct) => {
+    const dateNow = new Date()
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjE5NjU4ODQsImV4cCI6MTYyMjgyOTg4NH0.tXAtOmjHsBd_z0DlSYPd-V-rNOqsJSiNiLK0zcJLUgM",
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({...values, ['date']: now }),
+      body: JSON.stringify({
+        ...data,
+        ['date']: dateNow.toString(),
+        ['active']: data.active.value,
+        ['category']: data.category?.value,
+      }),
     }
-    const res = await fetch(url, requestInit)
-    const data = await res.json()
-  } */
-
-  const backHistory = () => {
-    history.goBack()
+    const res = await fetch(urlPro, requestInit);
+    const dataRes: IProductResponse = await res.json()
+    if (res.ok) {
+      console.log('Product Created', dataRes)
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
   }
 
-  return (
+  return show ? (
     <>
       <div className="container mx-auto">
         <div className="w-full lg:w-10/12 px-4 py-4 mx-auto">
@@ -103,81 +173,84 @@ const FormProduct = () => {
             <div className="rounded-t bg-white mb-0 px-6 py-6">
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-xl font-bold">Productos</h6>
-                <button
-                  className="bg-blue-500 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow outline-none focus:outline-none"
-                  type="button"
-                  onClick={backHistory}
-                >
-                  Regresar
-                </button>
+                <Link to="/product">
+                  <Button
+                    label="Regresar"
+                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                    textColor="white"
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
+                  />
+                </Link>
               </div>
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="col-span-2 py-4 px-6"
+              >
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Informacion del producto
                 </h6>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="px-4">
                     <Controller
-                      name="name"
                       control={control}
-                      defaultValue={""}
-                      render={({ field: { onChange, onBlur, value, name } }) => (
-                        <TextInputComponent
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={value}
-                          name={name}
+                      name="values.name"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
+                          type="text"
                           label="Nombre"
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="px-4">
-                    <Controller
-                      name="barcode"
-                      control={control}
-                      defaultValue={0}
-                      render={({ field: { onChange, onBlur, value, name } }) => (
-                        <TextInputComponent
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={value}
                           name={name}
-                          label="Código de Barra"
+                          value={value}
+                          onChange={onChange}
                         />
                       )}
                     />
                   </div>
                   <div className="px-4">
                     <Controller
-                      name="stock"
                       control={control}
-                      defaultValue={0}
-                      render={({ field: { onChange, onBlur, value, name } }) => (
-                        <TextInputComponent
+                      name="values.barcode"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
                           type="number"
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={value}
+                          label="Código de Barra"
                           name={name}
-                          label="Stock"
+                          value={value}
+                          onChange={onChange}
+                          focus
                         />
                       )}
                     />
                   </div>
                   <div className="px-4">
                     <Controller
-                      name="category"
                       control={control}
-                      render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                        <SelectInputComponent
+                      name="values.stock"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
+                          type="number"
+                          label="Stock"
                           name={name}
-                          label="Categoría"
-                          onChange={onChange}
                           value={value}
+                          onChange={onChange}
+                          focus
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="px-4">
+                    <Controller
+                      control={control}
+                      name="values.category"
+                      render={({ field: { onChange, name } }) => (
+                        <Select
+                          label="Categoría"
+                          name={name}
+                          value={selCategory}
                           options={categoryOptions}
+                          onChange={onChange}
+                          handleChange={setSelCategory}
                         />
                       )}
                     />
@@ -193,34 +266,32 @@ const FormProduct = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="px-4">
                     <Controller
-                      name="pricebuy"
                       control={control}
-                      defaultValue={0}
-                      render={({ field: { onChange, onBlur, value, name } }) => (
-                        <TextInputComponent
+                      name="values.pricebuy"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
                           type="number"
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={value}
-                          name={name}
                           label="Precio de Compra"
+                          name={name}
+                          value={value}
+                          onChange={onChange}
+                          focus
                         />
                       )}
                     />
                   </div>
                   <div className="px-4">
                     <Controller
-                      name="pricesell"
                       control={control}
-                      defaultValue={0}
-                      render={({ field: { onChange, onBlur, value, name } }) => (
-                        <TextInputComponent
+                      name="values.pricesell"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
                           type="number"
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={value}
-                          name={name}
                           label="Precio de Venta"
+                          name={name}
+                          value={value}
+                          onChange={onChange}
+                          focus
                         />
                       )}
                     />
@@ -236,39 +307,50 @@ const FormProduct = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="px-4">
                     <Controller
-                      name="description"
                       control={control}
-                      defaultValue={""}
-                      render={({ field: { onChange, onBlur, value, name } }) => (
-                        <TextInputComponent
-                          type="textarea"
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={value}
-                          name={name}
+                      name="values.description"
+                      render={({ field: { onChange, value, name } }) => (
+                        <TextArea
                           label="Notas"
+                          rows={5}
+                          name={name}
+                          value={value}
+                          onChange={onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="px-4">
+                    <Controller
+                      control={control}
+                      name="values.active"
+                      render={({ field: { onChange, name } }) => (
+                        <Select
+                          label="Estado"
+                          name={name}
+                          value={selActive}
+                          options={activeOptions}
+                          onChange={onChange}
+                          handleChange={setSelActive}
                         />
                       )}
                     />
                   </div>
                 </div>
-
-                <div className="mt-16 flex justify-start">
-                  <ButtonComponent
-                    label="Crear"
-                    bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
-                    bgTransparent={false}
-                    textColor={'text-white'}
-                    onHoverStyles={''}
-                  />
-                </div>
+                <Button
+                  label={ id ? 'Actualizar' : 'Crear' }
+                  bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
+                  textColor={'white'}
+                  onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
+                  submit
+                />
               </form>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  ) : <></>
 }
 
-export default FormProduct
+export default ProductForm

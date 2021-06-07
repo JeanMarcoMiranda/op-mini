@@ -2,10 +2,10 @@ import React from "react";
 
 import Login from "../views/Login";
 import Home from "../views/Home";
-import ProductsPage from "../views/Products";
-import Supplier from "../views/Suppliers";
-import FormProduct from "../views/Products/Form";
-import SupplierForm from "../views/Suppliers/supplierForm";
+import ProductsView from "../views/Products";
+import SupplierView from "../views/Suppliers";
+import ProductForm from "../views/Products/Form";
+import SupplierForm from "../views/Suppliers/Form";
 
 interface RouteData {
   path: string,
@@ -25,13 +25,8 @@ export const appRoutes: RouteData[] = [
     exact: true
   },
   {
-    path: '/suppliers',
-    component: Supplier,
-    exact: true
-  },
-  {
-    path: '/supplier/form/:id',
-    component: SupplierForm,
+    path: '/supplier',
+    component: SupplierView,
     exact: true
   },
   {
@@ -40,13 +35,23 @@ export const appRoutes: RouteData[] = [
     exact: true
   },
   {
+    path: '/supplier/form/:id',
+    component: SupplierForm,
+    exact: true
+  },
+  {
     path: '/product',
-    component: ProductsPage,
+    component: ProductsView,
     exact: true
   },
   {
     path: '/product/form',
-    component: FormProduct,
+    component: ProductForm,
     exact: true
-  }
+  },
+  {
+    path: '/product/form/:id',
+    component: ProductForm,
+    exact: true
+  },
 ]

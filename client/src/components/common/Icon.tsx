@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { MouseEventHandler, ComponentProps } from 'react';
 
 interface IconComponentProps {
-  Icon: (props: React.ComponentProps<'svg'>) => JSX.Element;
+  Icon: (props: ComponentProps<'svg'>) => JSX.Element;
   width: number;
   hover?: boolean;
   color?: string;
   margin?: string;
-  clickHandler?: React.MouseEventHandler<SVGSVGElement>;
+  onClick?: MouseEventHandler<SVGSVGElement>;
 }
 
 const IconComponent: React.FC<IconComponentProps> = ({
@@ -15,7 +15,7 @@ const IconComponent: React.FC<IconComponentProps> = ({
   hover = false,
   color = 'black',
   margin = 'mx-1',
-  clickHandler,
+  onClick,
 }) => {
   return (
     <div
@@ -29,7 +29,7 @@ const IconComponent: React.FC<IconComponentProps> = ({
         }
       `}
     >
-      <Icon onClick={clickHandler}/>
+      <Icon onClick={onClick}/>
     </div>
   );
 };
