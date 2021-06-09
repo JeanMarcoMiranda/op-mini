@@ -1,20 +1,21 @@
-import React, { ChangeEventHandler, Dispatch, SetStateAction } from 'react';
+import React, { ChangeEventHandler, RefCallback } from 'react';
+import { UseFormRegister, UseFormProps } from 'react-hook-form';
+
 //Dispatch<SetStateAction<string>>
 interface InputComponentProps {
   type: string
   label: string;
-  name: string,
+  name?: string
   value?: string | number;
-  onChange: ChangeEventHandler<HTMLInputElement>
+  onChange: ChangeEventHandler<HTMLInputElement>,
 }
 
-const InputComponent: React.FC<InputComponentProps> = ({
+const InputComponent = ({
   type,
   label,
-  name,
   value,
   onChange,
-}) => {
+}: InputComponentProps) => {
 
   return (
     <div className="relative w-full mb-3">
@@ -27,7 +28,6 @@ const InputComponent: React.FC<InputComponentProps> = ({
       )}
       <input
         type={type}
-        name={name}
         className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white text-sm shadow focus:outline-none focus:ring w-full"
         placeholder={label}
         value={value}

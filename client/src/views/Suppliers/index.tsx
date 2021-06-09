@@ -54,7 +54,7 @@ const Supplier = () => {
   return (
     <>
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 gap-4 px-4 py-4 mx-auto">
+       {/*  <div className="grid grid-cols-1 gap-4 px-4 py-4 mx-auto">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
             <div className="rounded-t bg-white mb-0 px-6 py-6">
               <div className="text-center flex justify-between">
@@ -148,7 +148,7 @@ const Supplier = () => {
               </form>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

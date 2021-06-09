@@ -11,15 +11,15 @@ export class RoleRepository {
 
   public async saveRole(role: CreateRoleDto): Promise<Role> {
     const createdUser = new this.roleModel(role);
-    return createdUser.save();
+    return await createdUser.save();
   }
 
   public async getAllRoles(): Promise<Role[]> {
-    return this.roleModel.find().exec();
+    return await this.roleModel.find().exec();
   }
 
   public async getOneRole(id: string): Promise<Role> {
-    const role = this.roleModel.findById(id).exec();
+    const role = await this.roleModel.findById(id).exec();
     if (!role) {
       throw new NotFoundException('Role not found');
     }
@@ -45,7 +45,7 @@ export class RoleRepository {
     return updatedRole;
   }
 
-  public async removeUser(id: string): Promise<Role> {
-    return this.roleModel.findByIdAndDelete(id);
+  public async removeRole(id: string): Promise<Role> {
+    return await this.roleModel.findByIdAndDelete(id);
   }
 }

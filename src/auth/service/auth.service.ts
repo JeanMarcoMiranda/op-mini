@@ -6,6 +6,7 @@ import { UserService } from '../../modules/Users/services/users.service';
 import { RoleService } from '../../modules/Users/services/role.service';
 import { User } from '../../modules/Users/entities/user.entity';
 import { PayloadToken } from '../models/token.model';
+import { Role } from 'src/modules/Users/entities/role.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,6 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
-
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
@@ -30,9 +30,7 @@ export class AuthService {
   }
 
   async generateJwt(user: User) {
-    const userRole = await this.roleService.findOne(`${user.role}`);
-
-    const payload: PayloadToken = { role: userRole, sub: user.id }; // sub: identificador, role: permisos
+    const payload: PayloadToken = { role: user.role as Role, sub: user.id }; // sub: identificador, role: permisos
     return {
       access_token: this.jwtService.sign(payload),
       user,
