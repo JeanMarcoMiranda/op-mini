@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import {
   AnnotationIcon,
   PencilAltIcon,
   ArchiveIcon,
-  PlusIcon,
 } from '@heroicons/react/outline';
 import {
   ButtonComponent as Button,
@@ -29,7 +28,6 @@ const ProductsView: React.FC = () => {
 
   const [productData, setProductData] = useState<IProduct[]>([])
   const [tableData, setTableData] = useState<IProductTableData[]>([])
-  const history = useHistory()
 
   const url: RequestInfo = 'http://localhost:8000/products'
 

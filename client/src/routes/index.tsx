@@ -4,8 +4,10 @@ import Login from "../views/Login";
 import Home from "../views/Home";
 import ProductsView from "../views/Products";
 import SupplierView from "../views/Suppliers";
+import UserView from "../views/Users";
 import ProductForm from "../views/Products/Form";
 import SupplierForm from "../views/Suppliers/Form";
+import UserForm from "../views/Users/Form";
 
 interface RouteData {
   path: string,
@@ -52,6 +54,21 @@ export const appRoutes: RouteData[] = [
   {
     path: '/product/form/:id',
     component: ProductForm,
+    exact: true
+  },
+  {
+    path: '/user',
+    component: UserView,
+    exact: true
+  },
+  {
+    path: '/user/form',
+    component: UserForm,
+    exact: true
+  },
+  {
+    path: '/user/form/:id',
+    component: UserForm,
     exact: true
   },
 ]

@@ -44,7 +44,7 @@ const LoginView: React.FC = () => {
 
   async function loginUserCallback() {
     // Request configuration
-    const LOGIN_URL: RequestInfo = 'http://localhost:5000/auth/login';
+    const LOGIN_URL: RequestInfo = 'http://localhost:8000/auth/login';
     const LOGIN_REQUEST_PARAMS: RequestInit = {
       method: 'POST',
       mode: 'cors',
