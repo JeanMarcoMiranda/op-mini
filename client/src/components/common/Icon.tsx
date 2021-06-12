@@ -18,19 +18,18 @@ const IconComponent: React.FC<IconComponentProps> = ({
   onClick,
 }) => {
   return (
-    <div
-      className={`
+    <Icon className={`
+        cursor-pointer
         w-${width}
         ${margin}
         ${
           hover
             ? `transform hover:text-${color}-500 hover:scale-110`
-            : `text-${color}-500`
+            : `text-${color}-600`
         }
       `}
-    >
-      <Icon onClick={onClick}/>
-    </div>
+      onClick={onClick}
+    />
   );
 };
 

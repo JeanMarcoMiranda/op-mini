@@ -6,14 +6,15 @@ import ProductsView from "../views/Products";
 import SupplierView from "../views/Suppliers";
 import ProductForm from "../views/Products/Form";
 import SupplierForm from "../views/Suppliers/Form";
+import navRoutes from "./navRoutes";
 
 interface RouteData {
   path: string,
   component: React.ComponentType,
-  exact: boolean
+  exact: boolean,
 }
 
-export const appRoutes: RouteData[] = [
+const appRoutes: RouteData[] = [
   {
     path: '/',
     component: Home,
@@ -55,3 +56,5 @@ export const appRoutes: RouteData[] = [
     exact: true
   },
 ]
+
+export { appRoutes, navRoutes }

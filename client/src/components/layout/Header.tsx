@@ -1,9 +1,21 @@
-const Header = () => {
+import React, { Dispatch, SetStateAction } from "react";
+import { IconComponent } from "../common";
+import { MenuIcon } from "@heroicons/react/solid";
+
+interface HeaderProps {
+  navToggle: Dispatch<SetStateAction<boolean>>
+}
+
+const Header: React.FC<HeaderProps> = ({
+  navToggle,
+}) => {
   return (
     <>
-      <footer className="relative bg-blueGray-200 pt-8 pb-6">
-        <h1>Soy un header</h1>
-      </footer>
+      <header className="fixed w-full items-center justify-between h-14 z-10 bg-gray-500 ">
+        <div className="m-auto text-white">
+          <IconComponent Icon={MenuIcon} width={10} onClick={() => navToggle(z => !z)}/>
+        </div>
+      </header>
     </>
   );
 }

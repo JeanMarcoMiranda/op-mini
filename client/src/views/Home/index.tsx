@@ -1,10 +1,9 @@
-import { Header } from '../../components/layout'
+import React from "react"
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div className="container">
-      <Header/>
-      <h1>Hola Mundo</h1>
+
     </div>
   )
 }
