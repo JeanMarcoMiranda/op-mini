@@ -45,9 +45,11 @@ export class UserRepository {
   ): Promise<User> {
     // $set: - indicates to update only the values provided instead of the entire document
     // new:true - indicates to the function to return the document updated instead of the values provided
+    const hashPassword = await bcrypt.hash(updateDocument.password, 10);
+
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
-      { $set: updateDocument },
+      { $set: updateDocument, password: hashPassword },
       { new: true },
     );
 
@@ -55,7 +57,9 @@ export class UserRepository {
       throw new NotFoundException(`User not found`);
     }
 
-    return updatedUser;
+    const { password, ...model } = updatedUser.toJSON();
+
+    return model as User;
   }
 
   public async removeUser(id: string): Promise<User> {

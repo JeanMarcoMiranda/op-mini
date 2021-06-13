@@ -1,5 +1,5 @@
-import React, { ComponentProps } from "react";
-import { BriefcaseIcon, ClipboardListIcon, HomeIcon } from "@heroicons/react/solid";
+import { ComponentProps } from "react";
+import { BriefcaseIcon, ClipboardListIcon, HomeIcon, UsersIcon } from "@heroicons/react/solid";
 
 interface RouteSideBar {
   label: string;
@@ -22,6 +22,11 @@ const navRoutes: RouteSideBar[] = [
     label: 'Proveedores',
     Icon: BriefcaseIcon,
     path: '/supplier'
+  },
+  {
+    label: 'Usuarios',
+    Icon: UsersIcon,
+    path: '/user'
   },
 ]
 

@@ -54,6 +54,7 @@ const SupplierView: React.FC = () => {
     };
 
     prepareTableData();
+    // eslint-disable-next-line
   }, [supplierData]);
 
   const getSupplierData = async () => {

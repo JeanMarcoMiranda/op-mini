@@ -42,6 +42,7 @@ const SupplierForm: React.FC = () => {
 
   useEffect(() => {
     id ? getSupplier() : setShow(true)
+    // eslint-disable-next-line
   }, []);
 
   const getSupplier = async () => {
@@ -85,7 +86,7 @@ const SupplierForm: React.FC = () => {
       },
       body: JSON.stringify({
         ...data,
-        ['active']: data.active.value
+        'active': data.active.value
       }),
     }
     const res = await fetch(url, requestInit);
@@ -107,7 +108,7 @@ const SupplierForm: React.FC = () => {
       },
       body: JSON.stringify({
         ...data,
-        ['active']: data.active.value
+        'active': data.active.value
       }),
     }
     const res = await fetch(url, requestInit);
