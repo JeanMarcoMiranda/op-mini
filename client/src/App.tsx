@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { appRoutes, navRoutes } from './routes'
-
+import { useSelector } from 'react-redux';
 import { SideBarComponent as SideBar } from './components';
 import { Header } from './components/layout';
 import './App.css';

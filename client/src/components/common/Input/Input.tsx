@@ -12,7 +12,6 @@ interface InputComponentProps {
 const InputComponent: React.FC<InputComponentProps> = ({
   type,
   label,
-  name,
   value,
   onChange,
   focus = false,
@@ -26,7 +25,6 @@ const InputComponent: React.FC<InputComponentProps> = ({
       )}
       <input
         type={type}
-        name={name}
         className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white text-sm shadow focus:outline-none focus:ring w-full"
         placeholder={label}
         value={value}

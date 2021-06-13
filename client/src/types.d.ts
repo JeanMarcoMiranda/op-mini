@@ -4,6 +4,11 @@ type TFormValues<T> = {
   }
 }
 
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
 // Supplier
 
 interface ISupplier {
@@ -152,6 +157,28 @@ interface IRole {
   description: string,
   isActive: boolean,
 }
+
+interface IUserSingle {
+  _id: string;
+  name: string;
+  email: string;
+  isActive: boolean;
+  documentType: string;
+  documentNumber: string;
+  role: IRole;
+}
+
+type UserState = {
+  user: IUserSingle;
+  access_token: string
+};
+
+type UserAction = {
+  type: string
+  userData: UserState
+}
+
+type DispatchType = (args: Action) => Action;
 
 // Others
 

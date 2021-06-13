@@ -1,22 +1,11 @@
 import React from 'react';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { InputComponent, ButtonComponent } from '../../components/common';
-import { useForm } from '../../components/hooks';
+import { setUserData } from '../../store/actions';
 
-function toHoverStyle(stylesOnHover: string): string {
-  const stylesSplited = stylesOnHover.split(' ');
-  let hoverStyles = '';
-
-  stylesSplited.forEach((style, index) => {
-    let newStyle = `hover:${style}`;
-    if (index !== stylesSplited.length - 1) {
-      newStyle = newStyle + ' ';
-    }
-    hoverStyles = hoverStyles + newStyle;
-  });
-
-  return hoverStyles;
-}
+import { toHoverStyle } from '../../components/utils';
 
 const LoginView: React.FC = () => {
   const loginButtonStyles = {
@@ -24,7 +13,8 @@ const LoginView: React.FC = () => {
     IS_TRANSPARENT: false,
     BUTTON_LABEL: 'Login Now',
     TEXT_COLOR: 'text-white',
-    ON_HOVER_STYLES: 'bg-gradient-to-r from-blue-500 to-blue-600 translate-y-11'
+    ON_HOVER_STYLES:
+      'bg-gradient-to-r from-blue-500 to-blue-600 translate-y-11',
   };
 
   const registerButtonStyles = {
@@ -35,14 +25,16 @@ const LoginView: React.FC = () => {
     ON_HOVER_STYLES: 'bg-gradient-to-r from-green-500 to-green-400',
   };
 
-  const initialFormState = {
-    email: 'buenas',
-    password: '1234',
-  };
+  const dispatch = useDispatch()
+  const state = useSelector(state => state)
+  console.log("buenas", state)
 
-  const { values, onChange, onSubmit } = useForm(loginUserCallback, initialFormState);
+  const { handleSubmit, control } = useForm<TFormValues<LoginFormValues>>({
+    defaultValues: { values: { email: '', password: '' } },
+    shouldUnregister: false,
+  });
 
-  async function loginUserCallback() {
+  const loginUser: SubmitHandler<TFormValues<LoginFormValues>> = async (values) => {
     // Request configuration
     const LOGIN_URL: RequestInfo = 'http://localhost:8000/auth/login';
     const LOGIN_REQUEST_PARAMS: RequestInit = {
@@ -52,7 +44,7 @@ const LoginView: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify(values.values),
     };
 
     // Setting up our request
@@ -64,6 +56,8 @@ const LoginView: React.FC = () => {
       const { access_token, user } = data;
       if (access_token) {
         console.log('Login buenardo');
+        console.log("this is the data", data)
+        dispatch(setUserData(data))
         // Guardar usuario y tokeny usuario  en el global state(Redux)
         // Guardar token y usuario en el local storage
       } else {
@@ -72,20 +66,23 @@ const LoginView: React.FC = () => {
     } else {
       console.log('Error: Unknow error || Server error');
     }
-  }
-
-  function prueba() {
-    toHoverStyle(registerButtonStyles.ON_HOVER_STYLES);
-  }
+  };
 
   return (
     <div className="container mx-auto mt-8">
       <div className="grid grid-cols-5 gap-4">
         <div className="col-span-3 py-4 px-6">
-          <img className="h-full w-full" src="/assets/images/graphic3.svg" alt="market"/>
+          <img
+            className="h-full w-full"
+            src="/assets/images/graphic3.svg"
+            alt="market"
+          />
         </div>
 
-        <form onSubmit={onSubmit} className="col-span-2 py-4 px-6">
+        <form
+          onSubmit={handleSubmit(loginUser)}
+          className="col-span-2 py-4 px-6"
+        >
           <h1 className="text-4xl mt-16 mb-8 opacity-75 text-left">Login</h1>
           <p className="text-xs mt-4 mb-20 opacity-50 text-left">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo eos ex
@@ -93,8 +90,32 @@ const LoginView: React.FC = () => {
             quaerat enim voluptate debitis possimus voluptatum sit assumenda
             quo.
           </p>
-          <InputComponent type="email" label="Email" name="email" onChange={onChange} />
-          <InputComponent type="password" label="Password" name="password" onChange={onChange} />
+          <Controller
+            control={control}
+            name="values.email"
+            render={({ field: { onChange, onBlur, value, ref, name } }) => (
+                <InputComponent
+                  type="email"
+                  label="Email"
+                  name="email"
+                  onChange={onChange}
+                  value={value}
+                />
+            )}
+          />
+          <Controller
+            control={control}
+            name="values.password"
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <InputComponent
+                type="password"
+                name="password"
+                label="Password"
+                onChange={onChange}
+                value={value}
+              />
+            )}
+          />
           <div className="mt-16 flex justify-start">
             <ButtonComponent
               label={loginButtonStyles.BUTTON_LABEL}

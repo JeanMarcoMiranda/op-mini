@@ -28,6 +28,6 @@ export class RoleService {
   }
 
   public async delete(id: string): Promise<Role> {
-    return await this.usersRespository.removeUser(id);
+    return await this.usersRespository.removeRole(id);
   }
 }
