@@ -7,7 +7,7 @@ const initialUserRole: IRole = {
   description: '',
 };
 
-const initialUserState: IUserSingle = {
+const initialUserState: IUserData = {
   _id: '',
   name: '',
   email: '',
@@ -18,18 +18,20 @@ const initialUserState: IUserSingle = {
 };
 
 const initialState: UserState = {
-  user: initialUserState,
-  access_token: '',
+  userData: initialUserState,
+  access_token: localStorage.getItem('token') || "",
 };
 
 export const userReducer = (
   state: UserState = initialState,
-  action: UserAction,
+  action: UserActionTypes,
 ): UserState => {
   switch (action.type) {
     case actionTypes.SET_USER_DATA: {
-      const { user, access_token } = action.userData;
-      return { ...state, user, access_token };
+      return { ...state, userData: action.user };
+    }
+    case actionTypes.SET_LOGEDIN: {
+      return { ...state, access_token: action.access_token };
     }
     default:
       return state;

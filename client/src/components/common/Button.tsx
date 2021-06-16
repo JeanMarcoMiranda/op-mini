@@ -26,7 +26,6 @@ const ButtonComponent: React.FC<ButtonProps> = ({
         text-${textColor}
         py-2 px-4 mr-3 mb-3
         focus:outline-none
-        transform
         ${onHoverStyles && onHoverStyles}
         rounded-lg`
       }

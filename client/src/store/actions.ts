@@ -1,7 +1,12 @@
 import * as actionTypes from './actionTypes'
 
-export const setUserData = (userData: UserState): UserAction => ({
+export const setUserData = (user: IUserData): UserActionTypes => ({
   type: actionTypes.SET_USER_DATA,
-  userData
+  user
+})
+
+export const setLogedin = (access_token: string): UserActionTypes => ({
+  type: actionTypes.SET_LOGEDIN,
+  access_token 
 })
 

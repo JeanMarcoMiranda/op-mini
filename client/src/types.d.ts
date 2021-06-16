@@ -1,8 +1,8 @@
 type TFormValues<T> = {
   values: {
-    [Key in keyof T]: T[Key]
-  }
-}
+    [Key in keyof T]: T[Key];
+  };
+};
 
 type LoginFormValues = {
   email: string;
@@ -40,34 +40,34 @@ interface IFormSupplier {
   docnum: string;
   address: string;
   active: ISelectOption;
-};
+}
 
 // Products
 
 interface IProduct {
-  _id: string,
-  barcode: string,
-  name: string,
-  stock: string,
-  pricebuy: string,
-  pricesell: string,
-  date: string,
-  description: string,
-  active: boolean,
-  category: ICategory,
+  _id: string;
+  barcode: string;
+  name: string;
+  stock: string;
+  pricebuy: string;
+  pricesell: string;
+  date: string;
+  description: string;
+  active: boolean;
+  category: ICategory;
 }
 
 interface IProductResponse {
-  _id: string,
-  barcode: string,
-  name: string,
-  stock: string,
-  pricebuy: string,
-  pricesell: string,
-  date: string,
-  description: string,
-  active: boolean,
-  category: string,
+  _id: string;
+  barcode: string;
+  name: string;
+  stock: string;
+  pricebuy: string;
+  pricesell: string;
+  date: string;
+  description: string;
+  active: boolean;
+  category: string;
 }
 
 interface IProductTableData {
@@ -101,19 +101,6 @@ interface ICategory {
 }
 
 //Users
-
-interface IUser {
-  _id: string;
-  name: string;
-  password: string;
-  isActive: boolean;
-  documentType: string;
-  documentNumber: string;
-  phone: string;
-  email: string;
-  currentAddress: string;
-  role: IRole;
-}
 
 interface IUserResponse {
   _id: string;
@@ -151,14 +138,32 @@ interface IFormUser {
   role: ISelectOption | undefined;
 }
 
-interface IRole {
-  _id: string,
-  name: string,
-  description: string,
-  isActive: boolean,
+// Others
+
+interface ISelectOption {
+  label: string;
+  value: string | number | boolean;
 }
 
-interface IUserSingle {
+interface IParamTypes {
+  id: string;
+}
+
+// ========== Redux User Types ==========
+interface IUser {
+  _id: string;
+  name: string;
+  password: string;
+  isActive: boolean;
+  documentType: string;
+  documentNumber: string;
+  phone: string;
+  email: string;
+  currentAddress: string;
+  role: IRole;
+}
+
+interface IUserData {
   _id: string;
   name: string;
   email: string;
@@ -169,24 +174,27 @@ interface IUserSingle {
 }
 
 type UserState = {
-  user: IUserSingle;
-  access_token: string
+  userData: IUserData;
+  access_token: string;
 };
 
-type UserAction = {
-  type: string
-  userData: UserState
+interface SetUserDataAction {
+  type: "SET_USER_DATA";
+  user: IUserData;
+};
+
+interface SetUserTokenAction {
+  type: "SET_LOGED_IN"
+  access_token: string
+}
+
+type UserActionTypes = SetUserDataAction | SetUserTokenAction
+
+interface IRole {
+  _id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
 }
 
 type DispatchType = (args: Action) => Action;
-
-// Others
-
-interface ISelectOption {
-  label: string;
-  value: string | number | boolean;
-};
-
-interface IParamTypes {
-  id: string;
-}

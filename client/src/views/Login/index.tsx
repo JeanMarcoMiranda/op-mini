@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { InputComponent, ButtonComponent } from '../../components/common';
-import { setUserData } from '../../store/actions';
+import { setLogedin, setUserData } from '../../store/actions';
 
 import { toHoverStyle } from '../../components/utils';
 
@@ -12,7 +12,7 @@ const LoginView: React.FC = () => {
     BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
     IS_TRANSPARENT: false,
     BUTTON_LABEL: 'Login Now',
-    TEXT_COLOR: 'text-white',
+    TEXT_COLOR: 'white',
     ON_HOVER_STYLES:
       'bg-gradient-to-r from-blue-500 to-blue-600 translate-y-11',
   };
@@ -21,13 +21,12 @@ const LoginView: React.FC = () => {
     BACKGROUND_COLOR: 'bg-gradient-to-r from-green-500 to-green-400',
     IS_TRANSPARENT: true,
     BUTTON_LABEL: 'Register',
-    TEXT_COLOR: 'text-green-500',
+    TEXT_COLOR: 'white',
     ON_HOVER_STYLES: 'bg-gradient-to-r from-green-500 to-green-400',
   };
 
   const dispatch = useDispatch()
   const state = useSelector(state => state)
-  console.log("buenas", state)
 
   const { handleSubmit, control } = useForm<TFormValues<LoginFormValues>>({
     defaultValues: { values: { email: '', password: '' } },
@@ -36,7 +35,7 @@ const LoginView: React.FC = () => {
 
   const loginUser: SubmitHandler<TFormValues<LoginFormValues>> = async (values) => {
     // Request configuration
-    const LOGIN_URL: RequestInfo = 'http://localhost:8000/auth/login';
+    const LOGIN_URL: RequestInfo = 'http://localhost:5000/auth/login';
     const LOGIN_REQUEST_PARAMS: RequestInit = {
       method: 'POST',
       mode: 'cors',
@@ -55,11 +54,12 @@ const LoginView: React.FC = () => {
     if (response.ok) {
       const { access_token, user } = data;
       if (access_token) {
-        console.log('Login buenardo');
-        console.log("this is the data", data)
-        dispatch(setUserData(data))
-        // Guardar usuario y tokeny usuario  en el global state(Redux)
+        // Guardar usuario y token usuario  en el global state(Redux)
+        dispatch(setUserData(user))
+        dispatch(setLogedin(access_token))
+
         // Guardar token y usuario en el local storage
+        localStorage.setItem('token', access_token)
       } else {
         console.log('No tienes accesso, proceda a crearse una cuenta');
       }
@@ -121,6 +121,7 @@ const LoginView: React.FC = () => {
               label={loginButtonStyles.BUTTON_LABEL}
               bgColor={loginButtonStyles.BACKGROUND_COLOR}
               textColor={loginButtonStyles.TEXT_COLOR}
+              submit={true}
               onHoverStyles={toHoverStyle(loginButtonStyles.ON_HOVER_STYLES)}
             />
             <ButtonComponent
