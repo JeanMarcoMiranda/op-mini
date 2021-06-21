@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import {
   AnnotationIcon,
@@ -12,6 +13,7 @@ import {
   IconComponent as Icon,
   TableComponent as Table,
 } from '../../components/common';
+import { RootState } from '../../store/store';
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -26,11 +28,15 @@ const tableFieldData = [
 const UserView: React.FC = () => {
   const [userData, setUserData] = useState<IUser[]>([]);
   const [tableData, setTableData] = useState<IUserTableData[]>([]);
+  const { access_token } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   const url: RequestInfo = 'http://localhost:8000/users';
 
   useEffect(() => {
     getUserData();
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -73,8 +79,7 @@ const UserView: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac',
+        Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
     };
@@ -88,8 +93,7 @@ const UserView: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'DELETE',
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac',
+        Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
     };

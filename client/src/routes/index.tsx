@@ -1,5 +1,3 @@
-import React from "react";
-
 import Login from "../views/Login";
 import Home from "../views/Home";
 import ProductsView from "../views/Products";
@@ -10,67 +8,82 @@ import SupplierForm from "../views/Suppliers/Form";
 import navRoutes from "./navRoutes";
 import UserForm from "../views/Users/Form";
 
-interface RouteData {
-  path: string,
-  component: React.ComponentType,
-  exact: boolean,
-}
-
 const appRoutes: RouteData[] = [
-  {
-    path: '/',
-    component: Home,
-    exact: true
-  },
   {
     path: '/login',
     component: Login,
-    exact: true
+    exact: true,
+    type: 'guest'
+  },
+  {
+    path: '/',
+    component: Home,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
   },
   {
     path: '/supplier',
     component: SupplierView,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Empleado', 'Comprador']
   },
   {
     path: '/supplier/form',
     component: SupplierForm,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
   {
     path: '/supplier/form/:id',
     component: SupplierForm,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
   {
     path: '/product',
     component: ProductsView,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
   },
   {
     path: '/product/form',
     component: ProductForm,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenador']
   },
   {
     path: '/product/form/:id',
     component: ProductForm,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenador']
   },
   {
     path: '/user',
     component: UserView,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
   {
     path: '/user/form',
     component: UserForm,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
   {
     path: '/user/form/:id',
     component: UserForm,
-    exact: true
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
 ]
 

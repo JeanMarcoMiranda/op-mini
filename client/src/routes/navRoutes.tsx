@@ -1,32 +1,29 @@
-import { ComponentProps } from "react";
 import { BriefcaseIcon, ClipboardListIcon, HomeIcon, UsersIcon } from "@heroicons/react/solid";
-
-interface RouteSideBar {
-  label: string;
-  Icon: (props: ComponentProps<'svg'>) => JSX.Element;
-  path: string;
-}
 
 const navRoutes: RouteSideBar[] = [
   {
     label: 'Inicio',
     Icon: HomeIcon,
-    path: '/'
+    path: '/',
+    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
   },
   {
     label: 'Productos',
     Icon: ClipboardListIcon,
-    path: '/product'
+    path: '/product',
+    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
   },
   {
     label: 'Proveedores',
     Icon: BriefcaseIcon,
-    path: '/supplier'
+    path: '/supplier',
+    roles: ['Administrador', 'Empleado', 'Comprador']
   },
   {
     label: 'Usuarios',
     Icon: UsersIcon,
-    path: '/user'
+    path: '/user',
+    roles: ['Administrador']
   },
 ]
 

@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import { appRoutes, navRoutes } from './routes';
-import { SideBarComponent as SideBar } from './components';
-import { Header } from './components/layout';
+import { Header, SideBar } from './components/layout';
 import './App.css';
+import { RootState } from './store/store';
+import AuthRoute from './routes/AuthRoute';
 
 const App = () => {
   const [sideBarOpen, setSideBarOpen] = useState(false);
+  const { userData, access_token } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   return (
     <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-white App">
@@ -20,12 +26,12 @@ const App = () => {
           }}
         >
           <Switch>
-            {appRoutes.map(({ path, component, exact }) => (
-              <Route
+            {appRoutes.map(({ path, component, exact, type }) => (
+              <AuthRoute
                 exact={exact}
                 path={path}
                 component={component}
-                key={path}
+                type={type}
               />
             ))}
           </Switch>

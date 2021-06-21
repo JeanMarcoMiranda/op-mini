@@ -1,6 +1,9 @@
-import React, { ComponentProps } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { NavLink, useLocation } from 'react-router-dom'
-import { generateString } from './utils'
+
+import { generateString } from '../utils'
+import { RootState } from '../../store/store';
 
 interface SideBarProps {
   routes: RouteSideBar[],
@@ -9,19 +12,16 @@ interface SideBarProps {
   isOpen: boolean,
 }
 
-interface RouteSideBar {
-  label: string;
-  Icon: (props: ComponentProps<'svg'>) => JSX.Element;
-  path: string;
-}
-
-const SideBarComponent: React.FC<SideBarProps> = ({
+const SideBar: React.FC<SideBarProps> = ({
   routes,
   color = "gray",
   activeColor = "blue",
   isOpen,
 }) => {
   const { pathname } = useLocation()
+  const { userData: { role: { name } } } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   return (
     <div className={`fixed flex flex-col top-14 left-0 w-72 h-full duration-500 border-none z-10 shadow-lg transform
@@ -33,11 +33,12 @@ const SideBarComponent: React.FC<SideBarProps> = ({
       <div className="bg-white h-full dark:bg-gray-700 py-4">
         <nav className="">
           <div className="text-left text-sm font-normal tracking-wide text-gray-600 dark:text-white uppercase pl-5 mb-4">
-            Main
+            Principal
           </div>
           <div>
-            {routes.map( ({ label, Icon, path }) => (
-              <NavLink className={`
+            {routes.map( ({ label, Icon, path, roles }) => {
+              if ( !roles.find(r => r === name) ) return
+              return (<NavLink className={`
                 w-full font-thin uppercase flex items-center p-4
                 transition-colors duration-200 justify-start
                 ${ pathname === path ? `
@@ -59,7 +60,7 @@ const SideBarComponent: React.FC<SideBarProps> = ({
                   {label}
                 </span>
               </NavLink>
-            ))}
+            )})}
           </div>
         </nav>
       </div>
@@ -67,4 +68,4 @@ const SideBarComponent: React.FC<SideBarProps> = ({
   )
 }
 
-export default SideBarComponent
+export default SideBar

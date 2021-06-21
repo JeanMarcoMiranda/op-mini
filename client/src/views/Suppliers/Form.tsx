@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import {
   ButtonComponent as Button,
@@ -8,6 +9,7 @@ import {
   SelectComponent as Select,
 } from '../../components/common';
 import { toHoverStyle } from '../../components/utils';
+import { RootState } from '../../store/store';
 
 const activeOptions: ISelectOption[] = [
   { label: 'Activo', value: true },
@@ -32,6 +34,9 @@ const SupplierForm: React.FC = () => {
     },
   });
   const { id } = useParams<IParamTypes>();
+  const { access_token } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   const backButtonStyles = {
     BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
@@ -81,7 +86,7 @@ const SupplierForm: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjE5NjU4ODQsImV4cCI6MTYyMjgyOTg4NH0.tXAtOmjHsBd_z0DlSYPd-V-rNOqsJSiNiLK0zcJLUgM",
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -103,7 +108,7 @@ const SupplierForm: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjE5NjU4ODQsImV4cCI6MTYyMjgyOTg4NH0.tXAtOmjHsBd_z0DlSYPd-V-rNOqsJSiNiLK0zcJLUgM",
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

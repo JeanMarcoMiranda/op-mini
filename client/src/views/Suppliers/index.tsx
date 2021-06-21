@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
 import {
   AnnotationIcon,
@@ -12,6 +13,7 @@ import {
   IconComponent as Icon,
   TableComponent as Table,
 } from '../../components/common';
+import { RootState } from '../../store/store';
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -26,11 +28,15 @@ const SupplierView: React.FC = () => {
 
   const [supplierData, setSupplierData] = useState<ISupplier[]>([]);
   const [tableData, setTableData] = useState<ISupplierTableData[]>([]);
+  const { access_token } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   const url = 'http://localhost:8000/suppliers';
 
   useEffect(() => {
     getSupplierData()
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -61,8 +67,7 @@ const SupplierView: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjIzMjc5MjAsImV4cCI6MTYyMzE5MTkyMH0.wHhPnnFLgajxmIDZ5_0x3HXB-IK9i12RcQw2ux8ADgg',
+        Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
     }
@@ -76,7 +81,7 @@ const SupplierView: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'DELETE',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjE5NjU4ODQsImV4cCI6MTYyMjgyOTg4NH0.tXAtOmjHsBd_z0DlSYPd-V-rNOqsJSiNiLK0zcJLUgM",
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       }
     }

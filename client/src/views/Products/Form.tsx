@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import {
   ButtonComponent as Button,
@@ -8,6 +9,7 @@ import {
   SelectComponent as Select,
   TextAreaComponent as TextArea,
 } from '../../components/common';
+import { RootState } from '../../store/store';
 import { toHoverStyle } from '../../components/utils';
 
 const activeOptions: ISelectOption[] = [
@@ -38,6 +40,9 @@ const ProductForm: React.FC = () => {
     }
   })
   const { id } = useParams<IParamTypes>();
+  const { access_token } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   useEffect(() => {
     const initialRender = async () => {
@@ -45,6 +50,7 @@ const ProductForm: React.FC = () => {
       prepareCatOptions(catData)
     }
     initialRender()
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
@@ -99,7 +105,7 @@ const ProductForm: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac",
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       }
     }
@@ -123,7 +129,7 @@ const ProductForm: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac",
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -148,7 +154,7 @@ const ProductForm: React.FC = () => {
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjp7Il9pZCI6IjYwYTMzZTZkZTNhN2Q1MjQwYzE1YzY2MCIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwiZGVzY3JpcHRpb24iOiJSb2wgZGUgYWRtaW5pc3RyYWRvciIsImlzQWN0aXZlIjp0cnVlLCJfX3YiOjB9LCJpYXQiOjE2MjI4MzA3MDAsImV4cCI6MTYyMzY5NDcwMH0.yCww2K-K1TX7P9RvFq96v0y6umyaGge8B0HvsIRA_Ac",
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

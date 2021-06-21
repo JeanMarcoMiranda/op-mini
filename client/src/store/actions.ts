@@ -6,7 +6,7 @@ export const setUserData = (user: IUserData): UserActionTypes => ({
 })
 
 export const setLogedin = (access_token: string): UserActionTypes => ({
-  type: actionTypes.SET_LOGEDIN,
-  access_token 
+  type: actionTypes.SET_LOGGED_IN,
+  access_token
 })
 

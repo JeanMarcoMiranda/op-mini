@@ -8,7 +8,7 @@ function MenuComponent() {
   const MENU_ITEM_DEFAULT_STYLE =
     'group flex rounded-md items-center w-full p-2 text-sm';
 
-  const { userData, access_token } = useSelector<RootState, RootState['user']>(
+  const { userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
 
@@ -16,15 +16,13 @@ function MenuComponent() {
     <Menu>
       {({ open }) => (
         <>
-          <div>
-            <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-              {userData && access_token ? userData.name : 'User'}
-              <ChevronDownIcon
-                className="w-5 h-5 ml-2 -mr-1 text-violet-200 hover:text-violet-100"
-                aria-hidden="true"
-              />
-            </Menu.Button>
-          </div>
+          <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+            {userData ? userData.name : 'User'}
+            <ChevronDownIcon
+              className="w-5 h-5 ml-2 -mr-1 text-violet-200 hover:text-violet-100"
+              aria-hidden="true"
+            />
+          </Menu.Button>
 
           {/* Items to render when button is clicked */}
           <Transition
@@ -36,7 +34,7 @@ function MenuComponent() {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute p-1 right-0 w-56 mt-2 origin-top-right bg-withe divede-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="absolute p-1 right-0 w-56 mt-2 mr-10 origin-top-right bg-withe divede-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <Menu.Item>
                 {({ active }) => (
                   <button

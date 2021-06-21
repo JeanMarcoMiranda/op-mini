@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { InputComponent, ButtonComponent } from '../../components/common';
 import { setLogedin, setUserData } from '../../store/actions';
@@ -26,7 +26,6 @@ const LoginView: React.FC = () => {
   };
 
   const dispatch = useDispatch()
-  const state = useSelector(state => state)
 
   const { handleSubmit, control } = useForm<TFormValues<LoginFormValues>>({
     defaultValues: { values: { email: '', password: '' } },
@@ -35,7 +34,7 @@ const LoginView: React.FC = () => {
 
   const loginUser: SubmitHandler<TFormValues<LoginFormValues>> = async (values) => {
     // Request configuration
-    const LOGIN_URL: RequestInfo = 'http://localhost:5000/auth/login';
+    const LOGIN_URL: RequestInfo = 'http://localhost:8000/auth/login';
     const LOGIN_REQUEST_PARAMS: RequestInit = {
       method: 'POST',
       mode: 'cors',
@@ -59,6 +58,7 @@ const LoginView: React.FC = () => {
         dispatch(setLogedin(access_token))
 
         // Guardar token y usuario en el local storage
+        localStorage.setItem('user', JSON.stringify(user))
         localStorage.setItem('token', access_token)
       } else {
         console.log('No tienes accesso, proceda a crearse una cuenta');

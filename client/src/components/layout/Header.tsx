@@ -10,15 +10,15 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ navToggle }) => {
   return (
     <header className="flex items-center justify-between py-3 w-full h-14 z-10 bg-gradient-to-l from-green-400 to-green-600">
-      <div className="text-white flex items-center">
+      <div className="text-white flex items-center ml-5">
         <IconComponent
           Icon={MenuIcon}
-          width={7}
+          width={10}
           onClick={() => navToggle((z) => !z)}
         />
-        <span>OP-Mini</span>
+        <span className="ml-5 font-semibold text-lg tracking-wide">OPERACION M.I.N.I</span>
       </div>
-      <div>
+      <div className="mr-10">
         <Menu/>
       </div>
     </header>

@@ -174,6 +174,7 @@ interface IUserData {
 }
 
 type UserState = {
+  isAuthUser: boolean;
   userData: IUserData;
   access_token: string;
 };
@@ -198,3 +199,19 @@ interface IRole {
 }
 
 type DispatchType = (args: Action) => Action;
+
+
+interface RouteData {
+  roles?: string[],
+  path: string,
+  component: React.ComponentType,
+  exact: boolean,
+  type?: string,
+}
+
+interface RouteSideBar {
+  label: string;
+  Icon: (props: ComponentProps<'svg'>) => JSX.Element;
+  path: string;
+  roles: string[];
+}

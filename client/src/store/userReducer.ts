@@ -18,7 +18,8 @@ const initialUserState: IUserData = {
 };
 
 const initialState: UserState = {
-  userData: initialUserState,
+  isAuthUser: !!localStorage.getItem('user'),
+  userData: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) as IUserData : initialUserState,
   access_token: localStorage.getItem('token') || "",
 };
 
@@ -30,7 +31,7 @@ export const userReducer = (
     case actionTypes.SET_USER_DATA: {
       return { ...state, userData: action.user };
     }
-    case actionTypes.SET_LOGEDIN: {
+    case actionTypes.SET_LOGGED_IN: {
       return { ...state, access_token: action.access_token };
     }
     default:
