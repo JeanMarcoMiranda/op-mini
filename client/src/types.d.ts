@@ -190,3 +190,54 @@ interface ISelectOption {
 interface IParamTypes {
   id: string;
 }
+
+interface ISearch {
+  search: string;
+};
+
+// Common
+
+interface ButtonProps {
+  label: string;
+  bgColor?: string;
+  onHoverStyles?: string;
+  textColor: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  submit?: boolean;
+}
+
+interface IDate {
+  day: string;
+  date: number;
+  month: string;
+  year: number;
+  hour: string;
+  minutes: string;
+  seconds: string;
+}
+
+interface IWeatherValues {
+  name: string;
+  cod: number;
+  visibility: number;
+  wind: {
+    speed: number,
+    deg: number
+  },
+  weather: [
+    {
+      id: number;
+      main: string;
+      description: string;
+      icon: string;
+    },
+  ];
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+  };
+}

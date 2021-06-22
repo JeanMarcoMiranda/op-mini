@@ -1,11 +1,164 @@
-import React from "react"
+import React, { useEffect, useState } from 'react';
+import { CardComponent } from '../../components/common';
+import { navRoutes } from '../../routes';
+import { useForm } from 'react-hook-form';
+import { DateTime } from '../../components/hooks';
+
+const buttonProps: ButtonProps = {
+  label: 'Vistar',
+  bgColor: 'bg-gray-900 ml-3 mt-3',
+  onHoverStyles: 'bg-gray-800',
+  textColor: 'white',
+};
 
 const Home: React.FC = () => {
+  const [date, setDate] = useState<IDate>();
+  const [city, setCity] = useState<IWeatherValues>();
+  const { control, getValues } = useForm<TFormValues<ISearch>>({
+    defaultValues: { values: { search: '' } },
+  });
+  let search: string = getValues('values.search');
+  const icon = `https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/${city?.weather[0]["icon"]}.svg`;
+  const timeValue = DateTime()
+
+  useEffect(() => {
+    setDate(timeValue)
+  }, [timeValue]);
+
+  useEffect(() => {
+    if (search.length <= 0) {
+      search = 'Arequipa';
+    }
+    const getWeather = async () => {
+      const urlApi: RequestInfo = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=e96d7162c54ff8ce2b51c0767e86ffa1&units=metric`;
+      const res = await fetch(urlApi);
+      const data = await res.json();
+      if (res.ok) {
+        setCity(data);
+      } else {
+        console.log('Error: City not found || Server error');
+      }
+      return data;
+    };
+    getWeather();
+  }, [search]);
+
   return (
-    <div className="container">
+    <div className="grid mb-4 pb-10 px-8 mx-4 rounded-3xl bg-gray-100">
+      <div className="col-span-12 mt-8">
+        <div className="flex items-center h-10 intro-y">
+          <h2 className="mr-5 text-lg font-medium truncate">Dashboard</h2>
+        </div>
 
+        <div className="grid lg:grid-cols-3 grid-cols-1 flex items-center justify-between w-full">
+          <div className="flex justify-center items-center lg:mr-4 p-4 col-span-2 rounded-3xl bg-gradient-to-r from-red-500 to-yellow-400 h-full">
+              <div className="container text-white px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+                <div className="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
+                  <p className="uppercase tracking-loose w-full">
+                    En que vamos a trabajar hoy?
+                  </p>
+                  <h1 className="my-4 text-4xl font-bold leading-tight w-full">
+                    Bienvenido [Usuario]!
+                  </h1>
+                  <p className="leading-normal text-1xl mb-8 w-full">
+                    La inspiración existe, pero te encontrará trabajando.
+                  </p>
+                  <p className="leading-normal text-2xl mb-8 w-full">
+                    {date?.hour} : {date?.minutes} : {date?.seconds}{' '}
+                    {new Date().getHours() < 12 ? 'A.M.' : 'P.M.'}
+                  </p>
+                </div>
+                <div className="w-full md:w-3/5 text-center">
+                  <img
+                    className="w-full z-50"
+                    src="https://s3.idle-empire.com/public/shop/rewards/main/ripple.png"
+                  />
+                </div>
+              </div>
+          </div>
+
+          <div className="flex lg:ml-4 p-4 justify-center items-center bg-gradient-to-r from-white to-gray-200 shadow-md rounded-3xl h-full">
+            <div className="text-center flex-auto justify-between items-center">
+              <div className="flex items-center justify-center">
+                <div className="flex flex-col p-4 w-full max-w-xs">
+                  <div className="font-bold text-xl">{city?.name}</div>
+                  <div className="text-sm text-gray-500">
+                    {date?.day} {date?.date} {date?.month} {date?.year}
+                  </div>
+                  <div className="mt-6 text-6xl self-center inline-flex items-center justify-center rounded-lg text-indigo-400 h-24 w-24">
+                    <img
+                      src={icon}
+                      alt="Just a flower"
+                      className="h-24 w-24 object-scale-down lg:object-cover rounded-2xl"
+                    />
+                  </div>
+                  <div className="flex flex-row items-center justify-center mt-6">
+                    <div className="font-medium text-4xl">
+                      {city?.main.temp}°C
+                    </div>
+                    <div className="flex flex-col items-center ml-6">
+                      <div>{city?.weather[0].main}</div>
+                      <div className="mt-1">
+                        <span className="text-sm">
+                          <i className="far fa-long-arrow-up"></i>
+                        </span>
+                        <span className="text-sm font-light text-gray-500">
+                          {city?.main.temp_max}°C
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-sm">
+                          <i className="far fa-long-arrow-down"></i>
+                        </span>
+                        <span className="text-sm font-light text-gray-500">
+                          {city?.main.temp_min}°C
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-row justify-between mt-6">
+                    <div className="flex flex-col items-center">
+                      <div className="font-medium text-sm">Viento</div>
+                      <div className="text-sm text-gray-500">
+                        {city?.wind.speed} k/h
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="font-medium text-sm">Humedad</div>
+                      <div className="text-sm text-gray-500">
+                        {city?.main.humidity}%
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="font-medium text-sm">Visibilidad</div>
+                      <div className="text-sm text-gray-500">
+                        {city?.visibility} km
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid sm:grid-cols-3 grid-cols-2 gap-6 mt-5">
+          {navRoutes.map(({ label, path }, index) => (
+            <CardComponent
+              key={index}
+              img="https://marketplace.canva.com/EAEK5jeIncM/1/0/1600w/canva-rosa%2C-azul-y-verde-ciberpunk-tendencia-moderna-fondo-para-zoom-bb3t9Mk6Ti8.jpg"
+              title="Dashboard"
+              label={label}
+              bgCardColor="bg-white"
+              textTitleColor="blue-700"
+              link={path}
+              button={buttonProps}
+            />
+          ))}
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
