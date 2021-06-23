@@ -5,6 +5,7 @@ import ButtonComponent from './Button';
 import IconComponent from "./Icon";
 import ChipComponent from "./Chip";
 import TableComponent from "./Table/Table";
+import CardComponent from "./Card";
 
 export {
   InputComponent,
@@ -14,5 +15,6 @@ export {
   ChipComponent,
   TableComponent,
   TextAreaComponent,
+  CardComponent
 }
 

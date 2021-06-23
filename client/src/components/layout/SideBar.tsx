@@ -37,7 +37,7 @@ const SideBar: React.FC<SideBarProps> = ({
           </div>
           <div>
             {routes.map( ({ label, Icon, path, roles }) => {
-              if ( !roles.find(r => r === name) ) return
+              if ( !roles.find(r => r === name) ) return false
               return (<NavLink className={`
                 w-full font-thin uppercase flex items-center p-4
                 transition-colors duration-200 justify-start
