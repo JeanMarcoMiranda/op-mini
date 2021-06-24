@@ -3,6 +3,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { Link } from 'react-router-dom';
 
 function MenuComponent() {
   const MENU_ITEM_DEFAULT_STYLE =
@@ -37,13 +38,15 @@ function MenuComponent() {
             <Menu.Items className="absolute p-1 right-0 w-56 mt-2 mr-10 origin-top-right bg-withe divede-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <Menu.Item>
                 {({ active }) => (
-                  <button
-                    className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                      active ? 'bg-blue-500 text-white' : 'text-black'
-                    }`}
-                  >
-                    Account settings
-                  </button>
+                  <Link to={`/user/form/${userData._id}`}>
+                    <button
+                      className={`${MENU_ITEM_DEFAULT_STYLE} ${
+                        active ? 'bg-blue-500 text-white' : 'text-black'
+                      }`}
+                    >
+                      Account settings
+                    </button>
+                  </Link>
                 )}
               </Menu.Item>
 

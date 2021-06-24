@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   UseGuards,
+  Req
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -15,6 +16,7 @@ import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
 import { Product } from '../entities/product.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Request } from 'express';
 
 @ApiTags('Products')
 @UseGuards(JwtAuthGuard)
@@ -36,6 +38,13 @@ export class ProductController {
   @Public()
   public async getOneProduct(@Param('id') id: string): Promise<Product> {
     return this.productService.findOneProduct(id);
+  }
+
+  @Get('search/:name')
+  //@Post('search')
+  @Public()
+  public async getNameProduct(@Param('name') name: string): Promise<Product[]> {
+    return this.productService.findNameProduct(name);
   }
 
   @Put(':id')

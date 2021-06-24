@@ -73,7 +73,7 @@ const UserForm: React.FC = () => {
       role,
     }: IUserResponse = await response.json();
     const activeOption = isActive ? activeOptions[0] : activeOptions[1];
-    const roleOption = roleOptions.find((rol) => rol.value === role);
+    const roleOption = roleOptions.find((rol) => rol.value === role._id);
     if (response.ok) {
       setValue('values', {
         name,

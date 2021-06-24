@@ -65,6 +65,13 @@ const appRoutes: RouteData[] = [
     roles: ['Administrador', 'Almacenador']
   },
   {
+    path: '/product/search/:name',
+    component: ProductsView,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
+  },
+  {
     path: '/user',
     component: UserView,
     exact: true,

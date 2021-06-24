@@ -15,13 +15,13 @@ const monthNames = [
   'Diciembre',
 ];
 const dayNames = [
+  'Domingo',
   'Lunes',
   'Martes',
   'Miercoles',
   'Jueves',
   'Viernes',
   'Sabado',
-  'Domingo',
 ];
 
 export const useDateTime = () => {

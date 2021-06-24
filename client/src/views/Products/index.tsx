@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
 
 import {
   AnnotationIcon,
   PencilAltIcon,
   ArchiveIcon,
+  SearchIcon,
 } from '@heroicons/react/outline';
 import {
   ButtonComponent as Button,
   ChipComponent as Chip,
   IconComponent as Icon,
   TableComponent as Table,
+  InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
 
@@ -26,46 +29,84 @@ const tableFieldData = [
   { text: 'Acciones', width: 2, name: 'actions' },
 ]
 
+const iconValue ={
+  isActive: true,
+  Icon: SearchIcon
+}
+
 const ProductsView: React.FC = () => {
 
   const [productData, setProductData] = useState<IProduct[]>([])
   const [tableData, setTableData] = useState<IProductTableData[]>([])
+  const {  setValue, control } = useForm<TFormValues<ISearch>>({
+    defaultValues: { values: { search: '' } },
+  });
+  const [searchVal, setSearchVal] = useState('')
   const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
-
   const url: RequestInfo = 'http://localhost:8000/products'
 
+
+
   useEffect(() => {
-    getProductData()
-    // eslint-disable-next-line
-  }, [])
+    if (searchVal.length > 2) {
+      getSearchProduct(searchVal)
+    }else{
+      getProductData()
+    }
+  }, [searchVal])
 
   useEffect(() => {
     if (productData.length === 0) return
 
     const prepareTableData = () => {
       let newTableData: IProductTableData[] = productData.map(
-        ({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active } : IProduct) => {
-        let newData: IProductTableData= {
-          _id,
-          barcode,
-          name,
-          category: category.name,
-          stock,
-          pricebuy,
-          pricesell,
-          active: renderActiveChip(active),
-          actions: renderActions(_id),
-        }
-        return newData
-      })
+        ({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active }: IProduct) => {
+          let newData: IProductTableData = {
+            _id,
+            barcode,
+            name,
+            category: category.name,
+            stock,
+            pricebuy,
+            pricesell,
+            active: renderActiveChip(active),
+            actions: renderActions(_id),
+          }
+          return newData
+        })
       setTableData(newTableData)
     }
 
     prepareTableData()
     // eslint-disable-next-line
   }, [productData])
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('values', {
+      search: event.target.value,
+    })
+    setSearchVal(event.target.value,)
+  }
+
+  const getSearchProduct = async (search: string) => {
+    const urlSearch: RequestInfo = `http://localhost:8000/products/search/${search}`
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      }
+    }
+    const res = await fetch(urlSearch, requestInit)
+    const data = await res.json()
+    if (res.ok) {
+      setProductData(data)
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
 
   const getProductData = async () => {
     const requestInit: RequestInit = {
@@ -116,7 +157,7 @@ const ProductsView: React.FC = () => {
         color="red"
         Icon={ArchiveIcon}
         hover
-        onClick={ () => deleteProduct(idProduct) }
+        onClick={() => deleteProduct(idProduct)}
       />
     </div>
   )
@@ -146,6 +187,29 @@ const ProductsView: React.FC = () => {
                 </Link>
               </div>
             </div>
+
+            <div className="box">
+              <div className="box-wrapper">
+                <div className=" bg-white rounded flex items-center w-full shadow-sm border border-gray-200">
+                  <Controller
+                    control={control}
+                    name="values.search"
+                    render={({ field: { value, name} }) =>(
+                        <Input
+                          type="search"
+                          label=""
+                          name={name}
+                          value={value}
+                          onChange={handleChange}
+                          placeholder="Buscar producto ..."
+                          icon={iconValue}
+                        />
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+
             <Table theadData={tableFieldData} tbodyData={tableData} />
           </div>
         </div>

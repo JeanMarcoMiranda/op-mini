@@ -112,7 +112,7 @@ interface IUserResponse {
   phone: string;
   email: string;
   currentAddress: string;
-  role: string;
+  role: IRole;
 }
 
 interface IUserTableData {

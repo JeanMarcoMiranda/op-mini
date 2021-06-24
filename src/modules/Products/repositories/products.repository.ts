@@ -22,7 +22,6 @@ export class ProductRepository {
     return this.productModel.find().populate("category").exec();
   }
 
-
   public async findOneProduct(id: string): Promise<Product> {
     const product = this.productModel.findById(id).exec();
     if (!product) {
@@ -31,6 +30,12 @@ export class ProductRepository {
     return product;
   }
 
+  public async findNameProduct(name:string): Promise<Product[]> {
+    var regex = new RegExp(["^.*", name, ".*$"].join(""), "i");
+    const product = await this.productModel.find({"name": regex}).populate("category").exec()
+    return product
+    //`/.*${name}.*/`     var regex = new RegExp(["^", name, "$"].join(""), "i");
+  }
 
   public async updateProduct(
     id: string,
@@ -49,7 +54,7 @@ export class ProductRepository {
     return updateProduct;
   }
 
-  
+
   public async removeProduct(id: string): Promise<Product> {
     return this.productModel.findByIdAndDelete(id);
   }
