@@ -41,7 +41,6 @@ export class ProductController {
   }
 
   @Get('search/:name')
-  //@Post('search')
   @Public()
   public async getNameProduct(@Param('name') name: string): Promise<Product[]> {
     return this.productService.findNameProduct(name);
