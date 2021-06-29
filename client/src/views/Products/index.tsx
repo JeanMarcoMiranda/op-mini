@@ -47,14 +47,13 @@ const ProductsView: React.FC = () => {
   );
   const url: RequestInfo = 'http://localhost:8000/products'
 
-
-
   useEffect(() => {
     if (searchVal.length > 2) {
       getSearchProduct(searchVal)
     }else{
       getProductData()
     }
+    // eslint-disable-next-line
   }, [searchVal])
 
   useEffect(() => {

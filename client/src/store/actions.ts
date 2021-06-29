@@ -5,8 +5,12 @@ export const setUserData = (user: IUserData): UserActionTypes => ({
   user
 })
 
-export const setLogedin = (access_token: string): UserActionTypes => ({
-  type: actionTypes.SET_LOGGED_IN,
+export const setToken = (access_token: string): UserActionTypes => ({
+  type: actionTypes.SET_TOKEN,
   access_token
 })
 
+export const setAuthUser = (is_auth: boolean): UserActionTypes => ({
+  type: actionTypes.SET_AUTH_USER,
+  is_auth
+})

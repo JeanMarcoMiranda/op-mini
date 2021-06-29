@@ -27,7 +27,6 @@ export class CreateProductDto {
   readonly date: string
 
   @IsString()
-  @IsNotEmpty()
   readonly description: string
 
   @IsBoolean()

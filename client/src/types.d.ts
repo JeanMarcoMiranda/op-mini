@@ -184,12 +184,17 @@ interface SetUserDataAction {
   user: IUserData;
 };
 
+interface SetUserAuthAction {
+  type: "SET_AUTH_USER";
+  is_auth: boolean;
+};
+
 interface SetUserTokenAction {
-  type: "SET_LOGED_IN"
+  type: "SET_TOKEN"
   access_token: string
 }
 
-type UserActionTypes = SetUserDataAction | SetUserTokenAction
+type UserActionTypes = SetUserDataAction | SetUserTokenAction | SetUserAuthAction
 
 interface IRole {
   _id: string;

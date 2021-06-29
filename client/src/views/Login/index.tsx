@@ -3,11 +3,15 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { InputComponent, ButtonComponent } from '../../components/common';
-import { setLogedin, setUserData } from '../../store/actions';
+import { setToken, setUserData, setAuthUser } from '../../store/actions';
 
 import { toHoverStyle } from '../../components/utils';
+import { useHistory } from 'react-router-dom';
 
 const LoginView: React.FC = () => {
+
+  const history = useHistory()
+
   const loginButtonStyles = {
     BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
     IS_TRANSPARENT: false,
@@ -55,11 +59,13 @@ const LoginView: React.FC = () => {
       if (access_token) {
         // Guardar usuario y token usuario  en el global state(Redux)
         dispatch(setUserData(user))
-        dispatch(setLogedin(access_token))
+        dispatch(setToken(access_token))
+        dispatch(setAuthUser(true))
 
         // Guardar token y usuario en el local storage
         localStorage.setItem('user', JSON.stringify(user))
         localStorage.setItem('token', access_token)
+        history.push('/')
       } else {
         console.log('No tienes accesso, proceda a crearse una cuenta');
       }
