@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
@@ -37,6 +37,8 @@ const SupplierForm: React.FC = () => {
   const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+
+  const history = useHistory()
 
   const backButtonStyles = {
     BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
@@ -98,6 +100,7 @@ const SupplierForm: React.FC = () => {
     const dataRes = await res.json()
     if (res.ok) {
       console.log('Supplier Updated', dataRes)
+      history.push('/supplier')
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -120,6 +123,7 @@ const SupplierForm: React.FC = () => {
     const dataRes = await res.json()
     if (res.ok) {
       console.log('Supplier Created', dataRes)
+      history.push('/supplier')
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -270,7 +274,7 @@ const SupplierForm: React.FC = () => {
                   </div>
                 </div>
                 <Button
-                  label={ id ? 'Actualizar' : 'Crear' }
+                  label={ id ? 'Actualizar Proveedor' : 'Crear Proveedor' }
                   bgColor={backButtonStyles.BACKGROUND_COLOR}
                   textColor={backButtonStyles.TEXT_COLOR}
                   onHoverStyles={toHoverStyle(backButtonStyles.ON_HOVER_STYLES)}

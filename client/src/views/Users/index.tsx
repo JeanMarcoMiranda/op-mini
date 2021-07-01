@@ -130,11 +130,11 @@ const UserView: React.FC = () => {
   return (
     <>
       <div className="container mx-auto">
-        <div className="w-full lg:w-10/12 px-4 py-4 mx-auto">
+        <div className="w-full lg:w-10/12 mx-auto my-8">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
-            <div className="rounded-t bg-white mb-0 px-6 py-6">
+            <div className="rounded-t bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
-                <h6 className="text-gray-500 text-xl font-bold">Usuarios</h6>
+              <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
                 <Link to={`/user/form`}>
                   <Button
                     label="Agregar"
@@ -144,7 +144,9 @@ const UserView: React.FC = () => {
                 </Link>
               </div>
             </div>
-            <Table theadData={tableFieldData} tbodyData={tableData} />
+            <div className="my-3">
+              <Table theadData={tableFieldData} tbodyData={tableData} />
+            </div>
           </div>
         </div>
       </div>

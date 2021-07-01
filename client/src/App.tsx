@@ -23,7 +23,7 @@ const App = () => {
         {isAuthUser && <Header navToggle={setSideBarOpen} />}
         <SideBar routes={navRoutes} isOpen={sideBarOpen} />
         <div
-          className="h-full mt-1"
+          className="h-full"
           onClick={() => {
             if (sideBarOpen) setSideBarOpen(false);
           }}

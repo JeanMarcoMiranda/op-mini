@@ -19,8 +19,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
   tbodyData,
 }) => {
   return (
-    <div className="flex-auto px-4 lg:px-10 py-5 mt-3 mb-6">
-      <div className="bg-white shadow-md rounded my-6">
+    <div className="flex-auto mx-6 my-3">
+      <div className="bg-white shadow-md rounded">
         <table className="w-full table-fixed">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">

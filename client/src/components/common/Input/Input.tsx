@@ -32,12 +32,14 @@ const InputComponent: React.FC<InputComponentProps> = ({
         </label>
       )}
       {icon && (
-        <IconComponent
-          width={5}
-          color="blue"
-          Icon={icon.Icon}
-          hover
-        />
+        <div className="mx-3">
+          <IconComponent
+            width={5}
+            color="blue"
+            Icon={icon.Icon}
+            hover
+          />
+        </div>
       )
       }
       <input

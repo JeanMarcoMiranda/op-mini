@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
@@ -43,6 +43,8 @@ const ProductForm: React.FC = () => {
   const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+
+  const history = useHistory()
 
   useEffect(() => {
     const initialRender = async () => {
@@ -144,6 +146,7 @@ const ProductForm: React.FC = () => {
     const dataRes: IProductResponse = await res.json()
     if (res.ok) {
       console.log('Product Updated', dataRes)
+      history.push('/product')
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -168,6 +171,7 @@ const ProductForm: React.FC = () => {
     const dataRes: IProductResponse = await res.json()
     if (res.ok) {
       console.log('Product Created', dataRes)
+      history.push('/product')
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -346,7 +350,7 @@ const ProductForm: React.FC = () => {
                   </div>
                 </div>
                 <Button
-                  label={ id ? 'Actualizar' : 'Crear' }
+                  label={ id ? 'Actualizar Producto' : 'Crear Producto' }
                   bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
                   textColor={'white'}
                   onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
