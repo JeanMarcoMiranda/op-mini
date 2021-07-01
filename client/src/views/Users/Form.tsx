@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import {
   ButtonComponent as Button,
   InputComponent as Input,
+  LoadingPageComponent as Load,
   SelectComponent as Select,
 } from '../../components/common';
 import { toHoverStyle } from '../../components/utils';
@@ -42,6 +43,8 @@ const UserForm: React.FC = () => {
   const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+
+  const history = useHistory()
 
   useEffect(() => {
     const initialRender = async () => {
@@ -150,6 +153,7 @@ const UserForm: React.FC = () => {
     const dataRes: IUserResponse = await res.json();
     if (res.ok) {
       console.log('User Updated', dataRes);
+      history.push('/user')
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -172,6 +176,7 @@ const UserForm: React.FC = () => {
     const dataRes: IUserResponse = await res.json();
     if (res.ok) {
       console.log('User Created', dataRes);
+      history.push('/user')
     } else {
       console.log('Error: Unknow error || Server error');
     }
@@ -368,7 +373,7 @@ const UserForm: React.FC = () => {
                   </div>
                 </div>
                 <Button
-                  label={id ? 'Actualizar' : 'Crear'}
+                  label={id ? 'Actualizar Usuario' : 'Crear Usuario'}
                   bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
                   textColor={'white'}
                   onHoverStyles={toHoverStyle(
@@ -382,9 +387,7 @@ const UserForm: React.FC = () => {
         </div>
       </div>
     </>
-  ) : (
-    <></>
-  );
+  ) : <Load/>
 };
 
 export default UserForm;

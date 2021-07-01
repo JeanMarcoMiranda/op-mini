@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { IconComponent } from '../common';
 import { MenuIcon } from '@heroicons/react/solid';
 import Menu from '../common/Menu'
+import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   navToggle: Dispatch<SetStateAction<boolean>>;
@@ -18,7 +19,9 @@ const Header: React.FC<HeaderProps> = ({
           width={10}
           onClick={() => navToggle((z) => !z)}
         />
-        <span className="ml-5 font-semibold text-lg tracking-wide">OPERACION M.I.N.I</span>
+        <Link to="/">
+          <span className="ml-5 font-semibold text-lg tracking-wide">OPERACION M.I.N.I</span>
+        </Link>
       </div>
       <div className="mr-10">
         <Menu/>
