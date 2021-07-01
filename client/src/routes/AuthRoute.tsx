@@ -19,7 +19,7 @@ const AuthRoute: React.FC<RouteData> = ({
   else if (type === 'private' && !isAuthUser) return <Redirect to='/login' />;
 
   if (type === 'private') {
-    if (roles.find(r => r === userData.role.name)) return <Redirect to='/' />
+    if (!roles.find(r => r === userData.role.name)) return <Redirect to='/' />
   }
 
   return <Route

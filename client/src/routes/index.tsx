@@ -20,7 +20,7 @@ const appRoutes: RouteData[] = [
     component: Home,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
     path: '/supplier',
@@ -48,28 +48,28 @@ const appRoutes: RouteData[] = [
     component: ProductsView,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
     path: '/product/form',
     component: ProductForm,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Almacenador']
+    roles: ['Administrador', 'Almacenero']
   },
   {
     path: '/product/form/:id',
     component: ProductForm,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Almacenador']
+    roles: ['Administrador', 'Almacenero']
   },
   {
     path: '/product/search/:name',
     component: ProductsView,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
     path: '/user',

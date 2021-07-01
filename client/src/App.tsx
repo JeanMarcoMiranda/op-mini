@@ -29,13 +29,14 @@ const App = () => {
           }}
         >
           <Switch>
-            {appRoutes.map(({ path, component, exact, type }) => (
+            {appRoutes.map(({ path, component, exact, type, roles }) => (
               <AuthRoute
                 exact={exact}
                 path={path}
                 component={component}
                 type={type}
                 key={path}
+                roles={roles}
               />
             ))}
           </Switch>

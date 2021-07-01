@@ -5,13 +5,13 @@ const navRoutes: RouteSideBar[] = [
     label: 'Inicio',
     Icon: HomeIcon,
     path: '/',
-    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
     label: 'Productos',
     Icon: ClipboardListIcon,
     path: '/product',
-    roles: ['Administrador', 'Almacenador', 'Empleado', 'Comprador']
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
     label: 'Proveedores',
