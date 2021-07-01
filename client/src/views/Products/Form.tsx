@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import {
   ButtonComponent as Button,
   InputComponent as Input,
+  LoadingPageComponent as Load,
   SelectComponent as Select,
   TextAreaComponent as TextArea,
 } from '../../components/common';
@@ -358,7 +359,7 @@ const ProductForm: React.FC = () => {
         </div>
       </div>
     </>
-  ) : <></>
+  ) : <Load/>
 }
 
 export default ProductForm

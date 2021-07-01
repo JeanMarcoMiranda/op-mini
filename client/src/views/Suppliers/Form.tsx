@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import {
   ButtonComponent as Button,
   InputComponent as Input,
+  LoadingPageComponent as Load,
   SelectComponent as Select,
 } from '../../components/common';
 import { toHoverStyle } from '../../components/utils';
@@ -282,8 +283,7 @@ const SupplierForm: React.FC = () => {
         </div>
       </div>
     </>
-  ): <></>;
-
+  ): <Load/>
 };
 
 export default SupplierForm;
