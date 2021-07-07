@@ -1,7 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 import TableHeadItem from './TableHeadItem'
 import TableRow from './TableRow'
+import { RootState } from '../../../store/store'
+
 
 export interface TableField {
   text: string;
@@ -14,10 +18,52 @@ interface TableComponentProps {
   tbodyData: any[];
 }
 
+interface IRolesForField {
+  [key: string]: {
+    roles: Array<String>,
+    routes: Array<String>
+  }
+}
+
 const TableComponent: React.FC<TableComponentProps> = ({
   theadData,
   tbodyData,
 }) => {
+
+  const {pathname: currentPath} = useLocation()
+
+  // == GLOBAL STATE
+  const { userData } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
+  const userRole = userData.role;
+
+  // == BASED ON ROL ADMINISTRATION VARIABLES
+  const ACCESS_ADMINISTRATION_FOR_FIELD: IRolesForField = {
+    actions: {
+      roles: ["Administrador", "Almacenero"],
+      routes: ["/user"]
+    }
+  }
+  const ROLE_KEYS = Object.keys(ACCESS_ADMINISTRATION_FOR_FIELD)
+  const FIELD_NAMES = theadData.map(field => field.name)
+
+  // == LOGIC FOR GETTING THE FIELDS TO HIDE
+  const FIELDS_TO_HIDE = FIELD_NAMES.filter(field => {
+    if(ROLE_KEYS.includes(field)){
+      const CURRENT_PROPERTY_ACCESS = ACCESS_ADMINISTRATION_FOR_FIELD[field]
+      const ACCESS_PROPERTY_ROUTES = CURRENT_PROPERTY_ACCESS.routes
+      const ACCESS_PROPERTY_ROLES = CURRENT_PROPERTY_ACCESS.roles
+
+      console.log("this is the current path", currentPath)
+      if(ACCESS_PROPERTY_ROUTES.includes(currentPath))
+        return ACCESS_PROPERTY_ROLES.includes(userRole.name) ? false : true
+      return false
+    }
+    return false
+  })
+
+  console.log("Estos son los campos restringidos", FIELDS_TO_HIDE)
   return (
     <div className="flex-auto mx-6 my-3">
       <div className="bg-white shadow-md rounded">
@@ -27,7 +73,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
               {theadData.map( (field, index) => (
                 <TableHeadItem
                   key={index}
-                  {... field}
+                  field={field}
+                  fieldsToHide={FIELDS_TO_HIDE}
                 />
               ))}
             </tr>
@@ -38,6 +85,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                 key={row._id}
                 data={row}
                 fields={theadData}
+                fieldsToHide={FIELDS_TO_HIDE}
               />
             ))}
           </tbody>

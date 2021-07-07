@@ -123,7 +123,7 @@ interface IUserTableData {
   email: string;
   currentAddress: string;
   active: JSX.Element;
-  actions: JSX.Element;
+  actions: JSX.Element | null;
 }
 
 interface IFormUser {

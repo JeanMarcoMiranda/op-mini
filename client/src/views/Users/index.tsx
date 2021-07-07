@@ -51,10 +51,7 @@ const UserView: React.FC = () => {
         ({
           _id,
           name,
-          password,
           isActive,
-          documentType,
-          documentNumber,
           phone,
           email,
           currentAddress,
@@ -117,7 +114,7 @@ const UserView: React.FC = () => {
     <div className="flex item-center justify-center">
       <Icon width={5} color="blue" Icon={AnnotationIcon} hover />
       <Link to={`/user/form/${idUser}`}>
-        <Icon width={5} color="blue" Icon={PencilAltIcon} hover />
+        <Icon width={5} color="yellow" Icon={PencilAltIcon} hover />
       </Link>
       <Icon
         width={5}
@@ -132,8 +129,8 @@ const UserView: React.FC = () => {
   const renderActiveChip = (isActive: boolean) => (
     <Chip
       label={isActive ? 'Activo' : 'Inactivo'}
-      bgColor="blue"
-      txtColor="blue"
+      bgColor={isActive ? 'blue' : 'red'}
+      txtColor="white"
     />
   );
 
@@ -154,7 +151,7 @@ const UserView: React.FC = () => {
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
             <div className="rounded-t bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
-              <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
+                <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
                 <Link to={`/user/form`}>
                   <Button
                     label="Agregar"

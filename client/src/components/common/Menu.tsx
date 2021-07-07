@@ -12,8 +12,9 @@ import {
   LogoutIcon as OutlineLogoutIcon
 } from '@heroicons/react/outline'
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { Link } from 'react-router-dom';
+
+import { RootState } from '../../store/store';
 
 function MenuComponent() {
   const MENU_ITEM_DEFAULT_STYLE =

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
@@ -27,41 +27,51 @@ const tableFieldData = [
   { text: 'Precio Venta', width: 1, name: 'pricesell' },
   { text: 'Estado', width: 1, name: 'active' },
   { text: 'Acciones', width: 2, name: 'actions' },
-]
+];
 
-const iconValue ={
+const iconValue = {
   isActive: true,
-  Icon: SearchIcon
-}
+  Icon: SearchIcon,
+};
 
 const ProductsView: React.FC = () => {
-
-  const [productData, setProductData] = useState<IProduct[]>([])
-  const [tableData, setTableData] = useState<IProductTableData[]>([])
-  const {  setValue, control } = useForm<TFormValues<ISearch>>({
+  const [ productData, setProductData ] = useState<IProduct[]>([]);
+  const [ tableData, setTableData ] = useState<IProductTableData[]>([]);
+  const { setValue, control } = useForm<TFormValues<ISearch>>({
     defaultValues: { values: { search: '' } },
   });
-  const [searchVal, setSearchVal] = useState('')
+  const [searchVal, setSearchVal] = useState('');
   const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
-  const url: RequestInfo = 'http://localhost:8000/products'
+  const url: RequestInfo = 'http://localhost:8000/products';
 
   useEffect(() => {
     if (searchVal.length > 2) {
-      getSearchProduct(searchVal)
-    }else{
-      getProductData()
+      getSearchProduct(searchVal);
+    } else {
+      getProductData();
     }
     // eslint-disable-next-line
-  }, [searchVal])
+  }, [searchVal]);
 
   useEffect(() => {
-    if (productData.length === 0) return
+    if (productData.length === 0) return;
 
     const prepareTableData = () => {
       let newTableData: IProductTableData[] = productData.map(
-        ({ _id, barcode, name, category, stock, pricebuy, pricesell, date, description, active }: IProduct) => {
+        ({
+          _id,
+          barcode,
+          name,
+          category,
+          stock,
+          pricebuy,
+          pricesell,
+          date,
+          description,
+          active,
+        }: IProduct) => {
           let newData: IProductTableData = {
             _id,
             barcode,
@@ -72,84 +82,75 @@ const ProductsView: React.FC = () => {
             pricesell,
             active: renderActiveChip(active),
             actions: renderActions(_id),
-          }
-          return newData
-        })
-      setTableData(newTableData)
-    }
+          };
+          return newData;
+        },
+      );
+      setTableData(newTableData);
+    };
 
-    prepareTableData()
+    prepareTableData();
     // eslint-disable-next-line
-  }, [productData])
+  }, [productData]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue('values', {
       search: event.target.value,
-    })
-    setSearchVal(event.target.value,)
-  }
+    });
+    setSearchVal(event.target.value);
+  };
 
   const getSearchProduct = async (search: string) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/products/search/${search}`
+    const urlSearch: RequestInfo = `http://localhost:8000/products/search/${search}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    const res = await fetch(urlSearch, requestInit)
-    const data = await res.json()
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlSearch, requestInit);
+    const data = await res.json();
     if (res.ok) {
-      setProductData(data)
+      setProductData(data);
     } else {
       console.log('Error: Unknow error || Server error');
     }
-  }
+  };
 
   const getProductData = async () => {
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    const res = await fetch(url, requestInit)
-    const data = await res.json()
-    setProductData(data)
-  }
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(url, requestInit);
+    const data = await res.json();
+    setProductData(data);
+  };
 
   const deleteProduct = async (idProduct: string) => {
-    const urlDelete: RequestInfo = url + '/' + idProduct
+    const urlDelete: RequestInfo = url + '/' + idProduct;
     const requestInit: RequestInit = {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      }
-    }
-    const res = await fetch(urlDelete, requestInit)
-    const data = await res.json()
-    console.log('Product Deleted', data)
-    getProductData()
-  }
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlDelete, requestInit);
+    const data = await res.json();
+    console.log('Product Deleted', data);
+    getProductData();
+  };
 
   const renderActions = (idProduct: string) => (
     <div className="flex item-center justify-center">
-      <Icon
-        width={5}
-        color="blue"
-        Icon={AnnotationIcon}
-        hover
-      />
+      <Icon width={5} color="blue" Icon={AnnotationIcon} hover />
       <Link to={`/product/form/${idProduct}`}>
-        <Icon
-          width={5}
-          color="blue"
-          Icon={PencilAltIcon}
-          hover
-        />
+        <Icon width={5} color="blue" Icon={PencilAltIcon} hover />
       </Link>
       <Icon
         width={5}
@@ -159,15 +160,15 @@ const ProductsView: React.FC = () => {
         onClick={() => deleteProduct(idProduct)}
       />
     </div>
-  )
+  );
 
   const renderActiveChip = (isActive: boolean) => (
     <Chip
       label={isActive ? 'Activo' : 'Inactivo'}
-      bgColor="blue"
-      txtColor="blue"
+      bgColor={isActive ? 'blue' : 'red'}
+      txtColor="white"
     />
-  )
+  );
 
   return (
     <>
@@ -175,8 +176,10 @@ const ProductsView: React.FC = () => {
         <div className="w-full lg:w-10/12 mx-auto my-8">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
             <div className="rounded-t bg-white mb-0 px-6 py-3">
-              <div className="text-center flex justify-between">
-                <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Productos</h6>
+              <div className="flex items-center justify-between">
+                <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">
+                  Productos
+                </h6>
                 <Link to={`/product/form`}>
                   <Button
                     label="Agregar"
@@ -193,21 +196,22 @@ const ProductsView: React.FC = () => {
                   <Controller
                     control={control}
                     name="values.search"
-                    render={({ field: { value, name} }) =>(
-                        <Input
-                          type="search"
-                          label=""
-                          name={name}
-                          value={value}
-                          onChange={handleChange}
-                          placeholder="Buscar producto ..."
-                          icon={iconValue}
-                        />
+                    render={({ field: { value, name } }) => (
+                      <Input
+                        type="search"
+                        label=""
+                        name={name}
+                        value={value}
+                        onChange={handleChange}
+                        placeholder="Buscar producto ..."
+                        icon={iconValue}
+                      />
                     )}
                   />
                 </div>
               </div>
             </div>
+
             <div className="mb-3">
               <Table theadData={tableFieldData} tbodyData={tableData} />
             </div>
@@ -215,7 +219,7 @@ const ProductsView: React.FC = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ProductsView
+export default ProductsView;

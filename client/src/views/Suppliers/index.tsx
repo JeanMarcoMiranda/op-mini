@@ -120,8 +120,8 @@ const SupplierView: React.FC = () => {
   const renderActiveChip = (isActive: boolean) => (
     <Chip
       label={isActive ? 'Activo' : 'Inactivo'}
-      bgColor="blue"
-      txtColor="blue"
+      bgColor={isActive ? 'blue' : 'red'}
+      txtColor="white"
     />
   )
 
