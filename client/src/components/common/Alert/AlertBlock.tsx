@@ -5,14 +5,14 @@ interface AlertComponentProps {
   setisOpen: React.Dispatch<React.SetStateAction<boolean>>
   title?: string,
   img?: string,
-  contentText: string,
+  contentText: string | string[],
   cancelButton?: boolean,
   defaultButton?: string,
   colorDB?: string,
   onClickDB?: MouseEventHandler<HTMLButtonElement>,
   typeButton?: string,
   colorTYB?: string,
-  onClickTB?: MouseEventHandler<HTMLButtonElement>
+  onClickTYB?: MouseEventHandler<HTMLButtonElement>
 }
 
 const AlertBlockComponent: React.FC<AlertComponentProps> = ({
@@ -27,7 +27,7 @@ const AlertBlockComponent: React.FC<AlertComponentProps> = ({
   onClickDB,
   typeButton,
   colorTYB,
-  onClickTB
+  onClickTYB
 }) => {
   const renderSwitch = (param: string) => {
     switch (param) {
@@ -58,7 +58,7 @@ const AlertBlockComponent: React.FC<AlertComponentProps> = ({
             </div>
             {img ?
               <div className="pt-6 flex justify-center">
-                <img src={img} className="w-1/5" />
+                <img src={img} alt='some img' className="w-1/5" />
               </div> : <></>}
             <div className={`${img ? "pt-0" : ""} px-6 py-10 flex-grow`}>
               <p className="text-gray-700 text-base">
@@ -78,7 +78,7 @@ const AlertBlockComponent: React.FC<AlertComponentProps> = ({
                 </button> : <></>}
               {typeButton ?
                 <button className={`${colorTYB ? renderSwitch(colorTYB) : "bg-gray-300 text-gray-600"} font-medium text-sm py-1 px-5 rounded`}
-                  onClick={onClickTB}>
+                  onClick={onClickTYB}>
                   {typeButton}
                 </button> : <></>}
             </div>

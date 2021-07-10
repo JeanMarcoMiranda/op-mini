@@ -8,14 +8,20 @@ import {
   ArchiveIcon,
 } from '@heroicons/react/outline';
 import {
-  AlertBlockComponent as Alert,
+  AlertBlockComponent as AlertBlock,
+  AlertDismissableComponent as AlertDism,
   ButtonComponent as Button,
   ChipComponent as Chip,
   IconComponent as Icon,
   TableComponent as Table,
-  LoadingPageComponent as Load,
 } from '../../components/common';
 import { RootState } from '../../store/store';
+
+interface IModalUInfo {
+  name?: string,
+  documentType?: string,
+  documentNumber?: number,
+}
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -28,8 +34,11 @@ const tableFieldData = [
 ];
 
 const UserView: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal1, setShowModal1] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+  const [showModal3, setShowModal3] = useState(false);
   const [modalInfo, setModalInfo] = useState("");
+  const [prepareInfo, setPrepareInfo] = useState("");
   const [userData, setUserData] = useState<IUser[]>([]);
   const [tableData, setTableData] = useState<IUserTableData[]>([]);
   const { access_token } = useSelector<RootState, RootState['user']>(
@@ -79,6 +88,27 @@ const UserView: React.FC = () => {
     // eslint-disable-next-line
   }, [userData]);
 
+  useEffect(() => {
+
+  }, [prepareInfo]);
+
+  const getUser = async (id: string) => {
+    const urlReq: RequestInfo = url + `/${id}`;
+    const res = await fetch(urlReq);
+    const {
+      name,
+      documentType,
+      documentNumber,
+    }: IModalUInfo = await res.json();
+    const data = {name,documentType,documentNumber};
+    let newData: string = ""
+    for (var [key, value] of Object.entries(data)) {
+      newData +=`${key}: ${value} \r\n`
+    }
+    let datareplace = newData.replace('name','Nombre').replace('documentType', 'Tipo de documento').replace('documentNumber','Numero de documento')
+    setPrepareInfo(datareplace)
+  };
+
   const getUserData = async () => {
     const requestInit: RequestInit = {
       method: 'GET',
@@ -105,17 +135,27 @@ const UserView: React.FC = () => {
     const data = await res.json();
     console.log('User Deleted', data);
     getUserData();
-    setShowModal(false);
+    setShowModal1(false);
+    dispalyModal('', 'alert')
   };
 
-  const dispalyModal = (param: string) =>{
-    setShowModal(prev => !prev)
-    setModalInfo(param)
+  const dispalyModal = (param: string, type?: string) => {
+    if (type === 'alert') {
+      setShowModal2(prev => !prev)
+    }
+    else if (type === 'tooltip') {
+      setShowModal3(prev => !prev)
+      getUser(param)
+    }
+    else {
+      setShowModal1(prev => !prev)
+      setModalInfo(param)
+    }
   }
 
   const renderActions = (idUser: string) => (
     <div className="flex item-center justify-center">
-      <Icon width={5} color="blue" Icon={AnnotationIcon} hover />
+      <Icon width={5} color="blue" Icon={AnnotationIcon} hover onClick={() => dispalyModal(idUser, 'tooltip')} />
       <Link to={`/user/form/${idUser}`}>
         <Icon width={5} color="blue" Icon={PencilAltIcon} hover />
       </Link>
@@ -140,21 +180,36 @@ const UserView: React.FC = () => {
   return (
     <>
       <div className="container mx-auto">
-        <Alert
-          isOpen={showModal}
-          setisOpen={setShowModal}
+        <AlertBlock
+          isOpen={showModal3}
+          setisOpen={setShowModal3}
+          title={"Informacion adicional"}
+          contentText={prepareInfo}
+          typeButton={"Cerrar"}
+          onClickTYB={() => setShowModal3(false)}
+        />
+        <AlertBlock
+          isOpen={showModal1}
+          setisOpen={setShowModal1}
           title={"¿Desea eliminar el elemento?"}
           contentText={"El elemento seleccionado sera eliminado de la base de datos"}
           cancelButton={true}
           typeButton={"Si, Eliminalo"}
           colorTYB={"danger"}
-          onClickTB={()=>deleteUser(modalInfo)}
+          onClickTYB={() => deleteUser(modalInfo)}
+        />
+        <AlertDism
+          isOpen={showModal2}
+          setisOpen={setShowModal2}
+          contentText={"El usuario ha sido eliminado con exito."}
+          color={"success"}
+          delay={5}
         />
         <div className="w-full lg:w-10/12 px-4 py-4 mx-auto">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
             <div className="rounded-t bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
-              <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
+                <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
                 <Link to={`/user/form`}>
                   <Button
                     label="Agregar"

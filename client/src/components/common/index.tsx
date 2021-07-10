@@ -9,7 +9,7 @@ import CardComponent from "./Card";
 import LoadingPageComponent from "./Load/LoadingPage";
 import LoadingSectionComponent from "./Load/LoadingSection";
 import AlertBlockComponent from "./Alert/AlertBlock";
-
+import AlertDismissableComponent from "./Alert/AlertDismissable";
 
 export {
   InputComponent,
@@ -23,5 +23,6 @@ export {
   LoadingPageComponent,
   LoadingSectionComponent,
   AlertBlockComponent,
+  AlertDismissableComponent,
 }
 
