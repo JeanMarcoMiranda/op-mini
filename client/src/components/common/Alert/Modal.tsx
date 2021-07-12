@@ -1,23 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setModalData } from '../../../store/actions';
 
-interface AlertComponentProps {
-  isOpen: boolean,
-  setisOpen: React.Dispatch<React.SetStateAction<boolean>>
-  title?: string,
-  img?: string,
-  contentText: string | string[],
-  cancelButton?: boolean,
-  defaultButton?: string,
-  colorDB?: string,
-  onClickDB?: MouseEventHandler<HTMLButtonElement>,
-  typeButton?: string,
-  colorTYB?: string,
-  onClickTYB?: MouseEventHandler<HTMLButtonElement>
-}
-
-const AlertBlockComponent: React.FC<AlertComponentProps> = ({
+const ModalComponent: React.FC<IModalProps> = ({
   isOpen,
-  setisOpen,
   title,
   img,
   contentText,
@@ -29,6 +15,8 @@ const AlertBlockComponent: React.FC<AlertComponentProps> = ({
   colorTYB,
   onClickTYB
 }) => {
+  const dispatch = useDispatch()
+
   const renderSwitch = (param: string) => {
     switch (param) {
       case 'success':
@@ -68,7 +56,7 @@ const AlertBlockComponent: React.FC<AlertComponentProps> = ({
             <div className="px-5 py-3 border-t bg-gray-100 flex justify-end">
               {cancelButton ?
                 <button className="bg-gray-300 text-gray-600 font-medium text-sm py-1 px-5 rounded mr-3"
-                  onClick={() => setisOpen(prev => !prev)}>
+                  onClick={() => dispatch(setModalData({setisOpen:(prev => !prev)}))}>
                   Cancelar
                 </button> : <></>}
               {defaultButton ?
@@ -90,4 +78,4 @@ const AlertBlockComponent: React.FC<AlertComponentProps> = ({
   )
 }
 
-export default AlertBlockComponent;
+export default ModalComponent;

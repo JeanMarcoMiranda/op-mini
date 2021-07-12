@@ -8,8 +8,9 @@ import TableComponent from "./Table/Table";
 import CardComponent from "./Card";
 import LoadingPageComponent from "./Load/LoadingPage";
 import LoadingSectionComponent from "./Load/LoadingSection";
-import AlertBlockComponent from "./Alert/AlertBlock";
-import AlertDismissableComponent from "./Alert/AlertDismissable";
+import ModalComponent from "./Alert/Modal";
+import ToastComponent from "./Alert/Toast";
+import NotificationComponent from "./Alert/Notification";
 
 export {
   InputComponent,
@@ -22,7 +23,8 @@ export {
   CardComponent,
   LoadingPageComponent,
   LoadingSectionComponent,
-  AlertBlockComponent,
-  AlertDismissableComponent,
+  ModalComponent,
+  ToastComponent,
+  NotificationComponent,
 }
 

@@ -1,3 +1,6 @@
 export const SET_TOKEN = "SET_TOKEN"
 export const SET_USER_DATA = "SET_USER_DATA"
 export const SET_AUTH_USER = "SET_AUTH_USER"
+export const SET_MODAL = "SET_MODAL"
+export const SET_TOAST = "SET_TOAST"
+export const SET_NOTIFICATION = "SET_NOTIFICATION"
