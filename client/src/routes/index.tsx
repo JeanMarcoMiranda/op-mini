@@ -92,6 +92,13 @@ const appRoutes: RouteData[] = [
     type: 'private',
     roles: ['Administrador']
   },
+  {
+    path: '/user/edit',
+    component: UserForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
+  },
 ]
 
 export { appRoutes, navRoutes }

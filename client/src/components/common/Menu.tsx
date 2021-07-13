@@ -11,11 +11,29 @@ import {
   DocumentTextIcon as OutlineDocumentTextIcon,
   LogoutIcon as OutlineLogoutIcon
 } from '@heroicons/react/outline'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData, setToken, setAuthUser } from '../../store/actions';
 import { RootState } from '../../store/store';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
-function MenuComponent() {
+const initialUserRole: IRole = {
+  _id: '',
+  name: '',
+  isActive: false,
+  description: '',
+};
+
+const initialUserState: IUserData = {
+  _id: '',
+  name: '',
+  email: '',
+  documentType: '',
+  documentNumber: '',
+  isActive: false,
+  role: initialUserRole,
+};
+
+const MenuComponent: React.FC = () => {
   const MENU_ITEM_DEFAULT_STYLE =
     'group flex rounded-md items-center w-full p-2 text-sm';
 
@@ -24,6 +42,19 @@ function MenuComponent() {
   );
 
   const userRole = userData.role;
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  const logOutUser = () => {
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+
+    dispatch(setUserData(initialUserState))
+    dispatch(setAuthUser(false))
+    dispatch(setToken(''))
+
+    history.push('/login')
+  }
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -64,7 +95,7 @@ function MenuComponent() {
               <div className="px-1 py-1">
                 <Menu.Item>
                   {({ active }) => (
-                    <Link to={`/user/form/${userData._id}`}>
+                    <Link to={`/user/edit`}>
                       <button
                         className={`${MENU_ITEM_DEFAULT_STYLE} ${
                           active ? 'bg-blue-500 text-white' : 'text-gray-900'
@@ -75,7 +106,7 @@ function MenuComponent() {
                         ) : (
                           <OutlineCogIcon className="w-5 h-5 mr-2" aria-hidden="true" />
                         )}
-                        Account settings
+                        Editar Perfil
                       </button>
                     </Link>
                   )}
@@ -93,7 +124,7 @@ function MenuComponent() {
                       ) : (
                         <OutlineDocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />
                       )}
-                      Documentation
+                      Guía de la App
                     </button>
                   )}
                 </Menu.Item>
@@ -106,6 +137,7 @@ function MenuComponent() {
                       className={`${MENU_ITEM_DEFAULT_STYLE} ${
                         active ? 'bg-red-500 text-white' : 'text-gray-900'
                       }`}
+                      onClick={() => logOutUser()}
                     >
                       {active ? (
                         <LogoutIcon className="w-5 h-5 mr-2" aria-hidden="true" />

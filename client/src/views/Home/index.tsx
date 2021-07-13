@@ -49,9 +49,9 @@ const Home: React.FC = () => {
   }, [search]);
 
   return (
-    <div className="grid my-8 pb-10 px-8 mx-4 rounded-3xl bg-gray-100">
+    <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-gray-100">
       <div className="col-span-12 ">
-        <div className="flex items-center h-10 intro-y my-3">
+        <div className="flex items-center h-10 intro-y mb-3">
           <h2 className="text-2xl font-semibold tracking-wide">Dashboard</h2>
         </div>
 
@@ -148,7 +148,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-3 grid-cols-2 gap-6 mt-5">
+        <div className="grid sm:grid-cols-3 grid-cols-2 gap-6 mt-6">
           {navRoutes.map(({ label, path }, index) => (
             <CardComponent
               key={index}
