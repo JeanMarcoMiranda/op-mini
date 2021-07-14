@@ -181,11 +181,11 @@ const ProductForm: React.FC = () => {
   return show ? (
     <>
       <div className="container mx-auto">
-        <div className="w-full lg:w-10/12 px-4 py-4 mx-auto">
+        <div className="w-full lg:w-10/12 mx-auto my-8">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
-            <div className="rounded-t bg-white mb-0 px-6 py-6">
+            <div className="rounded-t bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
-                <h6 className="text-gray-500 text-xl font-bold">Productos</h6>
+                <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Productos</h6>
                 <Link to="/product">
                   <Button
                     label="Regresar"
@@ -196,15 +196,15 @@ const ProductForm: React.FC = () => {
                 </Link>
               </div>
             </div>
-            <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+            <div className="flex-auto">
               <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="col-span-2 py-4 px-6"
+                className="col-span-2 py-3 px-6"
               >
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Informacion del producto
                 </h6>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3">
                   <div className="px-4">
                     <Controller
                       control={control}
@@ -270,13 +270,13 @@ const ProductForm: React.FC = () => {
                   </div>
                 </div>
 
-                <hr className="mt-6 border-b-1 border-gray-300" />
+                <hr className="mt-3 border-b-1 border-gray-300" />
 
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Informacion de Precios
                 </h6>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3">
                   <div className="px-4">
                     <Controller
                       control={control}
@@ -311,13 +311,13 @@ const ProductForm: React.FC = () => {
                   </div>
                 </div>
 
-                <hr className="mt-6 border-b-1 border-gray-300" />
+                <hr className="mt-3 border-b-1 border-gray-300" />
 
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Otros
                 </h6>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3">
                   <div className="px-4">
                     <Controller
                       control={control}
@@ -350,13 +350,15 @@ const ProductForm: React.FC = () => {
                     />
                   </div>
                 </div>
-                <Button
-                  label={ id ? 'Actualizar Producto' : 'Crear Producto' }
-                  bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
-                  textColor={'white'}
-                  onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
-                  submit
-                />
+                <div className="my-3">
+                  <Button
+                    label={ id ? 'Actualizar Producto' : 'Crear Producto' }
+                    bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
+                    textColor={'white'}
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
+                    submit
+                  />
+                </div>
               </form>
             </div>
           </div>

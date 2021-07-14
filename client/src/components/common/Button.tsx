@@ -24,7 +24,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({
         duration-500
         ${bgColor ? bgColor : 'bg-transparent'}
         text-${textColor}
-        py-2 px-4 mr-3 mb-3
+        py-2 px-4
         focus:outline-none
         ${onHoverStyles && onHoverStyles}
         rounded-lg`

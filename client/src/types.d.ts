@@ -149,6 +149,68 @@ interface IParamTypes {
   id: string;
 }
 
+// ========== Redux Alert Types ==========
+
+interface IModalProps {
+  isOpen?: boolean,
+  setisOpen?: React.Dispatch<React.SetStateAction<boolean>>,
+  title?: string,
+  img?: string,
+  contentText?: string,
+  cancelButton?: boolean,
+  defaultButton?: string,
+  colorDB?: string,
+  onClickDB?: MouseEventHandler<HTMLButtonElement>,
+  typeButton?: string,
+  colorTYB?: string,
+  onClickTYB?: MouseEventHandler<HTMLButtonElement>,
+}
+
+interface IToastProps {
+  isOpen?: boolean,
+  setisOpen?: React.Dispatch<React.SetStateAction<boolean>>,
+  contentText?: string,
+  color?: string,
+  delay?: number,
+}
+
+interface TableHead {
+  text: string;
+}
+
+interface INotificationProps {
+  isOpen?: boolean,
+  setisOpen?: React.Dispatch<React.SetStateAction<boolean>>,
+  title?: string,
+  theadData?: TableHead[],
+  tbodyData?: any,
+  contentObj?: any,
+  contentText?: string,
+}
+
+type AlertState = {
+  modalData?: IModalProps,
+  toastData?: IToastProps,
+  notificationData?: INotificationProps,
+};
+
+interface SetModalDataAction {
+  type: "SET_MODAL";
+  modal: IModalProps;
+};
+
+interface SetToastDataAction {
+  type: "SET_TOAST";
+  toast: IToastProps;
+};
+
+interface SetNotificationDataAction {
+  type: "SET_NOTIFICATION";
+  notification: INotificationProps;
+};
+
+type AlertActionTypes = SetModalDataAction | SetToastDataAction | SetNotificationDataAction
+
 // ========== Redux User Types ==========
 interface IUser {
   _id: string;

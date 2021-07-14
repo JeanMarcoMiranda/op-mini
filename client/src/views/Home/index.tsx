@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CardComponent } from '../../components/common';
 import { navRoutes } from '../../routes';
-import { useForm } from 'react-hook-form';
 import { useDateTime } from '../../components/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
@@ -16,13 +15,9 @@ const buttonProps: ButtonProps = {
 const Home: React.FC = () => {
   const [date, setDate] = useState<IDate>();
   const [city, setCity] = useState<IWeatherValues>();
-  const { getValues } = useForm<TFormValues<ISearch>>({
-    defaultValues: { values: { search: '' } },
-  });
   const { userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
-  let search: string = getValues('values.search');
   const icon = `https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/${city?.weather[0]["icon"]}.svg`;
   const timeValue = useDateTime()
 
@@ -31,11 +26,8 @@ const Home: React.FC = () => {
   }, [timeValue]);
 
   useEffect(() => {
-    if (search.length <= 0) {
-      search = 'Arequipa';
-    }
     const getWeather = async () => {
-      const urlApi: RequestInfo = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=e96d7162c54ff8ce2b51c0767e86ffa1&units=metric`;
+      const urlApi: RequestInfo = `https://api.openweathermap.org/data/2.5/weather?q=Arequipa&appid=e96d7162c54ff8ce2b51c0767e86ffa1&units=metric`;
       const res = await fetch(urlApi);
       const data = await res.json();
       if (res.ok) {
@@ -46,12 +38,12 @@ const Home: React.FC = () => {
       return data;
     };
     getWeather();
-  }, [search]);
+  }, []);
 
   return (
-    <div className="grid my-8 pb-10 px-8 mx-4 rounded-3xl bg-gray-100">
+    <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-gray-100">
       <div className="col-span-12 ">
-        <div className="flex items-center h-10 intro-y my-3">
+        <div className="flex items-center h-10 intro-y mb-3">
           <h2 className="text-2xl font-semibold tracking-wide">Dashboard</h2>
         </div>
 
@@ -148,7 +140,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-3 grid-cols-2 gap-6 mt-5">
+        <div className="grid sm:grid-cols-3 grid-cols-2 gap-6 mt-6">
           {navRoutes.map(({ label, path }, index) => (
             <CardComponent
               key={index}

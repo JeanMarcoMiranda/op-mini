@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setModalData, setNotificationData, setToastData } from '../../store/actions';
 
 import {
   AnnotationIcon,
@@ -8,14 +10,18 @@ import {
   ArchiveIcon,
 } from '@heroicons/react/outline';
 import {
-  AlertBlockComponent as Alert,
   ButtonComponent as Button,
   ChipComponent as Chip,
   IconComponent as Icon,
   TableComponent as Table,
-  LoadingPageComponent as Load,
 } from '../../components/common';
 import { RootState } from '../../store/store';
+
+interface IModalUInfo {
+  name?: string,
+  documentType?: string,
+  documentNumber?: number,
+}
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -27,9 +33,14 @@ const tableFieldData = [
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 
+const tableNotification = [
+  { text: 'Nombre'},
+  { text: 'Tipo de documento'},
+  { text: 'Numero de documento'},
+];
+
 const UserView: React.FC = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [modalInfo, setModalInfo] = useState("");
+  const dispatch = useDispatch()
   const [userData, setUserData] = useState<IUser[]>([]);
   const [tableData, setTableData] = useState<IUserTableData[]>([]);
   const { access_token } = useSelector<RootState, RootState['user']>(
@@ -76,6 +87,24 @@ const UserView: React.FC = () => {
     // eslint-disable-next-line
   }, [userData]);
 
+  const getDataNotification = async (id: string) => {
+    const urlReq: RequestInfo = url + `/${id}`;
+    const res = await fetch(urlReq);
+    const {
+      name,
+      documentType,
+      documentNumber,
+    }: IModalUInfo = await res.json();
+    const data = {name,documentType,documentNumber};
+    dispatch(setNotificationData({
+      isOpen: true,
+      setisOpen: (prev => !prev),
+      title: 'Notificacion del usuario',
+      theadData: tableNotification,
+      tbodyData: data
+    }))
+ };
+
   const getUserData = async () => {
     const requestInit: RequestInit = {
       method: 'GET',
@@ -102,17 +131,40 @@ const UserView: React.FC = () => {
     const data = await res.json();
     console.log('User Deleted', data);
     getUserData();
-    setShowModal(false);
+    dispatch(setModalData({setisOpen: (prev => !prev)}))
+    showAlert('toast')
   };
 
-  const dispalyModal = (param: string) =>{
-    setShowModal(prev => !prev)
-    setModalInfo(param)
+  const showAlert = (type: string, idUser?: string) => {
+    if (type === 'toast') {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El usuario ha sido eliminado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+    }
+    else if (type === 'notifi') {
+      getDataNotification(idUser!)
+    }
+    else {
+      dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: '¿Esta seguro que desea eliminar el elemento?',
+        contentText: 'El elemento seleccionado sera eliminado de la base de datos',
+        cancelButton: true,
+        typeButton: 'Si, Eliminalo',
+        colorTYB: 'danger',
+        onClickTYB: () => deleteUser(idUser!)
+      }))
+    }
   }
 
   const renderActions = (idUser: string) => (
     <div className="flex item-center justify-center">
-      <Icon width={5} color="blue" Icon={AnnotationIcon} hover />
+      <Icon width={5} color="blue" Icon={AnnotationIcon} hover onClick={() => showAlert('notifi', idUser)} />
       <Link to={`/user/form/${idUser}`}>
         <Icon width={5} color="yellow" Icon={PencilAltIcon} hover />
       </Link>
@@ -121,7 +173,7 @@ const UserView: React.FC = () => {
         color="red"
         Icon={ArchiveIcon}
         hover
-        onClick={() => dispalyModal(idUser)}
+        onClick={() => showAlert('delete',idUser)}
       />
     </div>
   );
@@ -137,16 +189,6 @@ const UserView: React.FC = () => {
   return (
     <>
       <div className="container mx-auto">
-        <Alert
-          isOpen={showModal}
-          setisOpen={setShowModal}
-          title={"¿Desea eliminar el elemento?"}
-          contentText={"El elemento seleccionado sera eliminado de la base de datos"}
-          cancelButton={true}
-          typeButton={"Si, Eliminalo"}
-          colorTYB={"danger"}
-          onClickTB={()=>deleteUser(modalInfo)}
-        />
         <div className="w-full lg:w-10/12 px-4 py-4 mx-auto">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
             <div className="rounded-t bg-white mb-0 px-6 py-3">

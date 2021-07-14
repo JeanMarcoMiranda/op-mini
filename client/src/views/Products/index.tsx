@@ -203,7 +203,7 @@ const ProductsView: React.FC = () => {
                         name={name}
                         value={value}
                         onChange={handleChange}
-                        placeholder="Buscar producto ..."
+                        placeholder="Buscar producto..."
                         icon={iconValue}
                       />
                     )}

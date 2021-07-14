@@ -8,8 +8,11 @@ import TableComponent from "./Table/Table";
 import CardComponent from "./Card";
 import LoadingPageComponent from "./Load/LoadingPage";
 import LoadingSectionComponent from "./Load/LoadingSection";
-import AlertBlockComponent from "./Alert/AlertBlock";
-
+import ModalComponent from "./Alert/Modal";
+import ToastComponent from "./Alert/Toast";
+import NotificationComponent from "./Alert/Notification";
+//import AlertBlockComponent from "./Alert/AlertBlock";
+import MenuComponent from "./Menu"
 
 export {
   InputComponent,
@@ -22,6 +25,10 @@ export {
   CardComponent,
   LoadingPageComponent,
   LoadingSectionComponent,
-  AlertBlockComponent,
+  ModalComponent,
+  ToastComponent,
+  NotificationComponent,
+//  AlertBlockComponent,
+  MenuComponent,
 }
 
