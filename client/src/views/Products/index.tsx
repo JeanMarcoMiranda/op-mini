@@ -4,19 +4,15 @@ import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 
 import {
-  AnnotationIcon,
-  PencilAltIcon,
-  ArchiveIcon,
   SearchIcon,
 } from '@heroicons/react/outline';
 import {
   ButtonComponent as Button,
-  ChipComponent as Chip,
-  IconComponent as Icon,
   TableComponent as Table,
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
+import { renderActiveChip, renderIconActions } from '../../components/utils';
 
 const tableFieldData = [
   { text: 'Codigo de Barras', width: 2, name: 'barcode' },
@@ -81,7 +77,7 @@ const ProductsView: React.FC = () => {
             pricebuy,
             pricesell,
             active: renderActiveChip(active),
-            actions: renderActions(_id),
+            actions: renderIconActions(_id, 'product', showAlert),
           };
           return newData;
         },
@@ -146,36 +142,16 @@ const ProductsView: React.FC = () => {
     getProductData();
   };
 
-  const renderActions = (idProduct: string) => (
-    <div className="flex item-center justify-center">
-      <Icon width={5} color="blue" Icon={AnnotationIcon} hover />
-      <Link to={`/product/form/${idProduct}`}>
-        <Icon width={5} color="blue" Icon={PencilAltIcon} hover />
-      </Link>
-      <Icon
-        width={5}
-        color="red"
-        Icon={ArchiveIcon}
-        hover
-        onClick={() => deleteProduct(idProduct)}
-      />
-    </div>
-  );
-
-  const renderActiveChip = (isActive: boolean) => (
-    <Chip
-      label={isActive ? 'Activo' : 'Inactivo'}
-      bgColor={isActive ? 'blue' : 'red'}
-      txtColor="white"
-    />
-  );
+  const showAlert = (type: string, id?: string) => {
+    //AQUI TU TRABAJO BRUCCE
+  }
 
   return (
     <>
       <div className="container mx-auto">
         <div className="w-full lg:w-10/12 mx-auto my-8">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
-            <div className="rounded-t bg-white mb-0 px-6 py-3">
+            <div className="rounded-lg bg-white mb-0 px-6 py-3">
               <div className="flex items-center justify-between">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">
                   Productos

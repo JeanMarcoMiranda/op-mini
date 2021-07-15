@@ -5,17 +5,11 @@ import { useDispatch } from 'react-redux';
 import { setModalData, setNotificationData, setToastData } from '../../store/actions';
 
 import {
-  AnnotationIcon,
-  PencilAltIcon,
-  ArchiveIcon,
-} from '@heroicons/react/outline';
-import {
   ButtonComponent as Button,
-  ChipComponent as Chip,
-  IconComponent as Icon,
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
+import { renderActiveChip, renderIconActions } from '../../components/utils';
 
 interface IModalUInfo {
   name?: string,
@@ -76,7 +70,7 @@ const UserView: React.FC = () => {
             email,
             currentAddress,
             active: renderActiveChip(isActive),
-            actions: renderActions(_id),
+            actions: renderIconActions(_id, 'user', showAlert),
           };
           return newData;
         },
@@ -135,7 +129,7 @@ const UserView: React.FC = () => {
     showAlert('toast')
   };
 
-  const showAlert = (type: string, idUser?: string) => {
+  const showAlert = (type: string, id?: string) => {
     if (type === 'toast') {
       dispatch(setToastData({
         isOpen: true,
@@ -146,7 +140,7 @@ const UserView: React.FC = () => {
       }))
     }
     else if (type === 'notifi') {
-      getDataNotification(idUser!)
+      getDataNotification(id!)
     }
     else {
       dispatch(setModalData({
@@ -157,41 +151,17 @@ const UserView: React.FC = () => {
         cancelButton: true,
         typeButton: 'Si, Eliminalo',
         colorTYB: 'danger',
-        onClickTYB: () => deleteUser(idUser!)
+        onClickTYB: () => deleteUser(id!)
       }))
     }
   }
-
-  const renderActions = (idUser: string) => (
-    <div className="flex item-center justify-center">
-      <Icon width={5} color="blue" Icon={AnnotationIcon} hover onClick={() => showAlert('notifi', idUser)} />
-      <Link to={`/user/form/${idUser}`}>
-        <Icon width={5} color="yellow" Icon={PencilAltIcon} hover />
-      </Link>
-      <Icon
-        width={5}
-        color="red"
-        Icon={ArchiveIcon}
-        hover
-        onClick={() => showAlert('delete',idUser)}
-      />
-    </div>
-  );
-
-  const renderActiveChip = (isActive: boolean) => (
-    <Chip
-      label={isActive ? 'Activo' : 'Inactivo'}
-      bgColor={isActive ? 'blue' : 'red'}
-      txtColor="white"
-    />
-  );
 
   return (
     <>
       <div className="container mx-auto">
         <div className="w-full lg:w-10/12 px-4 py-4 mx-auto">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
-            <div className="rounded-t bg-white mb-0 px-6 py-3">
+            <div className="rounded-lg bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
                 <Link to={`/user/form`}>

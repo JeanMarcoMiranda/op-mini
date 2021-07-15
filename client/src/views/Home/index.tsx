@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-gray-100">
+    <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-white">
       <div className="col-span-12 ">
         <div className="flex items-center h-10 intro-y mb-3">
           <h2 className="text-2xl font-semibold tracking-wide">Dashboard</h2>

@@ -3,17 +3,11 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 
 import {
-  AnnotationIcon,
-  PencilAltIcon,
-  ArchiveIcon,
-} from '@heroicons/react/outline';
-import {
   ButtonComponent as Button,
-  ChipComponent as Chip,
-  IconComponent as Icon,
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
+import { renderActiveChip, renderIconActions } from '../../components/utils';
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -52,7 +46,7 @@ const SupplierView: React.FC = () => {
           email,
           address,
           active: renderActiveChip(active),
-          actions: renderActions(_id),
+          actions: renderIconActions(_id, 'supplier', showAlert),
         };
         return newData;
         });
@@ -91,46 +85,16 @@ const SupplierView: React.FC = () => {
     getSupplierData()
   }
 
-  const renderActions = (idSupplier: string) => (
-    <div className="flex item-center justify-center">
-      <Icon
-        width={5}
-        color="blue"
-        Icon={AnnotationIcon}
-        hover
-      />
-      <Link to={`/supplier/form/${idSupplier}`}>
-        <Icon
-          width={5}
-          color="blue"
-          Icon={PencilAltIcon}
-          hover
-        />
-      </Link>
-      <Icon
-        width={5}
-        color="red"
-        Icon={ArchiveIcon}
-        hover
-        onClick={ () => deleteSupplier(idSupplier) }
-      />
-    </div>
-  )
-
-  const renderActiveChip = (isActive: boolean) => (
-    <Chip
-      label={isActive ? 'Activo' : 'Inactivo'}
-      bgColor={isActive ? 'blue' : 'red'}
-      txtColor="white"
-    />
-  )
+  const showAlert = (type: string, id?: string) => {
+    //AQUI TU TRABAJO BRUCCE
+  }
 
   return (
     <>
       <div className="container mx-auto">
         <div className="w-full lg:w-10/12 mx-auto my-8">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
-            <div className="rounded-t bg-white mb-0 px-6 py-3">
+            <div className="rounded-lg bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
               <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Proveedores</h6>
                 <Link to={`/supplier/form`}>

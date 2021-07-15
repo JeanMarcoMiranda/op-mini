@@ -98,7 +98,7 @@ const MenuComponent: React.FC = () => {
                     <Link to={`/user/edit`}>
                       <button
                         className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                          active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                          active ? 'bg-green-500 text-white' : 'text-gray-900'
                         }`}
                       >
                         {active ? (
@@ -116,7 +116,7 @@ const MenuComponent: React.FC = () => {
                   {({ active }) => (
                     <button
                       className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                        active ? 'bg-green-500 text-white' : 'text-gray-900'
                       }`}
                     >
                       {active ? (

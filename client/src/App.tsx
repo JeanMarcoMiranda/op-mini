@@ -66,9 +66,9 @@ const App = () => {
       />
       <Router>
         {isAuthUser && <Header navToggle={setSideBarOpen} />}
-        <SideBar routes={navRoutes} isOpen={sideBarOpen} />
+        <SideBar routes={navRoutes} isOpen={sideBarOpen} activeColor="green"/>
         <div
-          className="h-full"
+          className="h-full bg-yellow-100"
           onClick={() => {
             if (sideBarOpen) setSideBarOpen(false);
           }}

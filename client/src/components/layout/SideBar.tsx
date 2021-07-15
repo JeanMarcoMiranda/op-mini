@@ -30,9 +30,9 @@ const SideBar: React.FC<SideBarProps> = ({
         : "-translate-x-72 ease-in transition-medium"
       }
     `}>
-      <div className="bg-white h-full dark:bg-gray-700 py-4">
+      <div className="bg-white h-full py-4">
         <nav className="">
-          <div className="text-left text-sm font-normal tracking-wide text-gray-600 dark:text-white uppercase pl-5 mb-4">
+          <div className="text-left text-sm font-normal font-bold tracking-wide text-green-600 dark:text-white uppercase pl-5 mb-4">
             Principal
           </div>
           <div>
