@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setModalData, setNotificationData, setToastData } from '../../store/actions';
-
 import {
   AnnotationIcon,
   PencilAltIcon,
   ArchiveIcon,
 } from '@heroicons/react/outline';
+
+// My components
 import {
   ButtonComponent as Button,
   ChipComponent as Chip,

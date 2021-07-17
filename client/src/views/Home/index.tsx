@@ -140,7 +140,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-3 grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-10 gap-6 mt-6">
           {navRoutes.map(({ label, path }, index) => (
             <CardComponent
               key={index}
