@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setToastData } from '../../store/actions';
 
 import {
   ButtonComponent as Button,
@@ -18,7 +19,6 @@ const activeOptions: ISelectOption[] = [
 ];
 
 const SupplierForm: React.FC = () => {
-
   const [show, setShow] = useState(false);
   const [selActive, setSelActive] = useState<ISelectOption>(activeOptions[0]);
   const { control, handleSubmit, setValue } = useForm<TFormValues<IFormSupplier>>({
@@ -40,13 +40,7 @@ const SupplierForm: React.FC = () => {
   );
 
   const history = useHistory()
-
-  const backButtonStyles = {
-    BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
-    BUTTON_LABEL: 'Regresar',
-    TEXT_COLOR: 'white',
-    ON_HOVER_STYLES: 'bg-gradient-to-r from-blue-500 to-blue-600',
-  };
+  const dispatch = useDispatch()
 
   useEffect(() => {
     id ? getSupplier() : setShow(true)
@@ -71,7 +65,14 @@ const SupplierForm: React.FC = () => {
       setSelActive(activeOption)
       setShow(true)
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method: Get, Error${response.status} : ${response.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 
@@ -80,6 +81,7 @@ const SupplierForm: React.FC = () => {
       updateSupplier(values)
     } else {
       createSupplier(values)
+
     }
     console.log('onsubmit', values);
   }
@@ -98,12 +100,26 @@ const SupplierForm: React.FC = () => {
       }),
     }
     const res = await fetch(url, requestInit);
-    const dataRes = await res.json()
+    //const dataRes = await res.json()
     if (res.ok) {
-      console.log('Supplier Updated', dataRes)
+      //console.log('Supplier Updated', dataRes)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El proveedor ha sido actualizado con exito.',
+        color: 'success',
+        delay: 5
+      }))
       history.push('/supplier')
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Update, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 
@@ -121,12 +137,27 @@ const SupplierForm: React.FC = () => {
       }),
     }
     const res = await fetch(url, requestInit);
-    const dataRes = await res.json()
+    //const dataRes = await res.json()
     if (res.ok) {
-      console.log('Supplier Created', dataRes)
+      //console.log('Supplier Created', dataRes)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El proveedor se ha creado con exito.',
+        color: 'success',
+        delay: 5
+      }))
       history.push('/supplier')
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error')
+      console.log(res)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 
@@ -140,10 +171,10 @@ const SupplierForm: React.FC = () => {
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Proveedores</h6>
                 <Link to="/supplier">
                   <Button
-                    label={backButtonStyles.BUTTON_LABEL}
-                    bgColor={backButtonStyles.BACKGROUND_COLOR}
-                    textColor={backButtonStyles.TEXT_COLOR}
-                    onHoverStyles={toHoverStyle(backButtonStyles.ON_HOVER_STYLES)}
+                    label="Regresar"
+                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                    textColor="white"
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
                   />
                 </Link>
               </div>
@@ -277,9 +308,9 @@ const SupplierForm: React.FC = () => {
                 <div className="my-3">
                   <Button
                     label={ id ? 'Actualizar Proveedor' : 'Crear Proveedor' }
-                    bgColor={backButtonStyles.BACKGROUND_COLOR}
-                    textColor={backButtonStyles.TEXT_COLOR}
-                    onHoverStyles={toHoverStyle(backButtonStyles.ON_HOVER_STYLES)}
+                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                    textColor="white"
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
                     submit
                   />
                 </div>

@@ -62,6 +62,7 @@ const App = () => {
         theadData={notificationData?.theadData}
         tbodyData={notificationData?.tbodyData}
         contentObj={notificationData?.contentObj}
+        titleContent={notificationData?.titleContent}
         contentText={notificationData?.contentText}
       />
       <Router>

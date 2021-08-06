@@ -185,6 +185,7 @@ interface INotificationProps {
   theadData?: TableHead[],
   tbodyData?: any,
   contentObj?: any,
+  titleContent?: string,
   contentText?: string,
 }
 

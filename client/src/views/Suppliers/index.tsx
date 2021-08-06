@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setModalData, setNotificationData, setToastData } from '../../store/actions';
 
 import {
   ButtonComponent as Button,
@@ -8,6 +9,12 @@ import {
 } from '../../components/common';
 import { RootState } from '../../store/store';
 import { renderActiveChip, renderIconActions } from '../../components/utils';
+
+interface IModalUInfo {
+  name?: string,
+  doctype?: string,
+  docnum?: number,
+}
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -18,8 +25,14 @@ const tableFieldData = [
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 
-const SupplierView: React.FC = () => {
+const tableNotification = [
+  { text: 'Nombre'},
+  { text: 'Tipo de documento'},
+  { text: 'Numero de documento'},
+];
 
+const SupplierView: React.FC = () => {
+  const dispatch = useDispatch()
   const [supplierData, setSupplierData] = useState<ISupplier[]>([]);
   const [tableData, setTableData] = useState<ISupplierTableData[]>([]);
   const { access_token } = useSelector<RootState, RootState['user']>(
@@ -57,6 +70,24 @@ const SupplierView: React.FC = () => {
     // eslint-disable-next-line
   }, [supplierData]);
 
+  const getDataNotification = async (id: string) => {
+    const urlReq: RequestInfo = url + `/${id}`;
+    const res = await fetch(urlReq);
+    const {
+      name,
+      doctype,
+      docnum,
+    }: IModalUInfo = await res.json();
+    const data = {name,doctype,docnum};
+    dispatch(setNotificationData({
+      isOpen: true,
+      setisOpen: (prev => !prev),
+      title: 'Notificacion del usuario',
+      theadData: tableNotification,
+      tbodyData: data
+    }))
+  };
+
   const getSupplierData = async () => {
     const requestInit: RequestInit = {
       method: 'GET',
@@ -67,6 +98,7 @@ const SupplierView: React.FC = () => {
     }
     const res = await fetch(url, requestInit)
     const data = await res.json()
+    console.log(data)
     setSupplierData(data)
   }
 
@@ -82,11 +114,36 @@ const SupplierView: React.FC = () => {
     const res = await fetch(urlDelete, requestInit)
     const data = await res.json()
     console.log('Supplier deleted', data)
-    getSupplierData()
+    getSupplierData();
+    dispatch(setModalData({setisOpen: (prev => !prev)}))
+    showAlert('toast')
   }
 
   const showAlert = (type: string, id?: string) => {
-    //AQUI TU TRABAJO BRUCCE
+    if (type === 'toast') {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El proveedor ha sido eliminado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+    }
+    else if (type === 'notifi') {
+      getDataNotification(id!)
+    }
+    else {
+      dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: '¿Esta seguro que desea eliminar el elemento?',
+        contentText: 'El elemento seleccionado sera eliminado de la base de datos',
+        cancelButton: true,
+        typeButton: 'Si, Eliminalo',
+        colorTYB: 'danger',
+        onClickTYB: () => deleteSupplier(id!)
+      }))
+    }
   }
 
   return (
