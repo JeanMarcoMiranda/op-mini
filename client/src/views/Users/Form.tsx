@@ -212,10 +212,10 @@ const UserForm: React.FC = () => {
                 <Link to="/user">
                   <Button
                     label="Regresar"
-                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
                     textColor="white"
                     onHoverStyles={toHoverStyle(
-                      'bg-gradient-to-r from-blue-500 to-blue-600',
+                      'bg-gradient-to-r from-green-500 to-green-600',
                     )}
                   />
                 </Link>
@@ -394,10 +394,10 @@ const UserForm: React.FC = () => {
                 <div className="my-3">
                   <Button
                     label={id ? 'Actualizar Usuario' : editProfile ? 'Actualizar Usuario' : 'Crear Usuario'}
-                    bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
+                    bgColor={'bg-gradient-to-r from-green-400 to-green-500'}
                     textColor={'white'}
                     onHoverStyles={toHoverStyle(
-                      'bg-gradient-to-r from-blue-500 to-blue-600',
+                      'bg-gradient-to-r from-green-500 to-green-600',
                     )}
                     submit
                   />

@@ -9,7 +9,7 @@ import {
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions } from '../../components/utils';
+import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 interface IModalUInfo {
   name?: string,
@@ -37,7 +37,7 @@ const UserView: React.FC = () => {
   const dispatch = useDispatch()
   const [userData, setUserData] = useState<IUser[]>([]);
   const [tableData, setTableData] = useState<IUserTableData[]>([]);
-  const { access_token } = useSelector<RootState, RootState['user']>(
+  const { access_token, userData: userDataT } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
 
@@ -52,6 +52,17 @@ const UserView: React.FC = () => {
     if (userData.length === 0) return;
 
     const prepareTableData = () => {
+      let { name: role } = userDataT.role
+      let showActions = {
+        edit: false,
+        delete: false
+      }
+      if (role === "Administrador") {
+        showActions = {
+          edit: true,
+          delete: true
+        }
+      }
       let newTableData: IUserTableData[] = userData.map(
         ({
           _id,
@@ -70,7 +81,7 @@ const UserView: React.FC = () => {
             email,
             currentAddress,
             active: renderActiveChip(isActive),
-            actions: renderIconActions(_id, 'user', showAlert),
+            actions: renderIconActions(_id, 'user', showAlert, showActions),
           };
           return newData;
         },
@@ -164,13 +175,16 @@ const UserView: React.FC = () => {
             <div className="rounded-lg bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Usuarios</h6>
+                { userDataT.role.name === "Administrador" &&
                 <Link to={`/user/form`}>
                   <Button
                     label="Agregar"
                     textColor="white"
-                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
                   />
                 </Link>
+                }
               </div>
             </div>
             <div className="my-3">

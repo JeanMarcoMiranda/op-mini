@@ -12,7 +12,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions } from '../../components/utils';
+import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 const tableFieldData = [
   { text: 'Codigo de Barras', width: 2, name: 'barcode' },
@@ -37,7 +37,7 @@ const ProductsView: React.FC = () => {
     defaultValues: { values: { search: '' } },
   });
   const [searchVal, setSearchVal] = useState('');
-  const { access_token } = useSelector<RootState, RootState['user']>(
+  const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
   const url: RequestInfo = 'http://localhost:8000/products';
@@ -55,6 +55,23 @@ const ProductsView: React.FC = () => {
     if (productData.length === 0) return;
 
     const prepareTableData = () => {
+      let { name: role } = userData.role
+      let showActions = {
+        edit: false,
+        delete: false
+      }
+      if (role === "Administrador") {
+        showActions = {
+          edit: true,
+          delete: true
+        }
+      } else if (role === "Almacenero") {
+        showActions = {
+          edit: true,
+          delete: false
+        }
+      }
+
       let newTableData: IProductTableData[] = productData.map(
         ({
           _id,
@@ -77,7 +94,7 @@ const ProductsView: React.FC = () => {
             pricebuy,
             pricesell,
             active: renderActiveChip(active),
-            actions: renderIconActions(_id, 'product', showAlert),
+            actions: renderIconActions(_id, 'product', showAlert, showActions),
           };
           return newData;
         },
@@ -156,13 +173,16 @@ const ProductsView: React.FC = () => {
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">
                   Productos
                 </h6>
-                <Link to={`/product/form`}>
-                  <Button
-                    label="Agregar"
-                    textColor="white"
-                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
-                  />
-                </Link>
+                { userData.role.name === "Administrador" &&
+                  <Link to={`/product/form`}>
+                    <Button
+                      label="Agregar"
+                      textColor="white"
+                      bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                    />
+                  </Link>
+                }
               </div>
             </div>
 

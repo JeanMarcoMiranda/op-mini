@@ -42,10 +42,10 @@ const SupplierForm: React.FC = () => {
   const history = useHistory()
 
   const backButtonStyles = {
-    BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
+    BACKGROUND_COLOR: 'bg-gradient-to-r from-green-400 to-green-500',
     BUTTON_LABEL: 'Regresar',
     TEXT_COLOR: 'white',
-    ON_HOVER_STYLES: 'bg-gradient-to-r from-blue-500 to-blue-600',
+    ON_HOVER_STYLES: 'bg-gradient-to-r from-green-500 to-green-600',
   };
 
   useEffect(() => {

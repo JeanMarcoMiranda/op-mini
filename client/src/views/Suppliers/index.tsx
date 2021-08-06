@@ -7,7 +7,7 @@ import {
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions } from '../../components/utils';
+import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -22,7 +22,7 @@ const SupplierView: React.FC = () => {
 
   const [supplierData, setSupplierData] = useState<ISupplier[]>([]);
   const [tableData, setTableData] = useState<ISupplierTableData[]>([]);
-  const { access_token } = useSelector<RootState, RootState['user']>(
+  const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
 
@@ -37,6 +37,18 @@ const SupplierView: React.FC = () => {
     if (supplierData === []) return;
 
     const prepareTableData = () => {
+      let { name: role } = userData.role
+      let showActions = {
+        edit: false,
+        delete: false
+      }
+      if (role === "Administrador") {
+        showActions = {
+          edit: true,
+          delete: true
+        }
+      }
+
       let newTableData: ISupplierTableData[] = supplierData.map(
         ({ _id, name, phone, email, doctype, docnum, address, active }: ISupplier) => {
         let newData: ISupplierTableData = {
@@ -46,7 +58,7 @@ const SupplierView: React.FC = () => {
           email,
           address,
           active: renderActiveChip(active),
-          actions: renderIconActions(_id, 'supplier', showAlert),
+          actions: renderIconActions(_id, 'supplier', showAlert, showActions),
         };
         return newData;
         });
@@ -97,13 +109,16 @@ const SupplierView: React.FC = () => {
             <div className="rounded-lg bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
               <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Proveedores</h6>
+              { userData.role.name === "Administrador" &&
                 <Link to={`/supplier/form`}>
                   <Button
                     label="Agregar"
                     textColor="white"
-                    bgColor="bg-blue-500"
+                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
                   />
                 </Link>
+              }
               </div>
             </div>
             <div className="my-3">

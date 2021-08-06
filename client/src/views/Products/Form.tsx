@@ -189,9 +189,9 @@ const ProductForm: React.FC = () => {
                 <Link to="/product">
                   <Button
                     label="Regresar"
-                    bgColor="bg-gradient-to-r from-blue-400 to-blue-500"
+                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
                     textColor="white"
-                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
                   />
                 </Link>
               </div>
@@ -353,9 +353,9 @@ const ProductForm: React.FC = () => {
                 <div className="my-3">
                   <Button
                     label={ id ? 'Actualizar Producto' : 'Crear Producto' }
-                    bgColor={'bg-gradient-to-r from-blue-400 to-blue-500'}
+                    bgColor={'bg-gradient-to-r from-green-400 to-green-500'}
                     textColor={'white'}
-                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
                     submit
                   />
                 </div>

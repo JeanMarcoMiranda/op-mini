@@ -33,7 +33,7 @@ const App = () => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-white App">
+    <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-yellow-100 App">
       <Modal
         isOpen={modalData?.isOpen}
         setisOpen={modalData?.setisOpen}
