@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { toHoverStyle } from '../utils';
-import ButtonComponent from './Button';
+import { AcademicCapIcon } from '@heroicons/react/outline'
 
 interface CardComponentProps {
   img: string;
@@ -25,49 +24,17 @@ const CardComponent: React.FC<CardComponentProps> = ({
   link,
 }) => {
   return (
-    <div
-      className={`w-full h-full ${bgCardColor ? bgCardColor : 'bg-transparent'
-        } shadow-md  rounded-3xl p-4`}
-    >
-      <div className="flex-none lg:flex">
-        <div className="h-full w-full lg:h-48 lg:w-48 lg:mb-0 mb-3">
-          <img
-            src={img}
-            alt="Just a flower"
-            className="h-full w-full object-scale-down lg:object-cover lg:h-48 rounded-2xl"
-          />
-        </div>
-        <div className="flex-auto m-auto justify-evenly py-2">
-          <div className="flex flex-wrap ">
-            <div
-              className={`w-full flex-none text-xs text-${textTitleColor} font-medium`}
-            >
-              {title}
-            </div>
-            <h2
-              className={`flex-auto text-lg text-${textLabelColor} font-medium`}
-            >
-              {label}
-            </h2>
-          </div>
-          <p className="mt-3"></p>
-          <div className="flex p-4 pb-2 border-t border-gray-200 "></div>
-          <div className="text-center flex-auto justify-between">
-            <Link to={link}>
-              <ButtonComponent
-                label={button.label}
-                bgColor={button.bgColor}
-                textColor={button.textColor}
-                onHoverStyles={toHoverStyle(
-                  `${button.onHoverStyles}`
-                )}
-              />
-
-            </Link>
-          </div>
+    <Link to={link} className={`flex justify-between px-6 py-3 bg-gradient-to-r from-red-500 via-pink-600 to-purple-700 col-span-2 rounded-md hover:shadow-xl transform hover:scale-105 hover: transition ease-out duration-300`}>
+      <div className="my-auto">
+        <span className="block text-gray-100 text-left text-xs">{title}</span>
+        <span className="block text-gray-50 text-left text-xl font-bold">{label}</span>
+      </div>
+      <div>
+        <div className="rounded-full bg-black p-2">
+          <AcademicCapIcon className="w-8 text-white"/>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
