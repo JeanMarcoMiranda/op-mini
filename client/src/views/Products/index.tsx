@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { setModalData, setNotificationData, setToastData } from '../../store/actions';
 
 import {
   SearchIcon,
 } from '@heroicons/react/outline';
+
 import {
   ButtonComponent as Button,
   TableComponent as Table,
@@ -13,6 +15,12 @@ import {
 } from '../../components/common';
 import { RootState } from '../../store/store';
 import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+
+interface IModalUInfo {
+  name?: string,
+  date?: string,
+  description?: string,
+}
 
 const tableFieldData = [
   { text: 'Codigo de Barras', width: 2, name: 'barcode' },
@@ -25,12 +33,18 @@ const tableFieldData = [
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 
+const tableNotification = [
+  { text: 'Nombre'},
+  { text: 'Actualizado el'},
+];
+
 const iconValue = {
   isActive: true,
   Icon: SearchIcon,
 };
 
 const ProductsView: React.FC = () => {
+  const dispatch = useDispatch()
   const [ productData, setProductData ] = useState<IProduct[]>([]);
   const [ tableData, setTableData ] = useState<IProductTableData[]>([]);
   const { setValue, control } = useForm<TFormValues<ISearch>>({
@@ -113,6 +127,27 @@ const ProductsView: React.FC = () => {
     setSearchVal(event.target.value);
   };
 
+  const getDataNotification = async (id: string) => {
+    const urlReq: RequestInfo = url + `/${id}`;
+    const res = await fetch(urlReq);
+    const {
+      name,
+      date,
+      description,
+    }: IModalUInfo = await res.json();
+    const newDate = date?.replace('GMT-0500 (hora estándar de Perú)', '')
+    const data = {name,newDate};
+    dispatch(setNotificationData({
+      isOpen: true,
+      setisOpen: (prev => !prev),
+      title: 'Notificacion del producto',
+      theadData: tableNotification,
+      tbodyData: data,
+      titleContent: 'Descripcion',
+      contentText: description
+    }))
+ };
+
   const getSearchProduct = async (search: string) => {
     const urlSearch: RequestInfo = `http://localhost:8000/products/search/${search}`;
     const requestInit: RequestInit = {
@@ -157,10 +192,35 @@ const ProductsView: React.FC = () => {
     const data = await res.json();
     console.log('Product Deleted', data);
     getProductData();
+    dispatch(setModalData({setisOpen: (prev => !prev)}))
+    showAlert('toast')
   };
 
   const showAlert = (type: string, id?: string) => {
-    //AQUI TU TRABAJO BRUCCE
+    if (type === 'toast') {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El producto ha sido eliminado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+    }
+    else if (type === 'notifi') {
+      getDataNotification(id!)
+    }
+    else {
+      dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: '¿Esta seguro que desea eliminar el elemento?',
+        contentText: 'El elemento seleccionado sera eliminado de la base de datos',
+        cancelButton: true,
+        typeButton: 'Si, Eliminalo',
+        colorTYB: 'danger',
+        onClickTYB: () => deleteProduct(id!)
+      }))
+    }
   }
 
   return (

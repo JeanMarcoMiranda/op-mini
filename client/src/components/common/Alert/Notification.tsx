@@ -12,6 +12,7 @@ const NotificationComponent: React.FC<INotificationProps> = ({
   theadData,
   tbodyData,
   contentObj,
+  titleContent,
   contentText,
 }) => {
   const dispatch = useDispatch()
@@ -24,7 +25,7 @@ const NotificationComponent: React.FC<INotificationProps> = ({
       }
    `}>
       <div className="shadow-lg rounded-lg bg-white w-80 h-autox mx-auto m-8 p-4">
-        <div className="text-sm pb-2">
+        <div className="text-sm pb-2 font-bold">
           {title}
           <span onClick={() => dispatch(setNotificationData({setisOpen: (prev => !prev)}))}>
             <div className="fill-current w-5 h-5 float-right text-gray-600 ">
@@ -43,8 +44,11 @@ const NotificationComponent: React.FC<INotificationProps> = ({
           </div>
           : <></>
         }
-        {contentText ?
-          <div className="text-sm text-gray-600">{contentText}</div>
+        {titleContent|| contentText ?
+          <div>
+            <div className="text-sm text-gray-600 font-bold">{titleContent}</div>
+            <div className="text-sm text-gray-600">{contentText}</div>
+          </div>
           : <></>
         }
         {contentObj ? Object.keys(contentObj!).map((item, index) => (

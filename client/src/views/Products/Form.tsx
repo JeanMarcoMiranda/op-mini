@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setToastData } from '../../store/actions';
 
 import {
   ButtonComponent as Button,
@@ -46,6 +47,7 @@ const ProductForm: React.FC = () => {
   );
 
   const history = useHistory()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const initialRender = async () => {
@@ -85,7 +87,14 @@ const ProductForm: React.FC = () => {
       setSelActive(activeOption)
       setShow(true)
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method: Get, Error${response.status} : ${response.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 
@@ -144,12 +153,26 @@ const ProductForm: React.FC = () => {
     }
     const res = await fetch(url, requestInit);
     console.log(res)
-    const dataRes: IProductResponse = await res.json()
+    //const dataRes: IProductResponse = await res.json()
     if (res.ok) {
-      console.log('Product Updated', dataRes)
+      //console.log('Product Updated', dataRes)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El producto ha sido actualizado con exito.',
+        color: 'success',
+        delay: 5
+      }))
       history.push('/product')
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Update, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 
@@ -169,12 +192,26 @@ const ProductForm: React.FC = () => {
       }),
     }
     const res = await fetch(urlPro, requestInit);
-    const dataRes: IProductResponse = await res.json()
+    //const dataRes: IProductResponse = await res.json()
     if (res.ok) {
-      console.log('Product Created', dataRes)
+      //console.log('Product Created', dataRes)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El producto se ha creado con exito.',
+        color: 'success',
+        delay: 5
+      }))
       history.push('/product')
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 

@@ -3,6 +3,7 @@ import { useParams, Link, useHistory, useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData } from '../../store/actions';
+import { setToastData } from '../../store/actions';
 
 import {
   ButtonComponent as Button,
@@ -104,7 +105,14 @@ const UserForm: React.FC = () => {
       setSelActive(activeOption);
       setShow(true);
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method: Get, Error${response.status} : ${response.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   };
 
@@ -169,12 +177,26 @@ const UserForm: React.FC = () => {
     console.log(res);
     const dataRes: IUserResponse = await res.json();
     if (res.ok) {
-      console.log('User Updated', dataRes);
+      //console.log('User Updated', dataRes);
       //probar que esto puede fallar
       dispatch(setUserData(dataRes))
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El usuario ha sido actualizado con exito.',
+        color: 'success',
+        delay: 5
+      }))
       history.push('/user')
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Update, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   };
 
@@ -192,12 +214,26 @@ const UserForm: React.FC = () => {
       }),
     };
     const res = await fetch(urlUser, requestInit);
-    const dataRes: IUserResponse = await res.json();
+    //const dataRes: IUserResponse = await res.json();
     if (res.ok) {
-      console.log('User Created', dataRes);
+      //console.log('User Created', dataRes);
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El usuario se ha creado con exito.',
+        color: 'success',
+        delay: 5
+      }))
       history.push('/user')
     } else {
-      console.log('Error: Unknow error || Server error');
+      //console.log('Error: Unknow error || Server error');
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   };
 

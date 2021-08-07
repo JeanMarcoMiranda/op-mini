@@ -15,18 +15,10 @@ const LoginView: React.FC = () => {
   const loginButtonStyles = {
     BACKGROUND_COLOR: 'bg-gradient-to-r from-blue-400 to-blue-500',
     IS_TRANSPARENT: false,
-    BUTTON_LABEL: 'Login Now',
+    BUTTON_LABEL: 'Iniciar Sesion',
     TEXT_COLOR: 'white',
     ON_HOVER_STYLES:
       'bg-gradient-to-r from-blue-500 to-blue-600 translate-y-11',
-  };
-
-  const registerButtonStyles = {
-    BACKGROUND_COLOR: 'bg-gradient-to-r from-green-500 to-green-400',
-    IS_TRANSPARENT: true,
-    BUTTON_LABEL: 'Register',
-    TEXT_COLOR: 'white',
-    ON_HOVER_STYLES: 'bg-gradient-to-r from-green-500 to-green-400',
   };
 
   const dispatch = useDispatch()
@@ -102,7 +94,7 @@ const LoginView: React.FC = () => {
             render={({ field: { onChange, onBlur, value, ref, name } }) => (
                 <InputComponent
                   type="email"
-                  label="Email"
+                  label="Correo"
                   name="email"
                   onChange={onChange}
                   value={value}
@@ -116,7 +108,7 @@ const LoginView: React.FC = () => {
               <InputComponent
                 type="password"
                 name="password"
-                label="Password"
+                label="Contraseña"
                 onChange={onChange}
                 value={value}
               />
@@ -129,12 +121,6 @@ const LoginView: React.FC = () => {
               textColor={loginButtonStyles.TEXT_COLOR}
               submit={true}
               onHoverStyles={toHoverStyle(loginButtonStyles.ON_HOVER_STYLES)}
-            />
-            <ButtonComponent
-              label={registerButtonStyles.BUTTON_LABEL}
-              bgColor={registerButtonStyles.BACKGROUND_COLOR}
-              textColor={registerButtonStyles.TEXT_COLOR}
-              onHoverStyles={toHoverStyle(registerButtonStyles.ON_HOVER_STYLES)}
             />
           </div>
         </form>
