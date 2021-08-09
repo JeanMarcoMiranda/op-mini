@@ -1,4 +1,4 @@
-import { BriefcaseIcon, ClipboardListIcon, HomeIcon, UsersIcon } from "@heroicons/react/solid";
+import { BriefcaseIcon, ClipboardListIcon, HomeIcon, UsersIcon, ClipboardCheckIcon } from "@heroicons/react/solid";
 
 const navRoutes: RouteSideBar[] = [
   {
@@ -23,6 +23,12 @@ const navRoutes: RouteSideBar[] = [
     label: 'Usuarios',
     Icon: UsersIcon,
     path: '/user',
+    roles: ['Administrador']
+  },
+    {
+    label: 'Pedidos',
+    Icon: ClipboardCheckIcon,
+    path: '/order',
     roles: ['Administrador']
   },
 ]

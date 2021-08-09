@@ -7,6 +7,8 @@ import ProductForm from "../views/Products/Form";
 import SupplierForm from "../views/Suppliers/Form";
 import navRoutes from "./navRoutes";
 import UserForm from "../views/Users/Form";
+import OrderView from "../views/Orders";
+
 
 const appRoutes: RouteData[] = [
   {
@@ -98,6 +100,13 @@ const appRoutes: RouteData[] = [
     exact: true,
     type: 'private',
     roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
+  },
+  {
+    path: '/order',
+    component: OrderView,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
 ]
 
