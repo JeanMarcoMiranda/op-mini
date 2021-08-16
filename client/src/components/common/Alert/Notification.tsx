@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setNotificationData } from '../../../store/actions';
+import { setNotificationData } from '../../../store/action/actions';
 
 import {
   XIcon,

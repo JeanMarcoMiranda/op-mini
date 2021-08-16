@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { setModalData, setNotificationData, setToastData } from '../../store/actions';
+import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
 
 import {
   SearchIcon,
@@ -25,7 +25,8 @@ interface IModalUInfo {
 const tableFieldData = [
   { text: 'Codigo de Barras', width: 2, name: 'barcode' },
   { text: 'Nombre', width: 2, name: 'name' },
-  { text: 'Categoria', width: 2, name: 'category' },
+  { text: 'Categoria', width: 1, name: 'category' },
+  { text: 'Empresa', width: 1, name: 'company' },
   { text: 'Stock', width: 1, name: 'stock' },
   { text: 'Precio Compra', width: 1, name: 'pricebuy' },
   { text: 'Precio Venta', width: 1, name: 'pricesell' },
@@ -98,6 +99,7 @@ const ProductsView: React.FC = () => {
           date,
           description,
           active,
+          company = ''
         }: IProduct) => {
           let newData: IProductTableData = {
             _id,
@@ -109,6 +111,7 @@ const ProductsView: React.FC = () => {
             pricesell,
             active: renderActiveChip(active),
             actions: renderIconActions(_id, 'product', showAlert, showActions),
+            company,
           };
           return newData;
         },

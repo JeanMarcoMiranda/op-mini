@@ -12,7 +12,7 @@ export class CreateSupplierDto {
 
   @IsString()
   @IsNotEmpty()
-  readonly email: string;
+  readonly company: string;//
 
   @IsString()
   @IsNotEmpty()
@@ -24,7 +24,7 @@ export class CreateSupplierDto {
 
   @IsString()
   @IsNotEmpty()
-  readonly address: string;
+  readonly visitday: string;//
 
   @IsBoolean()
   @IsNotEmpty()

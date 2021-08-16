@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
-import { setModalData, setNotificationData, setToastData } from '../../store/actions';
+import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
@@ -18,9 +18,9 @@ interface IModalUInfo {
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
-  { text: 'Telefono', width: 2, name: 'phone' },
-  { text: 'Correo', width: 1, name: 'email' },
-  { text: 'Direccion', width: 1, name: 'address' },
+  { text: 'Telefono', width: 1, name: 'phone' },
+  { text: 'Empresa', width: 2, name: 'company' },
+  { text: 'Dia de Visita', width: 1, name: 'visitday' },
   { text: 'Estado', width: 1, name: 'active' },
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
@@ -53,25 +53,31 @@ const SupplierView: React.FC = () => {
       let { name: role } = userData.role
       let showActions = {
         edit: false,
-        delete: false
+        delete: false,
+        order: false,
       }
       if (role === "Administrador") {
         showActions = {
           edit: true,
-          delete: true
+          delete: true,
+          order: true,
         }
       }
 
       let newTableData: ISupplierTableData[] = supplierData.map(
-        ({ _id, name, phone, email, doctype, docnum, address, active }: ISupplier) => {
+        ({ _id, name, phone, company, doctype, docnum, visitday, active }: ISupplier) => {
+        let showActionAux = {...showActions}
+        if (!active) {
+          showActionAux.order = false
+        }
         let newData: ISupplierTableData = {
           _id,
           name,
           phone,
-          email,
-          address,
+          company,
+          visitday,
           active: renderActiveChip(active),
-          actions: renderIconActions(_id, 'supplier', showAlert, showActions),
+          actions: renderIconActions(_id, 'supplier', showAlert, showActionAux),
         };
         return newData;
         });

@@ -15,10 +15,10 @@ interface ISupplier {
   _id: string;
   name: string;
   phone: string;
-  email: string;
+  company: string;
   doctype: string;
   docnum: string;
-  address: string;
+  visitday: string;
   active: boolean;
 }
 
@@ -26,8 +26,8 @@ interface ISupplierTableData {
   _id: string;
   name: string;
   phone: string;
-  email: string;
-  address: string;
+  company: string;
+  visitday: string;
   active: JSX.Element;
   actions: JSX.Element;
 }
@@ -35,10 +35,10 @@ interface ISupplierTableData {
 interface IFormSupplier {
   name: string;
   phone: string;
-  email: string;
+  company: string;
   doctype: string;
   docnum: string;
-  address: string;
+  visitday: string;
   active: ISelectOption;
 }
 
@@ -55,6 +55,7 @@ interface IProduct {
   description: string;
   active: boolean;
   category: ICategory;
+  company: string;
 }
 
 interface IProductResponse {
@@ -68,6 +69,7 @@ interface IProductResponse {
   description: string;
   active: boolean;
   category: string;
+  company: string;
 }
 
 interface IProductTableData {
@@ -80,6 +82,7 @@ interface IProductTableData {
   pricesell: string;
   active: JSX.Element;
   actions: JSX.Element;
+  company: string;
 }
 
 interface IFormProduct {
@@ -92,6 +95,7 @@ interface IFormProduct {
   description: string;
   active: ISelectOption;
   category: ISelectOption | undefined;
+  company: string;
 }
 
 interface ICategory {

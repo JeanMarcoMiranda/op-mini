@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { InputComponent, ButtonComponent } from '../../components/common';
-import { setToken, setUserData, setAuthUser } from '../../store/actions';
+import { setToken, setUserData, setAuthUser } from '../../store/action/actions';
 
 import { toHoverStyle } from '../../components/utils';
 import { useHistory } from 'react-router-dom';

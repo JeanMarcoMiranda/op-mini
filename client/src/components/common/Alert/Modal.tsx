@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setModalData } from '../../../store/actions';
+import { setModalData } from '../../../store/action/actions';
 
 const ModalComponent: React.FC<IModalProps> = ({
   isOpen,

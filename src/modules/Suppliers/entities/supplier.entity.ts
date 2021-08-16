@@ -11,7 +11,7 @@ export class Supplier extends Document {
   phone: string;
 
   @Prop()
-  email: string;
+  company: string;
 
   @Prop()
   doctype: string;
@@ -20,7 +20,7 @@ export class Supplier extends Document {
   docnum: string;
 
   @Prop()
-  address: string;
+  visitday: string;
 
   @Prop({ required: true })
   active: boolean;

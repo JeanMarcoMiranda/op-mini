@@ -1,4 +1,4 @@
-import * as actionTypes from './actionTypes';
+import * as actionTypes from '../action/actionTypes';
 
 const initialUserRole: IRole = {
   _id: '',

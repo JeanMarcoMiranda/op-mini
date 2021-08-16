@@ -31,6 +31,9 @@ export class Product extends Document {
 
   @Prop({ type: Types.ObjectId, ref: Category.name })
   category: Category | Types.ObjectId;
+
+  @Prop()
+  company: string
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

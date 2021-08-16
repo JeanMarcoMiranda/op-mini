@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { setToastData } from '../../store/actions';
+import { setToastData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
@@ -26,10 +26,10 @@ const SupplierForm: React.FC = () => {
       values: {
         name: '',
         phone: '0',
-        email: '',
+        company: '',
         doctype: '',
         docnum: '0',
-        address: '',
+        visitday: '',
         active: activeOptions[0],
       },
     },
@@ -51,16 +51,16 @@ const SupplierForm: React.FC = () => {
   const getSupplier = async () => {
     const url: RequestInfo = `http://localhost:8000/suppliers/${id}`;
     const response = await fetch(url);
-    const { name, phone, email, doctype, docnum, address, active }: ISupplier = await response.json();
+    const { name, phone, company, doctype, docnum, visitday, active }: ISupplier = await response.json();
     const activeOption = active ? activeOptions[0] : activeOptions[1];
     if (response.ok) {
       setValue('values', {
         name,
         phone,
-        email,
+        company,
         doctype,
         docnum,
-        address,
+        visitday,
         active: activeOption,
       });
       setSelActive(activeOption)
@@ -259,14 +259,29 @@ const SupplierForm: React.FC = () => {
                   Informacion de Contacto
                 </h6>
                 <div className="grid md:grid-cols-2 gap-3">
-                  <div className="md:col-span-2 px-4">
+                  <div className="px-4">
                     <Controller
                       control={control}
-                      name="values.address"
+                      name="values.visitday"
                       render={({ field: { onChange, value, name } }) => (
                         <Input
                           type="text"
-                          label="Direccion"
+                          label="Dia de Visita"
+                          name={name}
+                          value={value}
+                          onChange={onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className=" px-4">
+                    <Controller
+                      control={control}
+                      name="values.company"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
+                          type="text"
+                          label="Empresa"
                           name={name}
                           value={value}
                           onChange={onChange}
@@ -286,21 +301,6 @@ const SupplierForm: React.FC = () => {
                           value={value}
                           onChange={onChange}
                           focus
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className=" px-4">
-                    <Controller
-                      control={control}
-                      name="values.email"
-                      render={({ field: { onChange, value, name } }) => (
-                        <Input
-                          type="email"
-                          label="Correo"
-                          name={name}
-                          value={value}
-                          onChange={onChange}
                         />
                       )}
                     />

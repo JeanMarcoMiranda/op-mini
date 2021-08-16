@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useHistory, useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserData } from '../../store/actions';
-import { setToastData } from '../../store/actions';
+import { setUserData } from '../../store/action/actions';
+import { setToastData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,

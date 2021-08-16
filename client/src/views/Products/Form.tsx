@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { setToastData } from '../../store/actions';
+import { setToastData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
@@ -38,6 +38,7 @@ const ProductForm: React.FC = () => {
         pricesell: '0',
         description: '',
         active: activeOptions[0],
+        company: '',
       }
     }
   })
@@ -67,7 +68,7 @@ const ProductForm: React.FC = () => {
   const getProduct = async () => {
     const urlReq: RequestInfo = urlPro + `/${id}`;
     const response = await fetch(urlReq);
-    const { name, barcode, stock, pricebuy, pricesell, description, active, category }: IProductResponse = await response.json();
+    const { name, barcode, stock, pricebuy, pricesell, description, active, category, company }: IProductResponse = await response.json();
     const activeOption = active ? activeOptions[0] : activeOptions[1];
     const categoryOption = categoryOptions.find(cat => cat.value === category)
     const dateNow = new Date()
@@ -82,6 +83,7 @@ const ProductForm: React.FC = () => {
         date: dateNow.toString(),
         active: activeOption,
         category: categoryOption,
+        company,
       });
       setSelCategory(categoryOption)
       setSelActive(activeOption)
@@ -301,6 +303,21 @@ const ProductForm: React.FC = () => {
                           options={categoryOptions}
                           onChange={onChange}
                           handleChange={setSelCategory}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="px-4">
+                    <Controller
+                      control={control}
+                      name="values.company"
+                      render={({ field: { onChange, value, name } }) => (
+                        <Input
+                          type="text"
+                          label="Empresa"
+                          name={name}
+                          value={value}
+                          onChange={onChange}
                         />
                       )}
                     />

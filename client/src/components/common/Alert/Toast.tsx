@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setToastData } from '../../../store/actions';
+import { setToastData } from '../../../store/action/actions';
 
 import {
   CheckCircleIcon,
