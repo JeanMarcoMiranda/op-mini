@@ -5,7 +5,7 @@ import ButtonComponent from './Button';
 import IconComponent from "./Icon";
 import ChipComponent from "./Chip";
 import TableComponent from "./Table/Table";
-import CardComponent from "./Card";
+import CardComponent from "./Card/Card";
 import LoadingPageComponent from "./Load/LoadingPage";
 import LoadingSectionComponent from "./Load/LoadingSection";
 import ModalComponent from "./Alert/Modal";
@@ -13,6 +13,7 @@ import ToastComponent from "./Alert/Toast";
 import NotificationComponent from "./Alert/Notification";
 //import AlertBlockComponent from "./Alert/AlertBlock";
 import MenuComponent from "./Menu"
+import CardOrderComponent from "./Card/CardOrder";
 
 export {
   InputComponent,
@@ -30,5 +31,6 @@ export {
   NotificationComponent,
 //  AlertBlockComponent,
   MenuComponent,
+  CardOrderComponent,
 }
 
