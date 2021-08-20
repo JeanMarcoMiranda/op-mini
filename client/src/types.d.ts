@@ -161,6 +161,7 @@ interface IModalProps {
   title?: string,
   img?: string,
   contentText?: string,
+  contentObj? :any[],
   cancelButton?: boolean,
   defaultButton?: string,
   colorDB?: string,

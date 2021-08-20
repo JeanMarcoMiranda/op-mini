@@ -6,6 +6,7 @@ const initialModalState: IModalProps = {
   title: '',
   img: '',
   contentText: '',
+  contentObj: [],
   cancelButton: false,
   defaultButton: '',
   colorDB: '',

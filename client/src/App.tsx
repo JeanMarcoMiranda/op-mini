@@ -40,6 +40,7 @@ const App = () => {
         title={modalData?.title}
         img={modalData?.img}
         contentText={modalData?.contentText}
+        contentObj={modalData?.contentObj}
         cancelButton={modalData?.cancelButton}
         defaultButton={modalData?.defaultButton}
         colorDB={modalData?.colorDB}
