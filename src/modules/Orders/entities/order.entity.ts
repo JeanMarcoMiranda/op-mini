@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+
+import { User } from '../../Users/entities/user.entity';
+import { Supplier } from '../../Suppliers/entities/supplier.entity'
+import { OrderProduct } from './orderproduct.entity';
 
 export interface Product {
-  product: string;
+  product: Types.ObjectId;
   quantity: string;
   note: string;
 }
@@ -10,14 +14,14 @@ export interface Product {
 @Schema()
 export class Order extends Document {
 
-  @Prop({ required: true })
-  createdby: string;
+  @Prop({ required: true, type: Types.ObjectId, ref: User.name })
+  createdby: User | Types.ObjectId;
 
   @Prop({ required: true })
   createdate: string;
 
-  @Prop()
-  receivedby: string;
+  @Prop({ type: Types.ObjectId, ref: User.name })
+  receivedby: User | Types.ObjectId;
 
   @Prop()
   receptiondate: string;
@@ -31,11 +35,11 @@ export class Order extends Document {
   @Prop()
   type: string;
 
-  @Prop()
-  supplier: string;
+  @Prop({ type: Types.ObjectId, ref: Supplier.name })
+  supplier: Supplier | Types.ObjectId;
 
   @Prop()
-  products: Product[]
+  products: [OrderProduct]
 
   @Prop({ required: true })
   status: string;

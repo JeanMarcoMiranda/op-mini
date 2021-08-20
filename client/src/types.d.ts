@@ -42,6 +42,40 @@ interface IFormSupplier {
   active: ISelectOption;
 }
 
+// Orders
+interface IOrderProduct {
+  product: string;
+  quantity: string;
+  note: string;
+}
+
+interface IOrder {
+  _id: string;
+  createdby: string;
+  createdate: string;
+  receivedby: string;
+  receptiondate: string;
+  estimatedamount: string;
+  finalamount: string;
+  type: string;
+  supplier: string;
+  products: IOrderProduct[];
+  status: string;
+}
+
+interface IFormOrder {
+  createdby: string;
+  createdate: string;
+  receivedby: string;
+  receptiondate: string;
+  estimatedamount: string;
+  finalamount: string;
+  type: string;
+  supplier: string;
+  products: IOrderProduct[];
+  status: string;
+}
+
 // Products
 
 interface IProduct {
