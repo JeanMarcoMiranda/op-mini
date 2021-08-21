@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setModalData } from '../../../store/action/actions';
-
 interface CardOrderProps {
   createdBy: string;
   supplier: string;
@@ -40,10 +39,23 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
     }))
   }
 
+  const renderColorCard = (param: string) => {
+    switch (param) {
+      case 'Completado':
+        return 'bg-green-500';
+      case 'Cancelado':
+        return 'bg-red-500';
+      case 'Pendiente':
+        return 'bg-yellow-500';
+      case 'info':
+        return 'bg-blue-500';
+    }
+  }
+
   return (
     <div className="text-center flex justify-between">
       <div className="bg-white max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg ">
-        <div className={`h-12 ${status == "Completado" ? "bg-green-500" : "bg-red-500"}  flex items-center justify-between`}>
+        <div className={`h-12 ${status ? renderColorCard(status) : "bg-gray-500"}  flex items-center justify-between`}>
           <p className="ml-5 text-white text-lg">{supplier}</p>
           <p className="mr-5 text-white font-thin text-lg">{status}</p>
         </div>
