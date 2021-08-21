@@ -114,8 +114,8 @@ interface IProductTableData {
   stock: string;
   pricebuy: string;
   pricesell: string;
-  active: JSX.Element;
-  actions: JSX.Element;
+  active?: JSX.Element;
+  actions?: JSX.Element;
   company: string;
 }
 

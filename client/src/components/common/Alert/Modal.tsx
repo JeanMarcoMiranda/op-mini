@@ -30,7 +30,7 @@ const ModalComponent: React.FC<IModalProps> = ({
         return 'bg-blue-400 text-white';
     }
   }
-  console.log(contentObj)
+  //console.log(contentObj)
   return (
     <>
       <div className={`fixed flex flex-col top-14 left-0 w-full h-full duration-500 border-none z-10 transform

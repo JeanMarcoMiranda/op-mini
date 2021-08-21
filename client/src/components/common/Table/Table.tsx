@@ -16,6 +16,7 @@ export interface TableField {
 interface TableComponentProps {
   theadData: TableField[];
   tbodyData: any[];
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 interface IRolesForField {
@@ -28,6 +29,7 @@ interface IRolesForField {
 const TableComponent: React.FC<TableComponentProps> = ({
   theadData,
   tbodyData,
+  onClick = (data:any) => {},
 }) => {
 
   const {pathname: currentPath} = useLocation()
@@ -54,8 +56,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
       const CURRENT_PROPERTY_ACCESS = ACCESS_ADMINISTRATION_FOR_FIELD[field]
       const ACCESS_PROPERTY_ROUTES = CURRENT_PROPERTY_ACCESS.routes
       const ACCESS_PROPERTY_ROLES = CURRENT_PROPERTY_ACCESS.roles
-
-      console.log("this is the current path", currentPath)
       if(ACCESS_PROPERTY_ROUTES.includes(currentPath))
         return ACCESS_PROPERTY_ROLES.includes(userRole.name) ? false : true
       return false
@@ -63,7 +63,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
     return false
   })
 
-  console.log("Estos son los campos restringidos", FIELDS_TO_HIDE)
   return (
     <div className="flex-auto mx-6 my-3">
       <div className="bg-white shadow-md rounded">
@@ -82,6 +81,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
           <tbody className="text-gray-600 text-sm font-light">
             {tbodyData.map((row) => (
               <TableRow
+                onClick={onClick}
                 key={row._id}
                 data={row}
                 fields={theadData}

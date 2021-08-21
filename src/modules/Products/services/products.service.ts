@@ -26,6 +26,10 @@ export class ProductService {
     return this.productRepository.findNameProduct(name);
   }
 
+  public async findCompanyProducts(name: string): Promise<Product[]> {
+    return this.productRepository.findCompanyProducts(name);
+  }
+
   public async updateProduct(
     id: string,
     documentUpdate: UpdateProductDto,
