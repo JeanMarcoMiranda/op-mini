@@ -57,9 +57,24 @@ const ModalComponent: React.FC<IModalProps> = ({
                   </div>
                   :
                   <div className={`${img ? "pt-0" : ""} px-6 py-10 flex-grow`}>
-                    {contentObj?.map((content, index) => {
-                      return <p key={index} className="text-gray-700 text-base">{`${content?.product} cant: ${content?.quantity}`}</p>
-                    })}
+                    <table className="auto-table">
+                      <thead>
+                        <tr>
+                          <th>Nombre</th>
+                          <th>Cantidad</th>
+                          <th>Notas</th>
+                        </tr>
+                      </thead>
+                      {contentObj?.map((content, index) => (
+                        <tbody key={index}>
+                          <tr>
+                            <td>{content?.product.name}</td>
+                            <td>{content?.quantity}</td>
+                            <td>{content?.note}</td>
+                          </tr>
+                        </tbody>
+                      ))}
+                    </table>
                   </div>
               }
 
@@ -89,3 +104,5 @@ const ModalComponent: React.FC<IModalProps> = ({
 }
 
 export default ModalComponent;
+
+//return <p key={index} className="text-gray-700 text-base">{`${content?.product.name} | Cantidad: ${content?.quantity}`}</p>
