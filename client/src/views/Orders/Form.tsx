@@ -7,9 +7,10 @@ import {
   ButtonComponent as Button,
   InputComponent as Input,
   TableComponent as Table,
+  IconComponent as Icon,
 } from '../../components/common';
-import { toHoverStyle } from '../../components/utils';
-import { SearchIcon } from '@heroicons/react/solid';
+import { isNumeric, toHoverStyle } from '../../components/utils';
+import { SearchIcon, XIcon } from '@heroicons/react/solid';
 
 const initialValues: IFormOrder = {
   createdby: '',
@@ -41,6 +42,7 @@ const tableFieldData = [
 
 const OrderForm: React.FC = () => {
 
+  const history = useHistory()
   const { id } = useParams<IParamTypes>();
   const dispatch = useDispatch()
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
@@ -53,6 +55,8 @@ const OrderForm: React.FC = () => {
   const [searchTableData, setSearchTableData] = useState<IProductTableData[]>([])
   const [orderListData, setOrderListData] = useState<IProduct[]>([])
   const [orderListObj, setOrderListObj] = useState<IOrderProduct[]>([])
+
+  const [estimatedTotal, setEstimatedTotal] = useState('0')
 
   useEffect(() => {
     setOrderData({...orderData, supplier: id})
@@ -140,9 +144,10 @@ const OrderForm: React.FC = () => {
       let nobjl: IOrderProduct = {
         product: nprol._id,
         quantity: '0',
-        note: ''
+        note: '',
+        price: '0',
       }
-      setOrderListObj( [...orderListObj, nobjl])
+      setOrderListObj([...orderListObj, nobjl])
       setOrderListData([...orderListData, nprol])
     }
   }
@@ -150,6 +155,97 @@ const OrderForm: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchVal(event.target.value);
   };
+
+  const createOrder = async (data: IOrderProduct[]) => {
+    const urlPro = "http://localhost:8000/orders"
+    const dateNow = new Date()
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...orderData,
+        products: data,
+        estimatedamount: estimatedTotal,
+        createdate: dateNow,
+        createdby: userData._id,
+        receivedby: userData._id,
+      }),
+    }
+    const res = await fetch(urlPro, requestInit);
+    if (res.ok) {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha creado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      history.push('/product')
+    } else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const updateQuantity = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const nOrderListObj = orderListObj.slice()
+    const obj = orderListObj[index]
+    obj.quantity = e.target.value
+    const price = Number(obj.quantity) * Number(orderListData[index].pricebuy)
+    obj.price = price + ''
+    
+    let estTotal = 0
+    for (let i = 0; i < nOrderListObj.length; i++) {
+      estTotal = estTotal + Number(nOrderListObj[i].price);
+    }
+    setEstimatedTotal(estTotal + '')
+
+    setOrderListObj([...nOrderListObj])
+  }
+
+  const updateIndividualPrice = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isNumeric(e.target.value)) {
+      return
+    }
+
+    const nOrderListObj = orderListData.slice()
+    const nOrderListObj2 = orderListObj.slice()
+    nOrderListObj[index].pricebuy = e.target.value
+    const obj = orderListObj[index]
+    const price = Number(obj.quantity) * Number(e.target.value)
+    obj.price = price + ''
+
+    let estTotal = 0
+    for (let i = 0; i < nOrderListObj2.length; i++) {
+      estTotal = estTotal + Number(nOrderListObj2[i].price);
+    }
+    setEstimatedTotal(estTotal + '')
+    setOrderListData([...nOrderListObj])
+    setOrderListObj([...nOrderListObj2])
+  }
+
+  const deleteProductOrder = (index: number) => {
+    const nOrderListObj = orderListData.slice()
+    const nOrderListObj2 = orderListObj.slice()
+    nOrderListObj.splice(index, 1)
+    nOrderListObj2.splice(index, 1)
+    
+    let estTotal = 0
+    for (let i = 0; i < nOrderListObj.length; i++) {
+      estTotal = estTotal + Number(nOrderListObj2[i].price);
+    }
+    setEstimatedTotal(estTotal + '')
+    setOrderListData([...nOrderListObj])
+    setOrderListObj([...nOrderListObj2])
+  }
 
   return (
     <>
@@ -178,10 +274,79 @@ const OrderForm: React.FC = () => {
                 </h6>
                 {orderListData.length > 0 ?
                   orderListData.map((prod, index) => (
-                    <p key={index}>{prod.name}</p>
+                    <div className="flex items-center" key={index}>
+                      <div className="flex-initial">
+                      <Icon
+                        width={8}
+                        color="red"
+                        Icon={XIcon}
+                        hover
+                        onClick={() => deleteProductOrder(index)}
+                      />
+                      </div>
+                      <div className="flex-auto px-3">
+                        <Input
+                          type="text"
+                          label="Nombre"
+                          name={prod.name}
+                          value={orderListData[index].name}
+                          disabled={true}
+                        />
+                      </div>
+                      <div className="flex-auto px-3">
+                        <Input
+                          type="number"
+                          label="Cantidad"
+                          name={prod.name}
+                          value={orderListObj[index].quantity}
+                          onChange={e => updateQuantity(index, e)}
+                        />
+                      </div>
+                      <div className="flex-auto px-3">
+                        <Input
+                          type="text"
+                          label="Precio Individual"
+                          name={prod.name}
+                          value={orderListData[index].pricebuy}
+                          onChange={e => updateIndividualPrice(index, e)}
+                        />
+                      </div>
+                      <div className="flex-auto px-3">
+                        <Input
+                          type="text"
+                          label="Total"
+                          name={prod.name}
+                          value={orderListObj[index].price}
+                          disabled={true}
+                        />
+                      </div>
+                    </div>
                   )) : '- - - - - - - - - -'
                 }
               </div>
+
+              <div className="grid md:grid-cols-2 flex items-center">
+                  <div className="my-3">
+                    <Button
+                      label="Crear Pedido"
+                      bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                      textColor="white"
+                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                      onClick={() => createOrder(orderListObj)}
+                    />
+                  </div>
+                  <div className="my-3">
+                    <div className="px-3">
+                      <Input
+                        type="text"
+                        label="Total Estimado"
+                        name="Total Estimado"
+                        value={estimatedTotal}
+                        disabled={true}
+                      />
+                    </div>
+                  </div>
+                </div>
 
               <div className="col-span-2 py-3 px-6">
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
@@ -211,16 +376,7 @@ const OrderForm: React.FC = () => {
                     onClick={addProductOrder}
                   />
                 </div>
-
-                <div className="my-3">
-                  <Button
-                    label="Crear Pedido"
-                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
-                    textColor="white"
-                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
-                    submit
-                  />
-                </div>
+                
               </div>
             </div>
           </div>

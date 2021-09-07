@@ -29,7 +29,6 @@ export class OrderRepository {
     return orders
   }
 
-
   public async findOneOrder(id: string): Promise<Order> {
     const order = this.orderModel.findById(id)
       .populate('createdby', 'name')

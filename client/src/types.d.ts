@@ -47,6 +47,7 @@ interface IOrderProduct {
   product: string;
   quantity: string;
   note: string;
+  price: number | string;
 }
 
 interface IOrder {

@@ -7,8 +7,9 @@ interface InputComponentProps {
   placeholder?: string;
   name: string;
   value?: string | number;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   focus?: boolean;
+  disabled?:boolean;
   icon?: {
     isActive: boolean;
     Icon: (props: ComponentProps<'svg'>) => JSX.Element;
@@ -20,9 +21,10 @@ const InputComponent: React.FC<InputComponentProps> = ({
   label,
   placeholder,
   value,
-  onChange,
+  onChange = () => {},
   focus = false,
   icon,
+  disabled = false,
 }) => {
   return (
     <div className={`relative w-full ${icon?.isActive ? "flex items-center" : "mb-3"}`}>
@@ -44,9 +46,12 @@ const InputComponent: React.FC<InputComponentProps> = ({
       }
       <input
         type={type}
-        className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white text-sm shadow focus:outline-none focus:ring w-full"
+        className={`border-0 px-3 py-3 placeholder-gray-300 text-gray-600 
+        ${disabled ? 'bg-gray-200' : 'bg-white'} 
+        text-sm shadow focus:outline-none focus:ring w-full`}
         placeholder={label ? label : placeholder}
         value={value}
+        disabled={disabled}
         onChange={onChange}
         onFocus={(e) => {
           focus && e.target.select()

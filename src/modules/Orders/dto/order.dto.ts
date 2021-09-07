@@ -16,7 +16,6 @@ export class CreateOrderDto {
   readonly receivedby: string;
 
   @IsString()
-  @IsNotEmpty()
   readonly receptiondate: string;
 
   @IsString()
@@ -24,7 +23,6 @@ export class CreateOrderDto {
   readonly estimatedamount: string;
 
   @IsString()
-  @IsNotEmpty()
   readonly finalamount: string;
 
   @IsString()
