@@ -41,7 +41,6 @@ export class OrderRepository {
     return order;
   }
 
-
   public async updateOrder(
     id: string,
     updateDocument: UpdateOrderDto,
