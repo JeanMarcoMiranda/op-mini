@@ -94,14 +94,26 @@ const OrderView: React.FC = () => {
     const newOrderData: IOrder[] = []
     await data.map(async (order) => {
       const createDate = formatDate(new Date(order.createdate));
-      const receptionDate = formatDate(new Date(order.receptiondate));
+      let receptionDate: string;
+      let receivedBy: {name: string, _id: string};
+      let finalaMount: string;
+      if(order.status === "Pendiente"){
+        receptionDate = "Pendiente";
+        receivedBy = {name: "Pendiente", _id: ""};
+        finalaMount= "---";
+      }else{
+        receptionDate = formatDate(new Date(order.receptiondate));
+        receivedBy = order.receivedby;
+        finalaMount= order.finalamount;
+      }
+      //console.log(order.createdate)
       const newObject: IOrder = {
         createdby: order.createdby,
         createdate: createDate,
-        receivedby: order.receivedby,
+        receivedby: receivedBy,
         receptiondate: receptionDate,
         estimatedamount: order.estimatedamount,
-        finalamount: order.finalamount,
+        finalamount: finalaMount,
         type: order.type,
         supplier: order.supplier,
         products: order.products,

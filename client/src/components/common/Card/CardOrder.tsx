@@ -63,32 +63,32 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
         <table className="text-left w-full border-collapse">
           <tbody>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-6 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
-              <td className="py-2 px-6 border-b border-grey-light">
+              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
+              <td className="py-2 px-4 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{createdBy}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-6 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Fecha de recepción</p></td>
-              <td className="py-2 px-6 border-b border-grey-light">
+              <td className="py-2 px-4 border-b border-grey-light"><p className="text-left text-sm mr-5 ml-5">Fecha de recepción</p></td>
+              <td className="py-2 px-4 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{receptionDate}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-6 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
-              <td className="py-2 px-6 border-b border-grey-light">
+              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
+              <td className="py-2 px-4 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{receivedBy}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-6 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
-              <td className="py-2 px-6 border-b border-grey-light">
+              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
+              <td className="py-2 px-4 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">S/. {estimatedAmount}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-6 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
-              <td className="py-2 px-6 border-b border-grey-light">
+              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
+              <td className="py-2 px-4 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">S/. {finalAmount}</p>
               </td>
             </tr>

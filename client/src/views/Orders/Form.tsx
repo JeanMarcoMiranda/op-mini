@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { setToastData } from '../../store/action/actions';
-import { 
+import {
   ButtonComponent as Button,
   InputComponent as Input,
   TableComponent as Table,
@@ -104,7 +104,7 @@ const OrderForm: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
-      }, 
+      },
     };
     const res = await fetch(urlSearch, requestInit);
     const data = await res.json();
@@ -158,7 +158,7 @@ const OrderForm: React.FC = () => {
 
   const createOrder = async (data: IOrderProduct[]) => {
     const urlPro = "http://localhost:8000/orders"
-    const dateNow = new Date()
+    let dateNow: Date = new Date()
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
@@ -201,7 +201,7 @@ const OrderForm: React.FC = () => {
     obj.quantity = e.target.value
     const price = Number(obj.quantity) * Number(orderListData[index].pricebuy)
     obj.price = price + ''
-    
+
     let estTotal = 0
     for (let i = 0; i < nOrderListObj.length; i++) {
       estTotal = estTotal + Number(nOrderListObj[i].price);
@@ -237,7 +237,7 @@ const OrderForm: React.FC = () => {
     const nOrderListObj2 = orderListObj.slice()
     nOrderListObj.splice(index, 1)
     nOrderListObj2.splice(index, 1)
-    
+
     let estTotal = 0
     for (let i = 0; i < nOrderListObj.length; i++) {
       estTotal = estTotal + Number(nOrderListObj2[i].price);
@@ -370,13 +370,13 @@ const OrderForm: React.FC = () => {
                 </div>
 
                 <div className="mb-3">
-                  <Table 
-                    theadData={tableFieldData} 
-                    tbodyData={searchTableData} 
+                  <Table
+                    theadData={tableFieldData}
+                    tbodyData={searchTableData}
                     onClick={addProductOrder}
                   />
                 </div>
-                
+
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 const formatDate = (dateToFormat: Date) => {
   let date = new Date(dateToFormat)
-  let day = date.getDay()
+  let day = date.getDate()
   let month = date.getMonth() + 1
   let year = date.getFullYear()
 
