@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setModalData } from '../../../store/action/actions';
 
+import { truncate } from '../../utils';
 const ModalComponent: React.FC<IModalProps> = ({
   isOpen,
   title,
@@ -17,7 +18,8 @@ const ModalComponent: React.FC<IModalProps> = ({
   onClickTYB
 }) => {
   const dispatch = useDispatch()
-
+  const tableHeadStyle = "px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+  const tableRowStyle = "px-5 py-2 border-b border-gray-200 bg-white text-sm has-tooltip"
   const renderSwitch = (param: string) => {
     switch (param) {
       case 'success':
@@ -30,7 +32,8 @@ const ModalComponent: React.FC<IModalProps> = ({
         return 'bg-blue-400 text-white';
     }
   }
-  console.log(contentObj)
+
+  //console.log(contentObj)
   return (
     <>
       <div className={`fixed flex flex-col top-14 left-0 w-full h-full duration-500 border-none z-10 transform
@@ -56,25 +59,29 @@ const ModalComponent: React.FC<IModalProps> = ({
                     <p className="text-gray-700 text-base">{contentText}</p>
                   </div>
                   :
-                  <div className={`${img ? "pt-0" : ""} px-6 py-10 flex-grow`}>
-                    <table className="auto-table">
-                      <thead>
-                        <tr>
-                          <th>Nombre</th>
-                          <th>Cantidad</th>
-                          <th>Notas</th>
-                        </tr>
-                      </thead>
-                      {contentObj?.map((content, index) => (
-                        <tbody key={index}>
+                  <div className={`${img ? "pt-0" : ""} px-4 py-6 flex-grow`}>
+                    <div className={"inline-block min-w-full shadow rounded-lg overflow-hidden"}>
+                      <table className="min-w-full leading-normal">
+                        <thead>
                           <tr>
-                            <td>{content?.product.name}</td>
-                            <td>{content?.quantity}</td>
-                            <td>{content?.note}</td>
+                            <th className={tableHeadStyle}>Nombre</th>
+                            <th className={tableHeadStyle}>Cantidad</th>
+                            <th className={tableHeadStyle}>Notas</th>
                           </tr>
-                        </tbody>
-                      ))}
-                    </table>
+                        </thead>
+                        {contentObj?.map((content, index) => (
+                          <tbody key={index}>
+                            <tr>
+                              <td className={tableRowStyle}>
+                              <span className='tooltip rounded shadow-lg p-1 bg-gray-100 text-gray-500 -mt-8'>{content?.product.name}</span>
+                                {truncate(content?.product.name)}</td>
+                              <td className={tableRowStyle}>{content?.quantity}</td>
+                              <td className={tableRowStyle}>{content?.note}</td>
+                            </tr>
+                          </tbody>
+                        ))}
+                      </table>
+                    </div>
                   </div>
               }
 
@@ -104,5 +111,3 @@ const ModalComponent: React.FC<IModalProps> = ({
 }
 
 export default ModalComponent;
-
-//return <p key={index} className="text-gray-700 text-base">{`${content?.product.name} | Cantidad: ${content?.quantity}`}</p>

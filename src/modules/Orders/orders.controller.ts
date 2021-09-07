@@ -6,14 +6,18 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { OrderService } from './orders.service';
 import { CreateOrderDto, UpdateOrderDto } from './dto/order.dto';
 import { Order } from './entities/order.entity';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Orders')
+@UseGuards(JwtAuthGuard)
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
@@ -31,6 +35,7 @@ export class OrderController {
   }
 
   @Get(':id')
+  @Public()
   public async getOneOrder(
     @Param('id') id: string
   ): Promise<Order> {
