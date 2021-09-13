@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setModalData } from '../../../store/action/actions';
 
-import { MenuComponentOrder as MenuOrder } from '../';
+import { MenuComponentOrder as MenuOrder } from '../index';
 interface CardOrderProps {
   createdBy?: string;
   company: string;
@@ -59,9 +59,12 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
   return (
     <div className="text-center flex justify-between">
       <div className="bg-white max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg ">
-        <div className={`h-12 ${status ? renderColorCard(status) : "bg-gray-500"}  flex items-center justify-between`}>
-          <p className="ml-5 text-white text-lg">{company}</p>
-          <p className="flex flex-wrap items-center mr-5 text-white font-thin text-lg">{status} <MenuOrder/></p>
+        <div className={`h-12 ${status ? renderColorCard(status) : "bg-gray-500"}  flex items-center justify-between content-center`}>
+          <p className="ml-6 text-center text-white text-lg">{company}</p>
+          <div className="flex mr-4">
+            <p className="text-center flex flex-wrap items-center text-white font-thin text-lg">{status} </p>
+            <MenuOrder/>
+          </div>
         </div>
 
         <table className="text-left w-full border-collapse">
