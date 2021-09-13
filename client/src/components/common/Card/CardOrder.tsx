@@ -2,17 +2,17 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setModalData } from '../../../store/action/actions';
 interface CardOrderProps {
-  createdBy: string;
+  createdBy?: string;
   company: string;
-  supplier: string;
+  supplier?: string;
   products?: any[];
-  createdDate: Date | string;
+  createdDate?: Date | string;
   status: string;
   receivedBy?: string;
   receptionDate?: Date | string;
   estimatedAmount?: string | number;
   finalAmount?: string | number;
-  type: string;
+  type?: string;
 }
 
 const CardOrderComponent: React.FC<CardOrderProps> = ({
@@ -64,51 +64,65 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
 
         <table className="text-left w-full border-collapse">
           <tbody>
+            {createdBy && (
             <tr className="hover:bg-gray-100">
               <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
               <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{createdBy}</p>
               </td>
             </tr>
+            )}
+            {receptionDate && (
             <tr className="hover:bg-gray-100">
               <td className="py-2 px-2 border-b border-grey-light"><p className="text-left text-sm mr-5 ml-5">Fecha de recepción</p></td>
               <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{receptionDate}</p>
               </td>
             </tr>
+            )}
+            {receivedBy && (
             <tr className="hover:bg-gray-100">
               <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
               <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{receivedBy}</p>
               </td>
             </tr>
+            )}
+            {supplier && (
             <tr className="hover:bg-gray-100">
               <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Proveedor</p></td>
               <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{supplier}</p>
               </td>
             </tr>
+            )}
+            {estimatedAmount && (
             <tr className="hover:bg-gray-100">
               <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
               <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">S/. {estimatedAmount}</p>
               </td>
             </tr>
+            )}
+            {finalAmount && (
             <tr className="hover:bg-gray-100">
               <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
               <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">S/. {finalAmount}</p>
               </td>
             </tr>
+            )}
           </tbody>
         </table>
         <button className='relative bg-blue-500 text-white p-2 m-4 rounded text-base font-bold overflow-visible' onClick={() => showAlert()}>
-          Lista Productos
+          Ver Productos
         </button>
+        {type && createdDate && (
         <div className="flex justify-between px-5 mb-2 text-sm text-gray-600">
           <p>Tipo de Pedido: {type}</p>
           <p>Creado el: {createdDate}</p>
         </div>
+        )}
       </div>
     </div>
   )

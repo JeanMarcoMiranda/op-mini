@@ -99,7 +99,7 @@ const OrderView: React.FC = () => {
       let receivedBy: {name: string, _id: string};
       let finalaMount: string;
       if(order.status === "Pendiente"){
-        receptionDate = "Pendiente";
+        receptionDate = formatDate(new Date(order.receptiondate))
         receivedBy = {name: "Pendiente", _id: ""};
         finalaMount= "---";
       }else{

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { 
   CardComponent as Card,
   CardOrderComponent as CardOrder,
+  LoadingPageComponent as Loading,
 } from '../../components/common';
 import { navRoutes } from '../../routes';
 import { useDateTime } from '../../components/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { formatDate } from '../../components/utils';
 
 const buttonProps: ButtonProps = {
   label: 'Vistar',
@@ -15,14 +17,48 @@ const buttonProps: ButtonProps = {
   textColor: 'white',
 };
 
+interface Product {
+  note: string;
+  product: {
+    name: string;
+    _id: string;
+  };
+  quantity: string;
+}
+
+interface IOrder {
+  createdby: {
+    name: string;
+    _id: string;
+  };
+  createdate: string;
+  receivedby: {
+    name: string;
+    _id: string;
+  };
+  receptiondate: string;
+  estimatedamount: string;
+  finalamount: string;
+  type: string;
+  supplier: {
+    company: string;
+    name: string;
+    _id?: string;
+  };
+  products: Product[];
+  status: string;
+}
+
 const Home: React.FC = () => {
   const [date, setDate] = useState<IDate>();
   const [city, setCity] = useState<IWeatherValues>();
-  const { userData } = useSelector<RootState, RootState['user']>(
+  const { userData, access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
   const icon = `https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/${city?.weather[0]["icon"]}.svg`;
   const timeValue = useDateTime()
+  const [orderTodayData, setOrderTodayData] = useState<IOrder[]>([])
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
     setDate(timeValue)
@@ -41,9 +77,35 @@ const Home: React.FC = () => {
       return data;
     };
     getWeather();
+    getOrder();
   }, []);
 
-  return (
+  const getOrder = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const urlOrder: RequestInfo = 'http://localhost:8000/orders';
+
+    const res = await fetch(urlOrder, requestInit);
+    const data: IOrder[] = await res.json();
+    const newOrderData: IOrder[] = []
+    const today: string = formatDate(new Date())
+
+    await data.map(async (order) => {
+      let rd = formatDate(new Date(order.receptiondate))
+      if (today === rd) {
+        newOrderData.push(order)
+      }
+    })
+    setOrderTodayData([...newOrderData])
+    setShow(true)
+  };
+
+  return show ? (
     <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-white">
       <div className="col-span-12 ">
         <div className="flex items-center h-10 intro-y mb-3">
@@ -160,10 +222,24 @@ const Home: React.FC = () => {
         <div className="flex items-center h-10 intro-y my-3">
           <h2 className="text-2xl font-semibold tracking-wide">Pedidos para Hoy</h2>
         </div>
+        <div className="grid grid-cols-3 gap-6 mt-6 mb-6">
+          {
+            orderTodayData.map((order, index) => (
+              <CardOrder
+                key={index}
+                company={order.supplier.company}
+                supplier={order.supplier.name}
+                status={order.status}
+                estimatedAmount={order.estimatedamount}
+                products={order.products}
+              />
+            ))
+          }
+        </div>
 
       </div>
     </div>
-  );
+  ) : (<Loading />);
 };
 
 export default Home;
