@@ -24,7 +24,7 @@ export class OrderRepository {
     const orders = this.orderModel.find()
       .populate('createdby', 'name')
       .populate('receivedby', 'name')
-      .populate({path:'supplier', select:'name'})
+      .populate({path:'supplier', select:'name company'})
       .populate({path:'products.product', model: this.productmodel, select: 'name'}).exec()
     return orders
   }

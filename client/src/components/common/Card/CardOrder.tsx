@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setModalData } from '../../../store/action/actions';
 interface CardOrderProps {
   createdBy: string;
+  company: string;
   supplier: string;
   products?: any[];
   createdDate: Date | string;
@@ -17,6 +18,7 @@ interface CardOrderProps {
 const CardOrderComponent: React.FC<CardOrderProps> = ({
   createdBy,
   supplier,
+  company,
   products,
   createdDate,
   status,
@@ -35,7 +37,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
       title: 'Lista de Productos',
       contentObj: products,
       defaultButton: "Cerrar",
-      onClickDB: () => dispatch(setModalData({setisOpen:(prev => !prev)}))
+      onClickDB: () => dispatch(setModalData({ setisOpen: (prev => !prev) }))
     }))
   }
 
@@ -56,39 +58,45 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
     <div className="text-center flex justify-between">
       <div className="bg-white max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg ">
         <div className={`h-12 ${status ? renderColorCard(status) : "bg-gray-500"}  flex items-center justify-between`}>
-          <p className="ml-5 text-white text-lg">{supplier}</p>
+          <p className="ml-5 text-white text-lg">{company}</p>
           <p className="mr-5 text-white font-thin text-lg">{status}</p>
         </div>
 
         <table className="text-left w-full border-collapse">
           <tbody>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
-              <td className="py-2 px-4 border-b border-grey-light">
+              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
+              <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{createdBy}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b border-grey-light"><p className="text-left text-sm mr-5 ml-5">Fecha de recepción</p></td>
-              <td className="py-2 px-4 border-b border-grey-light">
+              <td className="py-2 px-2 border-b border-grey-light"><p className="text-left text-sm mr-5 ml-5">Fecha de recepción</p></td>
+              <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{receptionDate}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
-              <td className="py-2 px-4 border-b border-grey-light">
+              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
+              <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">{receivedBy}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
-              <td className="py-2 px-4 border-b border-grey-light">
+              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Proveedor</p></td>
+              <td className="py-2 px-2 border-b border-grey-light">
+                <p className="text-justify text-sm mr-5 ml-5">{supplier}</p>
+              </td>
+            </tr>
+            <tr className="hover:bg-gray-100">
+              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
+              <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">S/. {estimatedAmount}</p>
               </td>
             </tr>
             <tr className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
-              <td className="py-2 px-4 border-b border-grey-light">
+              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
+              <td className="py-2 px-2 border-b border-grey-light">
                 <p className="text-justify text-sm mr-5 ml-5">S/. {finalAmount}</p>
               </td>
             </tr>
