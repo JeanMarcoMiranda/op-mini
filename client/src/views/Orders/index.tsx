@@ -36,8 +36,9 @@ interface IOrder {
   finalamount: string;
   type: string;
   supplier: {
+    company: string;
     name: string;
-    _id: string;
+    _id?: string;
   };
   products: Product[];
   status: string;
@@ -115,13 +116,15 @@ const OrderView: React.FC = () => {
         estimatedamount: order.estimatedamount,
         finalamount: finalaMount,
         type: order.type,
-        supplier: order.supplier,
+        supplier: {
+          company: order.supplier.company,
+          name: order.supplier.name,
+        },
         products: order.products,
         status: order.status
       }
       newOrderData.push(newObject)
     })
-
     const newOption: any[] = [];
     newOption.push({ value: "Todo" })
     await data.map(async (order) => {
@@ -154,7 +157,10 @@ const OrderView: React.FC = () => {
             estimatedamount: order.estimatedamount,
             finalamount: order.finalamount,
             type: order.type,
-            supplier: order.supplier,
+            supplier: {
+              company: order.supplier.company,
+              name: order.supplier.name,
+            },
             products: order.products,
             status: order.status
           }
@@ -202,7 +208,10 @@ const OrderView: React.FC = () => {
           estimatedamount: order.estimatedamount,
           finalamount: order.finalamount,
           type: order.type,
-          supplier: order.supplier,
+          supplier: {
+            company: order.supplier.company,
+            name: order.supplier.name,
+          },
           products: order.products,
           status: order.status
         }
@@ -342,6 +351,7 @@ const OrderView: React.FC = () => {
                       <Card
                         key={index}
                         createdBy={order.createdby.name}
+                        company={order.supplier.company}
                         supplier={order.supplier.name}
                         createdDate={order.createdate}
                         status={order.status}
