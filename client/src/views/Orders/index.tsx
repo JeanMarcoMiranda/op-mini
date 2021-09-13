@@ -224,12 +224,23 @@ const OrderView: React.FC = () => {
 
   const getSearchOrderDate = async () => {
     //console.log(startDate, endDate)
-    console.log(new Date(startDate))
+    //console.log(new Date(startDate))
 
     //setShowBlock(true)
     const data: IOrder[] = await getOrder();
     const newOrderData: IOrder[] = [];
-    const newFound = data.find(item => { console.log(new Date(item.createdate))})
+    console.log("data:", data)
+    //const newFound = data.find(item => { console.log(new Date(item.createdate))})  new Date(item.createdate)
+    const newFound = data.filter((item: any) => {
+       //console.log(new Date(item.createdate).getTime())
+       console.log("Created new Date: ", new Date(item.createdate))
+       console.log("Created Original: ", item.createdate)
+       //console.log(startDate.getTime())
+       //console.log(endDate.getTime())
+
+       let orderNew = new Date(item.createdate).getTime() >= startDate.getTime() && new Date(item.createdate).getTime() <= endDate.getTime()
+       //console.log(orderNew);
+      })
     //console.log(newFound)
     /*await data.map(async (order) => {
       if (order.supplier.name === newFound?.supplier.name) {

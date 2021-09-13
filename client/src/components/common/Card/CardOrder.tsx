@@ -1,6 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setModalData } from '../../../store/action/actions';
+
+import { MenuComponentOrder as MenuOrder } from '../';
 interface CardOrderProps {
   createdBy: string;
   company: string;
@@ -59,7 +61,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
       <div className="bg-white max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg ">
         <div className={`h-12 ${status ? renderColorCard(status) : "bg-gray-500"}  flex items-center justify-between`}>
           <p className="ml-5 text-white text-lg">{company}</p>
-          <p className="mr-5 text-white font-thin text-lg">{status}</p>
+          <p className="flex flex-wrap items-center mr-5 text-white font-thin text-lg">{status} <MenuOrder/></p>
         </div>
 
         <table className="text-left w-full border-collapse">
@@ -115,3 +117,4 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
 }
 export default CardOrderComponent;
 //      <div className="bg-white max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 transform hover:scale-105 cursor-pointer">
+//<ChevronDownIcon className="fill-current ml-2 h-5 w-5" />
