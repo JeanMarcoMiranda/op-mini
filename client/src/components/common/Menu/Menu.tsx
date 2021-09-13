@@ -12,8 +12,8 @@ import {
   LogoutIcon as OutlineLogoutIcon
 } from '@heroicons/react/outline'
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserData, setToken, setAuthUser } from '../../store/action/actions';
-import { RootState } from '../../store/store';
+import { setUserData, setToken, setAuthUser } from '../../../store/action/actions';
+import { RootState } from '../../../store/store';
 import { Link, useHistory } from 'react-router-dom';
 
 const initialUserRole: IRole = {

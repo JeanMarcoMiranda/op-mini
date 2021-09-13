@@ -11,9 +11,10 @@ import LoadingSectionComponent from "./Load/LoadingSection";
 import ModalComponent from "./Alert/Modal";
 import ToastComponent from "./Alert/Toast";
 import NotificationComponent from "./Alert/Notification";
-import MenuComponent from "./Menu"
+import MenuComponent from "./Menu/Menu"
 import CardOrderComponent from "./Card/CardOrder";
 import DatePickerComponent from "./DatePicker/DatePicker";
+import MenuComponentOrder from "./Menu/MenuOrder";
 
 export {
   InputComponent,
@@ -32,5 +33,6 @@ export {
   MenuComponent,
   CardOrderComponent,
   DatePickerComponent,
+  MenuComponentOrder
 }
 
