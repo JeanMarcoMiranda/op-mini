@@ -9,6 +9,7 @@ import navRoutes from "./navRoutes";
 import UserForm from "../views/Users/Form";
 import OrderView from "../views/Orders";
 import OrderForm from "../views/Orders/Form";
+import CategoryView from "../views/Categories";
 
 
 const appRoutes: RouteData[] = [
@@ -115,6 +116,13 @@ const appRoutes: RouteData[] = [
     exact: true,
     type: 'private',
     roles: ['Administrador']
+  },
+  {
+    path: '/categories',
+    component: CategoryView,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
 ]
 

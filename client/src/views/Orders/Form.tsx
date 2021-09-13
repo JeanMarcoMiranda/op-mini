@@ -8,6 +8,8 @@ import {
   InputComponent as Input,
   TableComponent as Table,
   IconComponent as Icon,
+  DatePickerComponent as DatePicker,
+  TextAreaComponent as TextArea,
 } from '../../components/common';
 import { isNumeric, toHoverStyle } from '../../components/utils';
 import { SearchIcon, XIcon } from '@heroicons/react/solid';
@@ -56,6 +58,8 @@ const OrderForm: React.FC = () => {
   const [orderListData, setOrderListData] = useState<IProduct[]>([])
   const [orderListObj, setOrderListObj] = useState<IOrderProduct[]>([])
 
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
   const [estimatedTotal, setEstimatedTotal] = useState('0')
 
   useEffect(() => {
@@ -172,6 +176,7 @@ const OrderForm: React.FC = () => {
         createdate: dateNow,
         createdby: userData._id,
         receivedby: userData._id,
+        receptiondate: startDate,
       }),
     }
     const res = await fetch(urlPro, requestInit);
@@ -244,6 +249,14 @@ const OrderForm: React.FC = () => {
     }
     setEstimatedTotal(estTotal + '')
     setOrderListData([...nOrderListObj])
+    setOrderListObj([...nOrderListObj2])
+  }
+
+  const updateOrderNote = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const nOrderListObj2 = orderListObj.slice()
+    const obj = nOrderListObj2[index]
+    obj.note = e.target.value
+    
     setOrderListObj([...nOrderListObj2])
   }
 
@@ -320,22 +333,40 @@ const OrderForm: React.FC = () => {
                           disabled={true}
                         />
                       </div>
+                      <div className="flex-auto px-3">
+                        <Input
+                          type="text"
+                          label="Nota"
+                          name={prod.name}
+                          value={orderListObj[index].note}
+                          onChange={e => updateOrderNote(index, e)}
+                        />
+                      </div>
                     </div>
-                  )) : '- - - - - - - - - -'
+                  )) : '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
                 }
               </div>
 
-              <div className="grid md:grid-cols-2 flex items-center">
-                  <div className="my-3">
+              <div className="flex items-center">
+                  <div className="flex-auto my-3 ml-6">
                     <Button
                       label="Crear Pedido"
                       bgColor="bg-gradient-to-r from-green-400 to-green-500"
                       textColor="white"
                       onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
                       onClick={() => createOrder(orderListObj)}
+                    /> 
+                  </div>
+                  <div className="flex-auto my-3">
+                    <DatePicker 
+                      text={"Recepción:"}
+                      selected={startDate}
+                      startDate={startDate}
+                      endDate={endDate}
+                      handleDateChange={setStartDate} 
                     />
                   </div>
-                  <div className="my-3">
+                  <div className="flex-auto my-3 mr-3">
                     <div className="px-3">
                       <Input
                         type="text"

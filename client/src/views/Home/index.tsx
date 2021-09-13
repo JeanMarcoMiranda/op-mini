@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { CardComponent } from '../../components/common';
+import { 
+  CardComponent as Card,
+  CardOrderComponent as CardOrder,
+} from '../../components/common';
 import { navRoutes } from '../../routes';
 import { useDateTime } from '../../components/hooks';
 import { useSelector } from 'react-redux';
@@ -142,7 +145,7 @@ const Home: React.FC = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-10 gap-6 mt-6">
           {navRoutes.map(({ label, path }, index) => (
-            <CardComponent
+            <Card
               key={index}
               img="https://marketplace.canva.com/EAEK5jeIncM/1/0/1600w/canva-rosa%2C-azul-y-verde-ciberpunk-tendencia-moderna-fondo-para-zoom-bb3t9Mk6Ti8.jpg"
               title="Dashboard"
@@ -154,6 +157,10 @@ const Home: React.FC = () => {
             />
           ))}
         </div>
+        <div className="flex items-center h-10 intro-y my-3">
+          <h2 className="text-2xl font-semibold tracking-wide">Pedidos para Hoy</h2>
+        </div>
+
       </div>
     </div>
   );
