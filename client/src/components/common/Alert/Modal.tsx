@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { InputComponent as Input } from '../index';
 import { setModalData } from '../../../store/action/actions';
 
 import { truncate } from '../../utils';
@@ -15,9 +16,14 @@ const ModalComponent: React.FC<IModalProps> = ({
   onClickDB,
   typeButton,
   colorTYB,
-  onClickTYB
+  onClickTYB,
+  inpComplete,
+  onClickOrdCompl
 }) => {
   const dispatch = useDispatch()
+  const [ordComplDoc, setOrdComplDoc] = useState<string>('')
+  const [ordComplAmo, setOrdComplAmo] = useState<string>('')
+
   const tableHeadStyle = "px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
   const tableRowStyle = "px-5 py-2 border-b border-gray-200 bg-white text-sm has-tooltip"
   const renderSwitch = (param: string) => {
@@ -32,7 +38,6 @@ const ModalComponent: React.FC<IModalProps> = ({
         return 'bg-blue-400 text-white';
     }
   }
-  //console.log(contentObj)
   return (
     <>
       <div className={`fixed flex flex-col top-14 left-0 w-full h-full duration-500 border-none z-10 transform
@@ -52,7 +57,24 @@ const ModalComponent: React.FC<IModalProps> = ({
                   <img src={img} alt='some img' className="w-1/5" />
                 </div> : <></>}
 
-              {
+              {inpComplete ?
+                (<div className="px-4 py-6">
+                  <Input
+                    type="text"
+                    label="Nro. Documento"
+                    name="ndocument"
+                    value={ordComplDoc}
+                    onChange={e => setOrdComplDoc(e.target.value)}
+                  />
+                  <Input
+                    type="number"
+                    label="Monto Final"
+                    name="finalamount"
+                    value={ordComplAmo}
+                    onChange={e => setOrdComplAmo(e.target.value)}
+                  />
+                </div>)
+                : 
                 contentText ?
                   <div className={`${img ? "pt-0" : ""} px-6 py-10 flex-grow`}>
                     <p className="text-gray-700 text-base">{contentText}</p>
@@ -97,7 +119,11 @@ const ModalComponent: React.FC<IModalProps> = ({
                   </button> : <></>}
                 {typeButton ?
                   <button className={`${colorTYB ? renderSwitch(colorTYB) : "bg-gray-300 text-gray-600"} font-medium text-sm py-1 px-5 rounded`}
-                    onClick={onClickTYB}>
+                    onClick={inpComplete ? () => {
+                      onClickOrdCompl(ordComplDoc,ordComplAmo)
+                      setOrdComplAmo('')
+                      setOrdComplDoc('')
+                      } : onClickTYB}>
                     {typeButton}
                   </button> : <></>}
               </div>

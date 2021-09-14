@@ -195,6 +195,7 @@ interface IModalProps {
   setisOpen?: React.Dispatch<React.SetStateAction<boolean>>,
   title?: string,
   img?: string,
+  inpComplete?: boolean,
   contentText?: string,
   contentObj? :any[],
   cancelButton?: boolean,
@@ -204,6 +205,7 @@ interface IModalProps {
   typeButton?: string,
   colorTYB?: string,
   onClickTYB?: MouseEventHandler<HTMLButtonElement>,
+  onClickOrdCompl?: MouseEventHandler<HTMLButtonElement>,
 }
 
 interface IToastProps {

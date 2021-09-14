@@ -83,6 +83,14 @@ const OrderForm: React.FC = () => {
     }
   }, [companyProducts])
 
+  useEffect(()=> {
+    let estTotal = 0
+    for (let i = 0; i < orderListObj.length; i++) {
+      estTotal = estTotal + Number(orderListObj[i].price);
+    }
+    setEstimatedTotal(estTotal + '')
+  }, [orderListObj])
+
   const getSupplierData = async ( idSupp: string) => {
     const url: RequestInfo = `http://localhost:8000/suppliers/${idSupp}`;
     const response = await fetch(url);
@@ -147,10 +155,11 @@ const OrderForm: React.FC = () => {
     if (nprol) {
       let nobjl: IOrderProduct = {
         product: nprol._id,
-        quantity: '0',
+        quantity: '1',
         note: '',
-        price: '0',
+        price: nprol.pricebuy,
       }
+      
       setOrderListObj([...orderListObj, nobjl])
       setOrderListData([...orderListData, nprol])
     }

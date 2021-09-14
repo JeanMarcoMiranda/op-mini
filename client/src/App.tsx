@@ -48,6 +48,8 @@ const App = () => {
         typeButton={modalData?.typeButton}
         colorTYB={modalData?.colorTYB}
         onClickTYB={modalData?.onClickTYB}
+        inpComplete={modalData?.inpComplete}
+        onClickOrdCompl={modalData?.onClickOrdCompl}
       />
       <Toast
         isOpen={toastData?.isOpen}
