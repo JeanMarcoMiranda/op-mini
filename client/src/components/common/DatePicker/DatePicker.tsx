@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useState } from 'react';
+import React, { ChangeEventHandler } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 interface DatePickerComponentProps {
@@ -17,10 +17,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
   endDate,
   handleDateChange
 }) => {
-  //console.log(selected)
-  //const [startDate, setStartDate] = useState(new Date())
-  //const [endDate, setEndDate] = useState(new Date())
-  //const [endDate, setEndDate] = useState(new Date().setMonth(startDate.getMonth() + 1))
+
   return (
     <div className="flex items-center justify-center">
       <div className="relative">
@@ -36,11 +33,10 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
               endDate={endDate}
               nextMonthButtonLabel=">"
               previousMonthButtonLabel="<"
+              dateFormat="dd/MM/yy"
             />
           </div>
         </div>
-
-
       </div>
     </div>
   )

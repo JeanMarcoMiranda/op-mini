@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { RootState } from '../../store/store';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
+
 import {
   CardOrderComponent as Card,
   ButtonComponent as Button,
@@ -12,7 +14,7 @@ import { toHoverStyle } from '../../components/utils';
 import { formatDate, filterDuplicate } from '../../components/utils';
 import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid';
 
-interface Product {
+interface IProductOrder {
   note: string;
   product: {
     name: string;
@@ -22,16 +24,17 @@ interface Product {
 }
 
 interface IOrder {
+  _id: string;
   createdby: {
     name: string;
     _id: string;
   };
-  createdate: string;
+  createdate: string | Date;
   receivedby: {
     name: string;
     _id: string;
   };
-  receptiondate: string;
+  receptiondate: string | Date;
   estimatedamount: string;
   finalamount: string;
   type: string;
@@ -40,18 +43,21 @@ interface IOrder {
     name: string;
     _id?: string;
   };
-  products: Product[];
+  products: IProductOrder[];
   status: string;
 }
 
 const OrderView: React.FC = () => {
+  const dispatch = useDispatch()
+  const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+  const dayEnd = new Date(); dayEnd.setHours(23, 59, 59, 999);
   const [show, setShow] = useState(false)
   const [showBlock, setShowBlock] = useState(false)
   const [orderData, setOrderData] = useState<IOrder[]>([]);
   const [option, setOption] = useState<any[]>([]);
   const [searchVal, setSearchVal] = useState('');
-  const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(dayStart)
+  const [endDate, setEndDate] = useState(dayEnd)
 
   const { access_token, userData: userDataT } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
@@ -94,21 +100,21 @@ const OrderView: React.FC = () => {
     const data: IOrder[] = await res.json();
     const newOrderData: IOrder[] = []
     await data.map(async (order) => {
-      const createDate = formatDate(new Date(order.createdate));
-      let receptionDate: string;
-      let receivedBy: {name: string, _id: string};
+      const createDate = new Date(order.createdate);
+      let receptionDate: string | Date;
+      let receivedBy: { name: string, _id: string };
       let finalaMount: string;
-      if(order.status === "Pendiente"){
-        receptionDate = formatDate(new Date(order.receptiondate))
-        receivedBy = {name: "Pendiente", _id: ""};
-        finalaMount= "---";
-      }else{
-        receptionDate = formatDate(new Date(order.receptiondate));
+      if (order.status === "Pendiente") {
+        receptionDate = new Date(order.receptiondate)
+        receivedBy = { name: "Pendiente", _id: "" };
+        finalaMount = "---";
+      } else {
+        receptionDate = new Date(order.receptiondate);
         receivedBy = order.receivedby;
-        finalaMount= order.finalamount;
+        finalaMount = order.finalamount;
       }
-      //console.log(order.createdate)
       const newObject: IOrder = {
+        _id: order._id,
         createdby: order.createdby,
         createdate: createDate,
         receivedby: receivedBy,
@@ -133,12 +139,11 @@ const OrderView: React.FC = () => {
       }
       newOption.push(newObject)
     })
-
     setOption(filterDuplicate(newOption))
     return newOrderData
   };
 
-  const filterOrderDataStatus = async (e: any) => {
+  const filterOrderDataStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setShowBlock(true)
     const data: IOrder[] = await getOrder();
     let value = e.target.value;
@@ -147,9 +152,10 @@ const OrderView: React.FC = () => {
       const newFound = data.find(element => element.status === value)
       await data.map(async (order) => {
         if (order.status === newFound?.status) {
-          const createDate = formatDate(new Date(order.createdate));
-          const receptionDate = formatDate(new Date(order.receptiondate));
+          const createDate = new Date(order.createdate);
+          const receptionDate = new Date(order.receptiondate);
           const newObject: IOrder = {
+            _id: order._id,
             createdby: order.createdby,
             createdate: createDate,
             receivedby: order.receivedby,
@@ -174,11 +180,11 @@ const OrderView: React.FC = () => {
     }
   }
 
-  const filterOrderDataMaxItems = async (e?: any) => {
+  const filterOrderDataMaxItems = async (e?: React.ChangeEvent<HTMLSelectElement>) => {
     setShowBlock(true)
     if (e) {
       const data: IOrder[] = await getOrder();
-      let value = e.target.value;
+      const value = e.target.value as unknown as number;
       if (!isNaN(+value)) {
         data.splice(value)
         setOrderData(data)
@@ -195,27 +201,41 @@ const OrderView: React.FC = () => {
     setShowBlock(true)
     const data: IOrder[] = await getOrder();
     const newOrderData: IOrder[] = [];
-    const newFound = data.find(element => element.supplier.name.includes(value))
+
+    const textLowerCase = (value: string) => {
+      return value.toLowerCase()
+    }
+
+    const arrayLowerCase = data.map(value => {
+      return textLowerCase(value.supplier.company)
+    })
+    console.log(arrayLowerCase);
+    console.log(textLowerCase(value));
+    //const newFound = arrayLowerCase.find(element => element.includes(textLowerCase(value)))
+    const newFound = data.find(element => element.supplier.company.includes(value))
+    //console.log(newFound);
     await data.map(async (order) => {
-      if (order.supplier.name === newFound?.supplier.name) {
-        const createDate = formatDate(new Date(order.createdate));
-        const receptionDate = formatDate(new Date(order.receptiondate));
-        const newObject: IOrder = {
-          createdby: order.createdby,
-          createdate: createDate,
-          receivedby: order.receivedby,
-          receptiondate: receptionDate,
-          estimatedamount: order.estimatedamount,
-          finalamount: order.finalamount,
-          type: order.type,
-          supplier: {
-            company: order.supplier.company,
-            name: order.supplier.name,
-          },
-          products: order.products,
-          status: order.status
-        }
-        newOrderData.push(newObject)
+      //console.log(newFound?.supplier.company)
+      if (order.supplier.company === newFound?.supplier.company) {
+      const createDate = new Date(order.createdate);
+      const receptionDate = new Date(order.receptiondate);
+      const newObject: IOrder = {
+        _id: order._id,
+        createdby: order.createdby,
+        createdate: createDate,
+        receivedby: order.receivedby,
+        receptiondate: receptionDate,
+        estimatedamount: order.estimatedamount,
+        finalamount: order.finalamount,
+        type: order.type,
+        supplier: {
+          company: order.supplier.company,
+          name: order.supplier.name,
+        },
+        products: order.products,
+        status: order.status
+      }
+      newOrderData.push(newObject)
       }
     })
     setOrderData(newOrderData)
@@ -223,46 +243,87 @@ const OrderView: React.FC = () => {
   }
 
   const getSearchOrderDate = async () => {
-    //console.log(startDate, endDate)
-    //console.log(new Date(startDate))
-
-    //setShowBlock(true)
+    setShowBlock(true)
     const data: IOrder[] = await getOrder();
     const newOrderData: IOrder[] = [];
-    console.log("data:", data)
-    //const newFound = data.find(item => { console.log(new Date(item.createdate))})  new Date(item.createdate)
-    const newFound = data.filter((item: any) => {
-       //console.log(new Date(item.createdate).getTime())
-       console.log("Created new Date: ", new Date(item.createdate))
-       console.log("Created Original: ", item.createdate)
-       //console.log(startDate.getTime())
-       //console.log(endDate.getTime())
-
-       let orderNew = new Date(item.createdate).getTime() >= startDate.getTime() && new Date(item.createdate).getTime() <= endDate.getTime()
-       //console.log(orderNew);
-      })
-    //console.log(newFound)
-    /*await data.map(async (order) => {
-      if (order.supplier.name === newFound?.supplier.name) {
-        const createDate = formatDate(new Date(order.createdate));
-        const receptionDate = formatDate(new Date(order.receptiondate));
-        const newObject: IOrder = {
-          createdby: order.createdby,
-          createdate: createDate,
-          receivedby: order.receivedby,
-          receptiondate: receptionDate,
-          estimatedamount: order.estimatedamount,
-          finalamount: order.finalamount,
-          type: order.type,
-          supplier: order.supplier,
-          products: order.products,
-          status: order.status
-        }
-        newOrderData.push(newObject)
+    const newFound = data.filter(order => {
+      return new Date(order.createdate).getTime() >= startDate.getTime() && new Date(order.createdate).getTime() <= endDate.getTime()
+    })
+    await newFound.map(async (order) => {
+      const createDate = new Date(order.createdate);
+      const receptionDate = new Date(order.receptiondate);
+      const newObject: IOrder = {
+        _id: order._id,
+        createdby: order.createdby,
+        createdate: createDate,
+        receivedby: order.receivedby,
+        receptiondate: receptionDate,
+        estimatedamount: order.estimatedamount,
+        finalamount: order.finalamount,
+        type: order.type,
+        supplier: {
+          company: order.supplier.company,
+          name: order.supplier.name,
+        },
+        products: order.products,
+        status: order.status
       }
+      newOrderData.push(newObject)
     })
     setOrderData(newOrderData)
-    setShowBlock(false)*/
+    setShowBlock(false)
+  }
+
+  const orderComplete = () => {
+    console.log("Completado")
+  }
+
+  const orderUpdate = () => {
+    console.log("Update")
+  }
+
+  const orderCancel = () => {
+    console.log("Cancel")
+  }
+
+  const orderDelete = async (id: string) => {
+    console.log("Delete")
+    const urlDelete: RequestInfo = url + `/${id}`;
+    const requestInit: RequestInit = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await fetch(urlDelete, requestInit);
+    initialRender();
+    dispatch(setModalData({ setisOpen: (prev => !prev) }))
+    showAlert('toast')
+  }
+
+  const showAlert = (type: string, id?: string) => {
+    if (type === 'toast') {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido ha sido eliminado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+    }
+    else {
+      dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: '¿Esta seguro que desea eliminar el elemento?',
+        contentText: 'El elemento seleccionado sera eliminado de la base de datos',
+        cancelButton: true,
+        typeButton: 'Si, Eliminalo',
+        colorTYB: 'danger',
+        onClickTYB: () => orderDelete(id!)
+      }))
+    }
   }
 
   return show ? (
@@ -361,13 +422,17 @@ const OrderView: React.FC = () => {
                     orderData.map((order, index) => (
                       <Card
                         key={index}
+                        menuComplete={orderComplete}
+                        menuUpdate={orderUpdate}
+                        menuCancel={orderCancel}
+                        menuDelete={() => showAlert('delete',order._id)}
                         createdBy={order.createdby.name}
                         company={order.supplier.company}
                         supplier={order.supplier.name}
-                        createdDate={order.createdate}
+                        createdDate={formatDate(new Date(order.createdate))}
                         status={order.status}
                         receivedBy={order.receivedby.name}
-                        receptionDate={order.receptiondate}
+                        receptionDate={formatDate(new Date(order.receptiondate))}
                         estimatedAmount={order.estimatedamount}
                         finalAmount={order.finalamount}
                         type={order.type}
