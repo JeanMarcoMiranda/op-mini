@@ -232,6 +232,7 @@ const Home: React.FC = () => {
                 status={order.status}
                 estimatedAmount={order.estimatedamount}
                 products={order.products}
+                menuComplete={(e) => console.log('buenas')}
               />
             ))
           }

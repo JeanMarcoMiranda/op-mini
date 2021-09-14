@@ -15,6 +15,10 @@ interface CardOrderProps {
   estimatedAmount?: string | number;
   finalAmount?: string | number;
   type?: string;
+  menuUpdate?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  menuDelete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  menuComplete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  menuCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const CardOrderComponent: React.FC<CardOrderProps> = ({
@@ -29,6 +33,10 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
   estimatedAmount,
   finalAmount,
   type,
+  menuUpdate,
+  menuCancel,
+  menuComplete,
+  menuDelete,
 }) => {
   const dispatch = useDispatch()
 
@@ -63,7 +71,12 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
           <p className="ml-6 text-center text-white text-lg">{company}</p>
           <div className="flex mr-4">
             <p className="text-center flex flex-wrap items-center text-white font-thin text-lg">{status} </p>
-            <MenuOrder/>
+            <MenuOrder
+              menuComplete={menuComplete}
+              menuUpdate={menuUpdate}
+              menuCancel={menuCancel}
+              menuDelete={menuDelete}
+            />
           </div>
         </div>
 
