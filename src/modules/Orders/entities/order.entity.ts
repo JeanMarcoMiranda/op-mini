@@ -35,6 +35,9 @@ export class Order extends Document {
   @Prop()
   type: string;
 
+  @Prop()
+  ndocument: string;
+
   @Prop({ type: Types.ObjectId, ref: Supplier.name })
   supplier: Supplier | Types.ObjectId;
 

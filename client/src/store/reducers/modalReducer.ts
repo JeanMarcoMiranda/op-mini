@@ -5,6 +5,7 @@ const initialModalState: IModalProps = {
   setisOpen: (prev => !prev),
   title: '',
   img: '',
+  inpComplete: false,
   contentText: '',
   contentObj: [],
   cancelButton: false,
@@ -13,7 +14,8 @@ const initialModalState: IModalProps = {
   onClickDB: '',
   typeButton: '',
   colorTYB: '',
-  onClickTYB: ''
+  onClickTYB: '',
+  onClickOrdCompl: (a:string, b:string) => {},
 };
 
 const initialState: AlertState = {

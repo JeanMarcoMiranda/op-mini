@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { 
+import {
   CardComponent as Card,
   CardOrderComponent as CardOrder,
   LoadingPageComponent as Loading,
 } from '../../components/common';
 import { navRoutes } from '../../routes';
 import { useDateTime } from '../../components/hooks';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { setModalData, setToastData } from '../../store/action/actions';
 import { formatDate } from '../../components/utils';
 
 const buttonProps: ButtonProps = {
@@ -27,6 +28,7 @@ interface Product {
 }
 
 interface IOrder {
+  _id: string;
   createdby: {
     name: string;
     _id: string;
@@ -47,9 +49,11 @@ interface IOrder {
   };
   products: Product[];
   status: string;
+  ndocument: string;
 }
 
 const Home: React.FC = () => {
+  const dispatch = useDispatch()
   const [date, setDate] = useState<IDate>();
   const [city, setCity] = useState<IWeatherValues>();
   const { userData, access_token } = useSelector<RootState, RootState['user']>(
@@ -59,6 +63,7 @@ const Home: React.FC = () => {
   const timeValue = useDateTime()
   const [orderTodayData, setOrderTodayData] = useState<IOrder[]>([])
   const [show, setShow] = useState(false)
+  const [orderModalOpen, setOrderModalOpen] = useState<number>(0)
 
   useEffect(() => {
     setDate(timeValue)
@@ -97,13 +102,77 @@ const Home: React.FC = () => {
 
     await data.map(async (order) => {
       let rd = formatDate(new Date(order.receptiondate))
-      if (today === rd) {
+      if (today === rd && order.status !== 'Cancelado') {
         newOrderData.push(order)
       }
     })
     setOrderTodayData([...newOrderData])
     setShow(true)
   };
+
+  const completeOrder = (index: number) => {
+    setOrderModalOpen(index)
+    aea(index)
+
+  }
+
+  const aea = (index : number) => {
+    dispatch(setModalData({
+      isOpen: true,
+      setisOpen: (prev => !prev),
+      title: `Completar el pedido de ${orderTodayData[index].supplier.company}`,
+      inpComplete: true,
+      cancelButton: true,
+      typeButton: 'Completar Pedido',
+      colorTYB: 'success',
+      onClickOrdCompl: onClickOrdCompl
+    }))
+  }
+
+  const onClickOrdCompl = async (Doc: string, FinAmount: string) => {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[orderModalOpen]._id}`;
+    console.log(orderModalOpen);
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...orderTodayData[orderModalOpen],
+        createdby: orderTodayData[orderModalOpen].createdby._id,
+        supplier: orderTodayData[orderModalOpen].supplier._id,
+        finalamount: FinAmount,
+        ndocument: Doc,
+        receivedby: userData._id,
+        status: 'Completado',
+      }),
+    }
+    console.log(requestInit)
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      console.log(res)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha completado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      getOrder()
+    } else {
+      console.log(res)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+
+    dispatch(setModalData({setisOpen: (prev => !prev)}))
+  }
 
   return show ? (
     <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-white">
@@ -232,7 +301,7 @@ const Home: React.FC = () => {
                 status={order.status}
                 estimatedAmount={order.estimatedamount}
                 products={order.products}
-                menuComplete={(e) => console.log('buenas')}
+                menuComplete={(e) => completeOrder(index)}
               />
             ))
           }

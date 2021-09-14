@@ -209,8 +209,8 @@ const OrderView: React.FC = () => {
     const arrayLowerCase = data.map(value => {
       return textLowerCase(value.supplier.company)
     })
-    console.log(arrayLowerCase);
-    console.log(textLowerCase(value));
+    //console.log(arrayLowerCase);
+    //console.log(textLowerCase(value));
     //const newFound = arrayLowerCase.find(element => element.includes(textLowerCase(value)))
     const newFound = data.find(element => element.supplier.company.includes(value))
     //console.log(newFound);
