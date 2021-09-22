@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { InputComponent as Input } from '../index';
 import { setModalData } from '../../../store/action/actions';
@@ -26,6 +26,7 @@ const ModalComponent: React.FC<IModalProps> = ({
 
   const tableHeadStyle = "px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
   const tableRowStyle = "px-5 py-2 border-b border-gray-200 bg-white text-sm has-tooltip"
+
   const renderSwitch = (param: string) => {
     switch (param) {
       case 'success':
@@ -38,15 +39,16 @@ const ModalComponent: React.FC<IModalProps> = ({
         return 'bg-blue-400 text-white';
     }
   }
+
   return (
     <>
       <div className={`fixed flex flex-col top-14 left-0 w-full h-full duration-500 border-none z-10 transform
-     ${isOpen
-          ? "translate-x-0 ease-out transition-medium"
-          : "-translate-x-full ease-in transition-medium"
-        }
-    `}>
-        <div className="w-full h-full fixed block top-0 left-0 bg-transparent">
+      ${isOpen
+            ? "translate-x-0 ease-out transition-medium"
+            : "-translate-x-full ease-in transition-medium"
+          }
+      `}>
+        <div className={`w-full h-full fixed block top-0 left-0 bg-transparent`}>
           <div className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-white m-4 mx-auto block relative" style={{ top: "25%" }}>
             <div className="flex flex-col min-h-full">
               <div className="px-6 py-4 border-b">
@@ -80,13 +82,14 @@ const ModalComponent: React.FC<IModalProps> = ({
                     <p className="text-gray-700 text-base">{contentText}</p>
                   </div>
                   :
-                  <div className={`${img ? "pt-0" : ""} px-4 py-6 flex-grow`}>
+                  <div className={`${img ? "pt-0" : ""} px-2 py-2 flex-grow`}>
                     <div className={"inline-block min-w-full shadow rounded-lg overflow-hidden"}>
                       <table className="min-w-full leading-normal">
                         <thead>
                           <tr>
                             <th className={tableHeadStyle}>Nombre</th>
                             <th className={tableHeadStyle}>Cantidad</th>
+                            <th className={tableHeadStyle}>Price</th>
                             <th className={tableHeadStyle}>Notas</th>
                           </tr>
                         </thead>
@@ -97,7 +100,10 @@ const ModalComponent: React.FC<IModalProps> = ({
                               <span className='tooltip rounded shadow-lg p-1 bg-gray-100 text-gray-500 -mt-8'>{content?.product.name}</span>
                                 {truncate(content?.product.name)}</td>
                               <td className={tableRowStyle}>{content?.quantity}</td>
-                              <td className={tableRowStyle}>{content?.note}</td>
+                              <td className={tableRowStyle}>S/.{content?.price}</td>
+                              <td className={tableRowStyle}>
+                              <span className='tooltip rounded shadow-lg p-1 bg-gray-100 text-gray-500 -mt-8'>{content?.note}</span>
+                                {truncate(content?.note, 5)}</td>
                             </tr>
                           </tbody>
                         ))}
