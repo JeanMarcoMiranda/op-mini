@@ -1,8 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom'
 import { setModalData } from '../../../store/action/actions';
+import { RootState } from '../../../store/store'
 
 import { MenuComponentOrder as MenuOrder } from '../index';
+
 interface CardOrderProps {
   createdBy?: string;
   company: string;
@@ -20,6 +23,13 @@ interface CardOrderProps {
   menuComplete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuApprove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+interface IRolesForField {
+  [key: string]: {
+    roles: Array<String>,
+    routes: Array<String>
+  }
 }
 
 const CardOrderComponent: React.FC<CardOrderProps> = ({
@@ -41,6 +51,23 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
   menuApprove,
 }) => {
   const dispatch = useDispatch()
+
+  const { pathname: currentPath } = useLocation()
+
+  // == GLOBAL STATE
+  const { userData } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
+  const userRole = userData.role;
+
+  const ACCESS_ADMINISTRATION_FOR_FIELD: IRolesForField = {
+    actions: {
+      roles: ["Administrador", "Empleado"],
+      routes: ["/order"]
+    }
+  }
+  console.log(userRole)
+
 
   const showAlert = () => {
     dispatch(setModalData({
@@ -66,6 +93,40 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
     }
   }
 
+  const RenderMenu: any = () => {
+    console.log(userRole.name);
+    switch (userRole.name) {
+      case 'Administrador':
+        return (
+          <MenuOrder
+            menuComplete={menuComplete}
+            menuUpdate={menuUpdate}
+            menuCancel={menuCancel}
+            menuDelete={menuDelete}
+            menuApprove={menuApprove}
+          />)
+      case 'Almacenero':
+        return (
+          <MenuOrder
+            menuComplete={menuComplete}
+          />)
+      case 'Empleado':
+        return (
+          <MenuOrder
+            menuComplete={menuComplete}
+            menuCancel={menuCancel}
+            menuApprove={menuApprove}
+          />)
+      case 'Comprador':
+        return (
+          <MenuOrder
+            menuComplete={menuComplete}
+            menuUpdate={menuUpdate}
+            menuCancel={menuCancel}
+          />)
+    }
+  }
+
   return (
     <div className="text-center flex justify-between">
       <div className="bg-white max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg ">
@@ -73,65 +134,59 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
           <p className="ml-6 text-center text-white text-lg">{company}</p>
           <div className="flex mr-4">
             <p className="text-center flex flex-wrap items-center text-white font-thin text-lg">{status} </p>
-            <MenuOrder
-              menuComplete={menuComplete}
-              menuUpdate={menuUpdate}
-              menuCancel={menuCancel}
-              menuDelete={menuDelete}
-              menuApprove={menuApprove}
-            />
+            <RenderMenu />
           </div>
         </div>
 
         <table className="text-left w-full border-collapse">
           <tbody>
             {createdBy && (
-            <tr className="hover:bg-gray-100">
-              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
-              <td className="py-2 px-2 border-b border-grey-light">
-                <p className="text-justify text-sm mr-5 ml-5">{createdBy}</p>
-              </td>
-            </tr>
+              <tr className="hover:bg-gray-100">
+                <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Creado por</p></td>
+                <td className="py-2 px-2 border-b border-grey-light">
+                  <p className="text-justify text-sm mr-5 ml-5">{createdBy}</p>
+                </td>
+              </tr>
             )}
             {receptionDate && (
-            <tr className="hover:bg-gray-100">
-              <td className="py-2 px-2 border-b border-grey-light"><p className="text-left text-sm mr-5 ml-5">Fecha de recepción</p></td>
-              <td className="py-2 px-2 border-b border-grey-light">
-                <p className="text-justify text-sm mr-5 ml-5">{receptionDate}</p>
-              </td>
-            </tr>
+              <tr className="hover:bg-gray-100">
+                <td className="py-2 px-2 border-b border-grey-light"><p className="text-left text-sm mr-5 ml-5">Fecha de recepción</p></td>
+                <td className="py-2 px-2 border-b border-grey-light">
+                  <p className="text-justify text-sm mr-5 ml-5">{receptionDate}</p>
+                </td>
+              </tr>
             )}
             {receivedBy && (
-            <tr className="hover:bg-gray-100">
-              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
-              <td className="py-2 px-2 border-b border-grey-light">
-                <p className="text-justify text-sm mr-5 ml-5">{receivedBy}</p>
-              </td>
-            </tr>
+              <tr className="hover:bg-gray-100">
+                <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Recibido por</p></td>
+                <td className="py-2 px-2 border-b border-grey-light">
+                  <p className="text-justify text-sm mr-5 ml-5">{receivedBy}</p>
+                </td>
+              </tr>
             )}
             {supplier && (
-            <tr className="hover:bg-gray-100">
-              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Proveedor</p></td>
-              <td className="py-2 px-2 border-b border-grey-light">
-                <p className="text-justify text-sm mr-5 ml-5">{supplier}</p>
-              </td>
-            </tr>
+              <tr className="hover:bg-gray-100">
+                <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Proveedor</p></td>
+                <td className="py-2 px-2 border-b border-grey-light">
+                  <p className="text-justify text-sm mr-5 ml-5">{supplier}</p>
+                </td>
+              </tr>
             )}
             {estimatedAmount && (
-            <tr className="hover:bg-gray-100">
-              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
-              <td className="py-2 px-2 border-b border-grey-light">
-                <p className="text-justify text-sm mr-5 ml-5">S/. {estimatedAmount}</p>
-              </td>
-            </tr>
+              <tr className="hover:bg-gray-100">
+                <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto estimado</p></td>
+                <td className="py-2 px-2 border-b border-grey-light">
+                  <p className="text-justify text-sm mr-5 ml-5">S/. {estimatedAmount}</p>
+                </td>
+              </tr>
             )}
             {finalAmount && (
-            <tr className="hover:bg-gray-100">
-              <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
-              <td className="py-2 px-2 border-b border-grey-light">
-                <p className="text-justify text-sm mr-5 ml-5">S/. {finalAmount}</p>
-              </td>
-            </tr>
+              <tr className="hover:bg-gray-100">
+                <td className="py-2 px-2 border-b border-grey-light"><p className="text-justify text-sm mr-5 ml-5">Monto final</p></td>
+                <td className="py-2 px-2 border-b border-grey-light">
+                  <p className="text-justify text-sm mr-5 ml-5">S/. {finalAmount}</p>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -139,10 +194,10 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
           Ver Productos
         </button>
         {type && createdDate && (
-        <div className="flex justify-between px-5 mb-2 text-sm text-gray-600">
-          <p>Tipo de Pedido: {type}</p>
-          <p>Creado el: {createdDate}</p>
-        </div>
+          <div className="flex justify-between px-5 mb-2 text-sm text-gray-600">
+            <p>Tipo de Pedido: {type}</p>
+            <p>Creado el: {createdDate}</p>
+          </div>
         )}
       </div>
     </div>

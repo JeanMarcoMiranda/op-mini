@@ -49,7 +49,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
   }
   const ROLE_KEYS = Object.keys(ACCESS_ADMINISTRATION_FOR_FIELD)
   const FIELD_NAMES = theadData.map(field => field.name)
-
   // == LOGIC FOR GETTING THE FIELDS TO HIDE
   const FIELDS_TO_HIDE = FIELD_NAMES.filter(field => {
     if(ROLE_KEYS.includes(field)){

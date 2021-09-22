@@ -14,7 +14,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData, setToken, setAuthUser } from '../../../store/action/actions';
 import { RootState } from '../../../store/store';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 interface MenuOrderProps {
   menuUpdate?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -24,6 +24,13 @@ interface MenuOrderProps {
   menuApprove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
+interface IRolesForField {
+  [key: string]: {
+    roles: Array<String>,
+    routes: Array<String>
+  }
+}
+
 const MenuComponentOrder: React.FC<MenuOrderProps> = ({
   menuUpdate,
   menuCancel,
@@ -31,8 +38,27 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
   menuDelete,
   menuApprove
 }) => {
-  const MENU_ITEM_DEFAULT_STYLE =
-    'group flex rounded-md items-center w-full p-2 text-sm';
+  const MENU_ITEM_DEFAULT_STYLE = 'group flex rounded-md items-center w-full p-2 text-sm';
+
+  const { pathname: currentPath } = useLocation()
+
+  // == GLOBAL STATE
+  const { userData } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
+  const userRole = userData.role;
+
+  // == BASED ON ROL ADMINISTRATION VARIABLES
+  const ACCESS_ADMINISTRATION_FOR_FIELD: IRolesForField = {
+    actions: {
+      roles: ["Administrador", "Almacenero"],
+      routes: ["/user"]
+    }
+  }
+  const ROLE_KEYS = Object.keys(ACCESS_ADMINISTRATION_FOR_FIELD)
+  //const FIELD_NAMES = theadData?.map(field => field.name)
+
+  //console.log(userRole)
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -66,9 +92,8 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
                     {({ active }) => (
                       <button
                         onClick={menuComplete}
-                        className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                          active ? 'bg-gray-500 text-white' : 'text-gray-900'
-                        }`}
+                        className={`${MENU_ITEM_DEFAULT_STYLE} ${active ? 'bg-gray-500 text-white' : 'text-gray-900'
+                          }`}
                       >
                         {active ? (
                           <CogIcon className="w-5 h-5 mr-2" aria-hidden="true" />
@@ -85,9 +110,8 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
                     {({ active }) => (
                       <button
                         onClick={menuUpdate}
-                        className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                          active ? 'bg-gray-500 text-white' : 'text-gray-900'
-                        }`}
+                        className={`${MENU_ITEM_DEFAULT_STYLE} ${active ? 'bg-gray-500 text-white' : 'text-gray-900'
+                          }`}
                       >
                         {active ? (
                           <DocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />
@@ -104,9 +128,8 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
                     {({ active }) => (
                       <button
                         onClick={menuCancel}
-                        className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                          active ? 'bg-gray-500 text-white' : 'text-gray-900'
-                        }`}
+                        className={`${MENU_ITEM_DEFAULT_STYLE} ${active ? 'bg-gray-500 text-white' : 'text-gray-900'
+                          }`}
                       >
                         {active ? (
                           <DocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />
@@ -123,9 +146,8 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
                     {({ active }) => (
                       <button
                         onClick={menuDelete}
-                        className={`${MENU_ITEM_DEFAULT_STYLE} ${
-                          active ? 'bg-gray-500 text-white' : 'text-gray-900'
-                        }`}
+                        className={`${MENU_ITEM_DEFAULT_STYLE} ${active ? 'bg-gray-500 text-white' : 'text-gray-900'
+                          }`}
                       >
                         {active ? (
                           <DocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />

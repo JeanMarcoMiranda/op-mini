@@ -108,7 +108,7 @@ const appRoutes: RouteData[] = [
     component: OrderView,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Comprador']
+    roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
     path: '/order/create/:id',
