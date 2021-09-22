@@ -29,6 +29,9 @@ export class CreateOrderDto {
   readonly ndocument: string;
 
   @IsString()
+  readonly tdocument: string;
+
+  @IsString()
   @IsNotEmpty()
   readonly type: string;
 

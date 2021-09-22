@@ -75,6 +75,8 @@ interface IFormOrder {
   supplier: string;
   products: IOrderProduct[];
   status: string;
+  ndocument?: string;
+  tdocument?: string;
 }
 
 // Products
@@ -206,6 +208,7 @@ interface IModalProps {
   colorTYB?: string,
   onClickTYB?: MouseEventHandler<HTMLButtonElement>,
   onClickOrdCompl?: MouseEventHandler<HTMLButtonElement>,
+  numOrdCompl?: number,
 }
 
 interface IToastProps {

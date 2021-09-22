@@ -21,6 +21,7 @@ interface MenuOrderProps {
   menuDelete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuComplete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  menuApprove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const MenuComponentOrder: React.FC<MenuOrderProps> = ({
@@ -28,6 +29,7 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
   menuCancel,
   menuComplete,
   menuDelete,
+  menuApprove
 }) => {
   const MENU_ITEM_DEFAULT_STYLE =
     'group flex rounded-md items-center w-full p-2 text-sm';
@@ -131,6 +133,25 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
                           <OutlineDocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />
                         )}
                         Eliminar
+                      </button>
+                    )}
+                  </Menu.Item>
+                )}
+                {menuApprove && (
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        onClick={menuApprove}
+                        className={`${MENU_ITEM_DEFAULT_STYLE} ${
+                          active ? 'bg-gray-500 text-white' : 'text-gray-900'
+                        }`}
+                      >
+                        {active ? (
+                          <DocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+                        ) : (
+                          <OutlineDocumentTextIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+                        )}
+                        Aprobar
                       </button>
                     )}
                   </Menu.Item>

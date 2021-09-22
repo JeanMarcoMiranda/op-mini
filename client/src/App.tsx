@@ -50,6 +50,7 @@ const App = () => {
         onClickTYB={modalData?.onClickTYB}
         inpComplete={modalData?.inpComplete}
         onClickOrdCompl={modalData?.onClickOrdCompl}
+        numOrdCompl={modalData?.numOrdCompl}
       />
       <Toast
         isOpen={toastData?.isOpen}

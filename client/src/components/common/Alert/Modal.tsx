@@ -4,6 +4,7 @@ import { InputComponent as Input } from '../index';
 import { setModalData } from '../../../store/action/actions';
 
 import { truncate } from '../../utils';
+import { RadioGroup } from '@headlessui/react';
 const ModalComponent: React.FC<IModalProps> = ({
   isOpen,
   title,
@@ -18,11 +19,13 @@ const ModalComponent: React.FC<IModalProps> = ({
   colorTYB,
   onClickTYB,
   inpComplete,
-  onClickOrdCompl
+  onClickOrdCompl,
+  numOrdCompl,
 }) => {
   const dispatch = useDispatch()
   const [ordComplDoc, setOrdComplDoc] = useState<string>('')
   const [ordComplAmo, setOrdComplAmo] = useState<string>('')
+  const [ordTDoc, setOrdTDoc] = useState<string>('factura')
 
   const tableHeadStyle = "px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
   const tableRowStyle = "px-5 py-2 border-b border-gray-200 bg-white text-sm has-tooltip"
@@ -66,6 +69,28 @@ const ModalComponent: React.FC<IModalProps> = ({
                     value={ordComplDoc}
                     onChange={e => setOrdComplDoc(e.target.value)}
                   />
+                  <div className="mb-3">
+                    <RadioGroup value={ordTDoc} onChange={setOrdTDoc} className="flex">
+                      <RadioGroup.Option value="factura" 
+                        className={({ active, checked }) => `
+                        ${ checked ? 'bg-blue-500 text-white' : 'bg-white'} 
+                        flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
+                      >
+                        {({ checked }) => (
+                          <span className="">Factura</span>
+                        )}
+                      </RadioGroup.Option>
+                      <RadioGroup.Option value="boleta" 
+                        className={({ active, checked }) => `
+                        ${ checked ? 'bg-blue-500 text-white' : 'bg-white'} 
+                        flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
+                      >
+                        {({ checked }) => (
+                          <span className="">Boleta</span>
+                        )}
+                      </RadioGroup.Option>
+                    </RadioGroup>
+                  </div>
                   <Input
                     type="number"
                     label="Monto Final"
@@ -120,7 +145,7 @@ const ModalComponent: React.FC<IModalProps> = ({
                 {typeButton ?
                   <button className={`${colorTYB ? renderSwitch(colorTYB) : "bg-gray-300 text-gray-600"} font-medium text-sm py-1 px-5 rounded`}
                     onClick={inpComplete ? () => {
-                      onClickOrdCompl(ordComplDoc,ordComplAmo)
+                      onClickOrdCompl(ordComplDoc,ordComplAmo,ordTDoc,numOrdCompl)
                       setOrdComplAmo('')
                       setOrdComplDoc('')
                       } : onClickTYB}>

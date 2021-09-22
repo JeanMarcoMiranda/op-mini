@@ -25,6 +25,8 @@ const initialValues: IFormOrder = {
   supplier: '',
   products: [],
   status: 'Pendiente',
+  ndocument: '',
+  tdocument: '',
 }
 
 const iconValue = {
@@ -197,7 +199,7 @@ const OrderForm: React.FC = () => {
         color: 'success',
         delay: 5
       }))
-      history.push('/product')
+      history.push('/order')
     } else {
       dispatch(setToastData({
         isOpen: true,

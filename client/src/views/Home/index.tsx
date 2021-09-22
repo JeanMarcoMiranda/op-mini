@@ -112,11 +112,8 @@ const Home: React.FC = () => {
 
   const completeOrder = (index: number) => {
     setOrderModalOpen(index)
-    aea(index)
+    console.log(index)
 
-  }
-
-  const aea = (index : number) => {
     dispatch(setModalData({
       isOpen: true,
       setisOpen: (prev => !prev),
@@ -125,12 +122,13 @@ const Home: React.FC = () => {
       cancelButton: true,
       typeButton: 'Completar Pedido',
       colorTYB: 'success',
+      numOrdCompl: index,
       onClickOrdCompl: onClickOrdCompl
     }))
   }
 
-  const onClickOrdCompl = async (Doc: string, FinAmount: string) => {
-    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[orderModalOpen]._id}`;
+  const approveOrder = async (index: number) => {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
     console.log(orderModalOpen);
     const requestInit: RequestInit = {
       method: 'PUT',
@@ -139,11 +137,38 @@ const Home: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ...orderTodayData[orderModalOpen],
+        status: 'Aprobado',
+      }),
+    }
+    console.log(requestInit)
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha aprobado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      getOrder()
+    }
+  }
+
+  const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index:number) => {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
+    console.log(orderModalOpen);
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         createdby: orderTodayData[orderModalOpen].createdby._id,
         supplier: orderTodayData[orderModalOpen].supplier._id,
         finalamount: FinAmount,
         ndocument: Doc,
+        tdocument: tDoc,
         receivedby: userData._id,
         status: 'Completado',
       }),
@@ -151,7 +176,9 @@ const Home: React.FC = () => {
     console.log(requestInit)
     const res = await fetch(url, requestInit);
     if (res.ok) {
-      console.log(res)
+      await orderTodayData[index].products.map(product => {
+        updateProductQuantity(product)
+      })
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -170,8 +197,44 @@ const Home: React.FC = () => {
         delay: 5
       }))
     }
-
     dispatch(setModalData({setisOpen: (prev => !prev)}))
+  }
+
+  const updateProductQuantity = async (product: Product) => {
+    const quantityProd = await getQProd(product.product._id)
+
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const url: RequestInfo = urlPro + `/${product.product._id}`;
+    console.log((Number(product.quantity) + Number(quantityProd)))
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        stock: (Number(product.quantity) + Number(quantityProd)) + '',
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      console.log('Quantity Product')
+    }
+  }
+
+  const getQProd = async (pId: string) => {
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlReq: RequestInfo = urlPro + `/${pId}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlReq, requestInit);
+    const data = await res.json();
+    return data.stock
   }
 
   return show ? (
@@ -294,14 +357,15 @@ const Home: React.FC = () => {
         <div className="grid grid-cols-3 gap-6 mt-6 mb-6">
           {
             orderTodayData.map((order, index) => (
-              <CardOrder
+            <CardOrder
                 key={index}
                 company={order.supplier.company}
                 supplier={order.supplier.name}
                 status={order.status}
                 estimatedAmount={order.estimatedamount}
                 products={order.products}
-                menuComplete={(e) => completeOrder(index)}
+                menuComplete={(order.status === "Aprobado") ? (e) => completeOrder(index) : undefined}
+                menuApprove={(userData.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
               />
             ))
           }

@@ -16,6 +16,7 @@ const initialModalState: IModalProps = {
   colorTYB: '',
   onClickTYB: '',
   onClickOrdCompl: (a:string, b:string) => {},
+  numOrdCompl: 0,
 };
 
 const initialState: AlertState = {

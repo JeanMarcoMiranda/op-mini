@@ -19,6 +19,7 @@ interface CardOrderProps {
   menuDelete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuComplete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  menuApprove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const CardOrderComponent: React.FC<CardOrderProps> = ({
@@ -37,6 +38,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
   menuCancel,
   menuComplete,
   menuDelete,
+  menuApprove,
 }) => {
   const dispatch = useDispatch()
 
@@ -59,7 +61,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
         return 'bg-red-500';
       case 'Pendiente':
         return 'bg-yellow-500';
-      case 'info':
+      case 'Aprobado':
         return 'bg-blue-500';
     }
   }
@@ -76,6 +78,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
               menuUpdate={menuUpdate}
               menuCancel={menuCancel}
               menuDelete={menuDelete}
+              menuApprove={menuApprove}
             />
           </div>
         </div>
