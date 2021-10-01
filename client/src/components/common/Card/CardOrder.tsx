@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom'
 import { setModalData } from '../../../store/action/actions';
 import { RootState } from '../../../store/store'
 
@@ -25,13 +24,6 @@ interface CardOrderProps {
   menuApprove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-interface IRolesForField {
-  [key: string]: {
-    roles: Array<String>,
-    routes: Array<String>
-  }
-}
-
 const CardOrderComponent: React.FC<CardOrderProps> = ({
   createdBy,
   supplier,
@@ -52,22 +44,10 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
 }) => {
   const dispatch = useDispatch()
 
-  const { pathname: currentPath } = useLocation()
-
-  // == GLOBAL STATE
   const { userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
   const userRole = userData.role;
-
-  const ACCESS_ADMINISTRATION_FOR_FIELD: IRolesForField = {
-    actions: {
-      roles: ["Administrador", "Empleado"],
-      routes: ["/order"]
-    }
-  }
-  console.log(userRole)
-
 
   const showAlert = () => {
     dispatch(setModalData({
@@ -94,7 +74,6 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
   }
 
   const RenderMenu: any = () => {
-    console.log(userRole.name);
     switch (userRole.name) {
       case 'Administrador':
         return (
@@ -102,7 +81,6 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
             menuComplete={menuComplete}
             menuUpdate={menuUpdate}
             menuCancel={menuCancel}
-            menuDelete={menuDelete}
             menuApprove={menuApprove}
           />)
       case 'Almacenero':
@@ -114,7 +92,6 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
         return (
           <MenuOrder
             menuComplete={menuComplete}
-            menuCancel={menuCancel}
             menuApprove={menuApprove}
           />)
       case 'Comprador':
@@ -122,7 +99,6 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
           <MenuOrder
             menuComplete={menuComplete}
             menuUpdate={menuUpdate}
-            menuCancel={menuCancel}
           />)
     }
   }
@@ -134,7 +110,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
           <p className="ml-6 text-center text-white text-lg">{company}</p>
           <div className="flex mr-4">
             <p className="text-center flex flex-wrap items-center text-white font-thin text-lg">{status} </p>
-            <RenderMenu />
+            { <RenderMenu /> }
           </div>
         </div>
 

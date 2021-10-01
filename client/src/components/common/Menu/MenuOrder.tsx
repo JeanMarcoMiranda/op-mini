@@ -4,17 +4,13 @@ import {
   ChevronDownIcon,
   CogIcon,
   DocumentTextIcon,
-  LogoutIcon
+  CheckIcon
 } from '@heroicons/react/solid';
 import {
   CogIcon as OutlineCogIcon,
   DocumentTextIcon as OutlineDocumentTextIcon,
-  LogoutIcon as OutlineLogoutIcon
+  CheckIcon as OutlineCheckIcon,
 } from '@heroicons/react/outline'
-import { useDispatch, useSelector } from 'react-redux';
-import { setUserData, setToken, setAuthUser } from '../../../store/action/actions';
-import { RootState } from '../../../store/store';
-import { Link, useHistory, useLocation } from 'react-router-dom';
 
 interface MenuOrderProps {
   menuUpdate?: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -22,13 +18,6 @@ interface MenuOrderProps {
   menuComplete?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuCancel?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   menuApprove?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}
-
-interface IRolesForField {
-  [key: string]: {
-    roles: Array<String>,
-    routes: Array<String>
-  }
 }
 
 const MenuComponentOrder: React.FC<MenuOrderProps> = ({
@@ -39,26 +28,6 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
   menuApprove
 }) => {
   const MENU_ITEM_DEFAULT_STYLE = 'group flex rounded-md items-center w-full p-2 text-sm';
-
-  const { pathname: currentPath } = useLocation()
-
-  // == GLOBAL STATE
-  const { userData } = useSelector<RootState, RootState['user']>(
-    (state) => state.user,
-  );
-  const userRole = userData.role;
-
-  // == BASED ON ROL ADMINISTRATION VARIABLES
-  const ACCESS_ADMINISTRATION_FOR_FIELD: IRolesForField = {
-    actions: {
-      roles: ["Administrador", "Almacenero"],
-      routes: ["/user"]
-    }
-  }
-  const ROLE_KEYS = Object.keys(ACCESS_ADMINISTRATION_FOR_FIELD)
-  //const FIELD_NAMES = theadData?.map(field => field.name)
-
-  //console.log(userRole)
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -96,9 +65,9 @@ const MenuComponentOrder: React.FC<MenuOrderProps> = ({
                           }`}
                       >
                         {active ? (
-                          <CogIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+                          <CheckIcon className="w-5 h-5 mr-2" aria-hidden="true" />
                         ) : (
-                          <OutlineCogIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+                          <OutlineCheckIcon className="w-5 h-5 mr-2" aria-hidden="true" />
                         )}
                         Completar
                       </button>
