@@ -609,7 +609,7 @@ const OrderView: React.FC = () => {
                       <Card
                         key={index}
                         menuComplete={(order.status === "Aprobado") ? (e) => orderComplete(index) : undefined}
-                        menuUpdate={(order.status != "Completado") ? (e) => orderUpdate(index) : undefined}
+                        menuUpdate={(order.status != "Completado" && order.status != "Cancelado" ) ? (e) => orderUpdate(index) : undefined}
                         menuCancel={(order.status === "Completado") ? (e) => orderCancel(index) : undefined}
                         menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
                         createdBy={order.createdby.name}
