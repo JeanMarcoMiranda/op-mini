@@ -10,7 +10,7 @@ import {
   LoadingSectionComponent as LoadSection,
   DatePickerComponent as DatePicker,
 } from '../../components/common';
-import { toHoverStyle } from '../../components/utils';
+import { roundDecimals, toHoverStyle } from '../../components/utils';
 import { formatDate, filterDuplicate } from '../../components/utils';
 import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid';
 
@@ -21,6 +21,7 @@ interface IProductOrder {
     _id: string;
   };
   quantity: string;
+  price: string;
 }
 
 interface IOrder {
@@ -58,6 +59,7 @@ const OrderView: React.FC = () => {
   const [searchVal, setSearchVal] = useState('');
   const [startDate, setStartDate] = useState(dayStart)
   const [endDate, setEndDate] = useState(dayEnd)
+  const [orderModalOpen, setOrderModalOpen] = useState<number>(0)
 
   const { access_token, userData: userDataT } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
@@ -274,16 +276,175 @@ const OrderView: React.FC = () => {
     setShowBlock(false)
   }
 
-  const orderComplete = () => {
-    console.log("Completado")
+  const orderComplete = (index: number) => {
+    setOrderModalOpen(index)
+    console.log(index)
+
+    dispatch(setModalData({
+      isOpen: true,
+      setisOpen: (prev => !prev),
+      title: `Completar el pedido de ${orderData[index].supplier.company}`,
+      inpComplete: true,
+      cancelButton: true,
+      typeButton: 'Completar Pedido',
+      colorTYB: 'success',
+      numOrdCompl: index,
+      onClickOrdCompl: onClickOrdCompl
+    }))
   }
 
-  const orderUpdate = () => {
+  const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index:number) => {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        createdby: orderData[index].createdby._id,
+        supplier: orderData[index].supplier._id,
+        finalamount: FinAmount,
+        ndocument: Doc,
+        tdocument: tDoc,
+        receivedby: userDataT._id,
+        status: 'Completado',
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      await orderData[index].products.map(product => {
+        updateProductQuantity(product, 'completar')
+      })
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha completado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      getOrder()
+    } else {
+      console.log(res)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+    dispatch(setModalData({setisOpen: (prev => !prev)}))
+  }
+
+  const updateProductQuantity = async (product: IProductOrder, action: string) => {
+    const quantityProd = await getQProd(product.product._id)
+
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const url: RequestInfo = urlPro + `/${product.product._id}`;
+    let requestInit: RequestInit = {}
+    if(action === "completar") {
+      requestInit = {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pricebuy: roundDecimals(Number(product.price) / Number(product.quantity)) + '',
+          stock: (Number(product.quantity) + Number(quantityProd.stock)) + '',
+        }),
+      }
+    }else if (action === "cancelar"){
+      requestInit = {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pricebuy: quantityProd.lastpricebuy,
+          stock: (Number(quantityProd.stock) - Number(product.quantity)) + '',
+        }),
+      }
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      console.log('Quantity Product')
+    }
+  }
+
+  const getQProd = async (pId: string) => {
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlReq: RequestInfo = urlPro + `/${pId}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlReq, requestInit);
+    const data = await res.json();
+    return data
+  }
+
+  const orderUpdate = (index: number) => {
     console.log("Update")
   }
 
-  const orderCancel = () => {
-    console.log("Cancel")
+  const orderCancel = (index: number) => {
+    dispatch(setModalData({
+      isOpen: true,
+      setisOpen: (prev => !prev),
+      title: '¿Esta seguro que desea cancelar el elemento?',
+      contentText: 'El elemento seleccionado sera cancelado',
+      cancelButton: true,
+      typeButton: 'Si, Cancelalo',
+      colorTYB: 'danger',
+      onClickTYB: () => cancelOrder(index!)
+    }))
+  }
+
+  const cancelOrder = async (index: number) => {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        createdby: orderData[index].createdby._id,
+        supplier: orderData[index].supplier._id,
+        receivedby: orderData[index].receivedby._id,
+        status: 'Cancelado',
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      await orderData[index].products.map(product => {
+        updateProductQuantity(product,'cancelar')
+      })
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha cancelado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      initialRender()
+    } else {
+      console.log(res)
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+    dispatch(setModalData({setisOpen: (prev => !prev)}))
   }
 
   const orderDelete = async (id: string) => {
@@ -323,6 +484,31 @@ const OrderView: React.FC = () => {
         colorTYB: 'danger',
         onClickTYB: () => orderDelete(id!)
       }))
+    }
+  }
+
+  const approveOrder = async (index: number) => {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: 'Aprobado',
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha aprobado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      initialRender()
     }
   }
 
@@ -422,10 +608,10 @@ const OrderView: React.FC = () => {
                     orderData.map((order, index) => (
                       <Card
                         key={index}
-                        menuComplete={orderComplete}
-                        menuUpdate={orderUpdate}
-                        menuCancel={orderCancel}
-                        menuDelete={() => showAlert('delete',order._id)}
+                        menuComplete={(order.status === "Aprobado") ? (e) => orderComplete(index) : undefined}
+                        menuUpdate={(order.status != "Completado") ? (e) => orderUpdate(index) : undefined}
+                        menuCancel={(order.status === "Completado") ? (e) => orderCancel(index) : undefined}
+                        menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
                         createdBy={order.createdby.name}
                         company={order.supplier.company}
                         supplier={order.supplier.name}
@@ -450,3 +636,4 @@ const OrderView: React.FC = () => {
   ) : <Load />
 }
 export default OrderView;
+//menuDelete={() => showAlert('delete',order._id)}

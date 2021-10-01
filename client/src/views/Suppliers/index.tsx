@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
+import { useForm, Controller } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
-
+import {
+  SearchIcon,
+} from '@heroicons/react/outline';
 import {
   ButtonComponent as Button,
   TableComponent as Table,
+  InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
 import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
@@ -31,10 +35,20 @@ const tableNotification = [
   { text: 'Numero de documento'},
 ];
 
+const iconValue = {
+  isActive: true,
+  Icon: SearchIcon,
+};
+
+
 const SupplierView: React.FC = () => {
   const dispatch = useDispatch()
   const [supplierData, setSupplierData] = useState<ISupplier[]>([]);
   const [tableData, setTableData] = useState<ISupplierTableData[]>([]);
+  const [searchVal, setSearchVal] = useState('');
+  const { setValue, control } = useForm<TFormValues<ISearch>>({
+    defaultValues: { values: { search: '' } },
+  });
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
@@ -45,6 +59,15 @@ const SupplierView: React.FC = () => {
     getSupplierData()
     //eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (searchVal.length > 2) {
+      getSearchSupplier(searchVal);
+    } else {
+      getSupplierData();
+    }
+    // eslint-disable-next-line
+  }, [searchVal]);
 
   useEffect(() => {
     if (supplierData === []) return;
@@ -60,6 +83,13 @@ const SupplierView: React.FC = () => {
         showActions = {
           edit: true,
           delete: true,
+          order: true,
+        }
+      }
+      if (role === "Empleado") {
+        showActions = {
+          edit: false,
+          delete: false,
           order: true,
         }
       }
@@ -164,6 +194,31 @@ const SupplierView: React.FC = () => {
     }
   }
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('values', {
+      search: event.target.value,
+    });
+    setSearchVal(event.target.value);
+  };
+
+  const getSearchSupplier = async (search: string) => {
+    const urlSearch: RequestInfo = `http://localhost:8000/suppliers/search/${search}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlSearch, requestInit);
+    const data = await res.json();
+    if (res.ok) {
+      setSupplierData(data);
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
+
   return (
     <>
       <div className="container mx-auto">
@@ -184,6 +239,29 @@ const SupplierView: React.FC = () => {
               }
               </div>
             </div>
+
+            <div className="box mx-6 mt-6 mb-3">
+              <div className="box-wrapper">
+                <div className=" bg-white rounded flex items-center w-full shadow-sm border border-gray-200">
+                  <Controller
+                    control={control}
+                    name="values.search"
+                    render={({ field: { value, name } }) => (
+                      <Input
+                        type="search"
+                        label=""
+                        name={name}
+                        value={value}
+                        onChange={handleChange}
+                        placeholder="Buscar proveedor por empresa..."
+                        icon={iconValue}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+
             <div className="my-3">
               <Table
                 theadData={tableFieldData}

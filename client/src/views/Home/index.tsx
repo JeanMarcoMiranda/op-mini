@@ -9,7 +9,7 @@ import { useDateTime } from '../../components/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setModalData, setToastData } from '../../store/action/actions';
-import { formatDate } from '../../components/utils';
+import { formatDate, roundDecimals } from '../../components/utils';
 
 const buttonProps: ButtonProps = {
   label: 'Vistar',
@@ -25,6 +25,7 @@ interface Product {
     _id: string;
   };
   quantity: string;
+  price: string;
 }
 
 interface IOrder {
@@ -129,7 +130,6 @@ const Home: React.FC = () => {
 
   const approveOrder = async (index: number) => {
     const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
-    console.log(orderModalOpen);
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -164,8 +164,8 @@ const Home: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        createdby: orderTodayData[orderModalOpen].createdby._id,
-        supplier: orderTodayData[orderModalOpen].supplier._id,
+        createdby: orderTodayData[index].createdby._id,
+        supplier: orderTodayData[index].supplier._id,
         finalamount: FinAmount,
         ndocument: Doc,
         tdocument: tDoc,
@@ -213,6 +213,7 @@ const Home: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        pricebuy: roundDecimals(Number(product.price) / Number(product.quantity)) + '',
         stock: (Number(product.quantity) + Number(quantityProd)) + '',
       }),
     }
@@ -351,26 +352,27 @@ const Home: React.FC = () => {
             />
           ))}
         </div>
-        <div className="flex items-center h-10 intro-y my-3">
-          <h2 className="text-2xl font-semibold tracking-wide">Pedidos para Hoy</h2>
-        </div>
-        <div className="grid grid-cols-3 gap-6 mt-6 mb-6">
-          {
-            orderTodayData.map((order, index) => (
-            <CardOrder
-                key={index}
-                company={order.supplier.company}
-                supplier={order.supplier.name}
-                status={order.status}
-                estimatedAmount={order.estimatedamount}
-                products={order.products}
-                menuComplete={(order.status === "Aprobado") ? (e) => completeOrder(index) : undefined}
-                menuApprove={(userData.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
-              />
-            ))
-          }
-        </div>
-
+        {(orderTodayData.length !== 0) && (<>
+          <div className="flex items-center h-10 intro-y my-3">
+            <h2 className="text-2xl font-semibold tracking-wide">Pedidos para Hoy</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-6 mt-6 mb-6">
+            {
+              orderTodayData.map((order, index) => (
+              <CardOrder
+                  key={index}
+                  company={order.supplier.company}
+                  supplier={order.supplier.name}
+                  status={order.status}
+                  estimatedAmount={order.estimatedamount}
+                  products={order.products}
+                  menuComplete={(order.status === "Aprobado") ? (e) => completeOrder(index) : undefined}
+                  menuApprove={(userData.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
+                />
+              ))
+            }
+          </div></>
+        )}
       </div>
     </div>
   ) : (<Loading />);

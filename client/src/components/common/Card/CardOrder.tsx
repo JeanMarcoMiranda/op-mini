@@ -66,8 +66,6 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
       routes: ["/order"]
     }
   }
-  console.log(userRole)
-
 
   const showAlert = () => {
     dispatch(setModalData({
@@ -94,7 +92,6 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
   }
 
   const RenderMenu: any = () => {
-    console.log(userRole.name);
     switch (userRole.name) {
       case 'Administrador':
         return (
@@ -134,7 +131,7 @@ const CardOrderComponent: React.FC<CardOrderProps> = ({
           <p className="ml-6 text-center text-white text-lg">{company}</p>
           <div className="flex mr-4">
             <p className="text-center flex flex-wrap items-center text-white font-thin text-lg">{status} </p>
-            <RenderMenu />
+            {RenderMenu()}
           </div>
         </div>
 

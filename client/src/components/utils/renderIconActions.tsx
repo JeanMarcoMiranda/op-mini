@@ -11,11 +11,12 @@ const renderIconActions = (
   idCRUD: string,
   crudName: string,
   showAlert: (type: string, id?: string | undefined) => void,
-  showAction: {edit?: boolean, delete?: boolean, order?: boolean} = {}
+  showAction: {edit?: boolean, delete?: boolean, order?: boolean, more?: boolean} = {}
 ) => {
   let editAct = false
   let deleteAct = false
   let orderAct = false
+  let moreAct = true
   for (const property in showAction) {
     switch (property) {
       case "edit":
@@ -27,17 +28,22 @@ const renderIconActions = (
       case "order":
         orderAct = showAction[property] ? true : false
         break;
+      case "more":
+        moreAct = showAction[property] ? true : false
+        break
     }
   }
   return (
   <div className="flex item-center justify-center">
-    <Icon
-      width={5}
-      color="blue"
-      Icon={AnnotationIcon}
-      hover
-      onClick={() => showAlert('notifi', idCRUD)}
-      />
+    {moreAct && 
+      <Icon
+        width={5}
+        color="blue"
+        Icon={AnnotationIcon}
+        hover
+        onClick={() => showAlert('notifi', idCRUD)}
+        />
+    }
     {editAct &&
       <Link to={`/${crudName}/form/${idCRUD}`}>
         <Icon

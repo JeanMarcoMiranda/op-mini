@@ -31,6 +31,12 @@ export class SupplierRepository {
     return supplier;
   }
 
+  public async findCompanySupplier(name:string): Promise<Supplier[]> {
+    let regex = new RegExp(["^.*", name, ".*$"].join(""), "i");
+    const product = await this.supplierModel.find({$or:[{"company": regex}]}).exec()
+    return product
+  }
+
 
   public async updateSupplier(
     id: string,
@@ -49,7 +55,7 @@ export class SupplierRepository {
     return updateSupplier;
   }
 
-  
+
   public async removeSupplier(id: string): Promise<Supplier> {
     return this.supplierModel.findByIdAndDelete(id);
   }

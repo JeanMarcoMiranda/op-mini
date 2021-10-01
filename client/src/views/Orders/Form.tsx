@@ -9,9 +9,8 @@ import {
   TableComponent as Table,
   IconComponent as Icon,
   DatePickerComponent as DatePicker,
-  TextAreaComponent as TextArea,
 } from '../../components/common';
-import { isNumeric, toHoverStyle } from '../../components/utils';
+import { isNumeric, roundDecimals, toHoverStyle } from '../../components/utils';
 import { SearchIcon, XIcon } from '@heroicons/react/solid';
 
 const initialValues: IFormOrder = {
@@ -161,7 +160,7 @@ const OrderForm: React.FC = () => {
         note: '',
         price: nprol.pricebuy,
       }
-      
+
       setOrderListObj([...orderListObj, nobjl])
       setOrderListData([...orderListData, nprol])
     }
@@ -267,7 +266,7 @@ const OrderForm: React.FC = () => {
     const nOrderListObj2 = orderListObj.slice()
     const obj = nOrderListObj2[index]
     obj.note = e.target.value
-    
+
     setOrderListObj([...nOrderListObj2])
   }
 
@@ -280,7 +279,7 @@ const OrderForm: React.FC = () => {
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Pedidos</h6>
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">{supplierData?.name} - {supplierData?.company}</h6>
-                <Link to="/order">
+                <Link to="/supplier">
                   <Button
                     label="Regresar"
                     bgColor="bg-gradient-to-r from-green-400 to-green-500"
@@ -340,7 +339,7 @@ const OrderForm: React.FC = () => {
                           type="text"
                           label="Total"
                           name={prod.name}
-                          value={orderListObj[index].price}
+                          value={roundDecimals(Number(orderListObj[index].price))}
                           disabled={true}
                         />
                       </div>
@@ -366,15 +365,15 @@ const OrderForm: React.FC = () => {
                       textColor="white"
                       onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
                       onClick={() => createOrder(orderListObj)}
-                    /> 
+                    />
                   </div>
                   <div className="flex-auto my-3">
-                    <DatePicker 
+                    <DatePicker
                       text={"Recepción:"}
                       selected={startDate}
                       startDate={startDate}
                       endDate={endDate}
-                      handleDateChange={setStartDate} 
+                      handleDateChange={setStartDate}
                     />
                   </div>
                   <div className="flex-auto my-3 mr-3">

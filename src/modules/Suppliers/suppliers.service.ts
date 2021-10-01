@@ -22,6 +22,10 @@ export class SupplierService {
     return this.supplierRepository.findOneSupplier(id);
   }
 
+  public async findCompanySupplier(name: string): Promise<Supplier[]> {
+    return this.supplierRepository.findCompanySupplier(name);
+  }
+
   public async updateSupplier(
     id: string,
     documentUpdate: UpdateSupplierDto,

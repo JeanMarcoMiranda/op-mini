@@ -37,6 +37,11 @@ export class SupplierController {
     return this.supplierService.findOneSupplier(id);
   }
 
+  @Get('search/:name')
+  public async getNameSuplier(@Param('name') name: string): Promise<Supplier[]> {
+    return this.supplierService.findCompanySupplier(name);
+  }
+
   @Put(':id')
   public async putSupplier(
     @Param('id') id: string,

@@ -16,7 +16,7 @@ const navRoutes: RouteSideBar[] = [
   {
     label: 'Categorías',
     Icon: BookmarkAltIcon,
-    path: '/categories',
+    path: '/category',
     roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
   },
   {
@@ -35,7 +35,7 @@ const navRoutes: RouteSideBar[] = [
     label: 'Pedidos',
     Icon: ClipboardCheckIcon,
     path: '/order',
-    roles: ['Administrador']
+    roles: ['Administrador', 'Empleado', 'Comprador']
   },
 ]
 

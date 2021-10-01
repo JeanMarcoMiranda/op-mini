@@ -44,7 +44,10 @@ interface IFormSupplier {
 
 // Orders
 interface IOrderProduct {
-  product: string;
+  product: string | {
+    name: string;
+    _id: string;
+  };
   quantity: string;
   note: string;
   price: number | string;
@@ -139,6 +142,18 @@ interface ICategory {
   _id: string;
   name: string;
   active: boolean;
+}
+
+interface IFormCategory {
+  name: string;
+  active: ISelectOption;
+}
+
+interface ICategoryData {
+  _id: string;
+  name: string;
+  active: JSX.Element;
+  actions: JSX.Element
 }
 
 //Users

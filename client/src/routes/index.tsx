@@ -10,6 +10,7 @@ import UserForm from "../views/Users/Form";
 import OrderView from "../views/Orders";
 import OrderForm from "../views/Orders/Form";
 import CategoryView from "../views/Categories";
+import CategoryForm from "../views/Categories/Form";
 
 
 const appRoutes: RouteData[] = [
@@ -115,14 +116,35 @@ const appRoutes: RouteData[] = [
     component: OrderForm,
     exact: true,
     type: 'private',
-    roles: ['Administrador']
+    roles: ['Administrador', 'Empleado']
   },
   {
-    path: '/categories',
+    path: '/category',
     component: CategoryView,
     exact: true,
     type: 'private',
     roles: ['Administrador', 'Almacenero', 'Empleado', 'Comprador']
+  },
+  {
+    path: '/category/form',
+    component: CategoryForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenero']
+  },
+  {
+    path: '/category/form/:id',
+    component: CategoryForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Almacenero']
+  },
+  {
+    path: '/category/update/:id',
+    component: CategoryForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
   },
 ]
 
