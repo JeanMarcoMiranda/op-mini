@@ -191,6 +191,7 @@ const ProductForm: React.FC = () => {
         'date': dateNow.toString(),
         'active': data.active.value,
         'category': data.category?.value,
+        'lastpricebuy': '',
       }),
     }
     const res = await fetch(urlPro, requestInit);

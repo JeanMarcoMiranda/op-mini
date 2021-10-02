@@ -356,6 +356,8 @@ const OrderView: React.FC = () => {
         }),
       }
     }else if (action === "cancelar"){
+      console.log(quantityProd.lastpricebuy);
+      console.log((Number(quantityProd.stock) - Number(product.quantity)) + '');
       requestInit = {
         method: 'PUT',
         headers: {
@@ -363,7 +365,7 @@ const OrderView: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pricebuy: quantityProd.lastpricebuy,
+          pricebuy: '0.5',
           stock: (Number(quantityProd.stock) - Number(product.quantity)) + '',
         }),
       }
@@ -371,6 +373,8 @@ const OrderView: React.FC = () => {
     const res = await fetch(url, requestInit);
     if (res.ok) {
       console.log('Quantity Product')
+    }else {
+      console.log('no se pudo we');
     }
   }
 
@@ -402,7 +406,7 @@ const OrderView: React.FC = () => {
       cancelButton: true,
       typeButton: 'Si, Cancelalo',
       colorTYB: 'danger',
-      onClickTYB: () => cancelOrder(index!)
+      onClickTYB: () => cancelOrder(index)
     }))
   }
 
