@@ -60,12 +60,13 @@ const OrderForm: React.FC = () => {
   const [orderListObj, setOrderListObj] = useState<IOrderProduct[]>([])
 
   const [startDate, setStartDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
+  const [endDate] = useState(new Date())
   const [estimatedTotal, setEstimatedTotal] = useState('0')
 
   useEffect(() => {
     setOrderData({...orderData, supplier: id})
     getSupplierData(id)
+    //eslint-disable-next-line
   }, [])
 
   useEffect( () => {
@@ -76,12 +77,14 @@ const OrderForm: React.FC = () => {
         prepareSearchTableData()
       }
     }
+    //eslint-disable-next-line
   }, [searchVal])
 
   useEffect( () => {
     if (companyProducts.length > 0) {
       prepareSearchTableData()
     }
+    //eslint-disable-next-line
   }, [companyProducts])
 
   useEffect(()=> {

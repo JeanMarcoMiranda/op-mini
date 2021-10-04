@@ -40,6 +40,7 @@ const CategoryForm: React.FC = () => {
 
   useEffect(() => {
     id ? getCategory() : setShow(true)
+    //eslint-disable-next-line
   }, [])
 
   const getCategory = async () => {

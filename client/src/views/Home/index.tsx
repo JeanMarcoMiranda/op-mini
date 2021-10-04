@@ -84,6 +84,7 @@ const Home: React.FC = () => {
     };
     getWeather();
     getOrder();
+    //eslint-disable-next-line
   }, []);
 
   const getOrder = async () => {
@@ -150,7 +151,7 @@ const Home: React.FC = () => {
         color: 'success',
         delay: 5
       }))
-      getOrder()
+      getOrder();
     }
   }
 

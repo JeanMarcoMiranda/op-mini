@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { InputComponent as Input } from '../index';
 import { setModalData } from '../../../store/action/actions';
@@ -73,18 +73,18 @@ const ModalComponent: React.FC<IModalProps> = ({
                   />
                   <div className="mb-3">
                     <RadioGroup value={ordTDoc} onChange={setOrdTDoc} className="flex">
-                      <RadioGroup.Option value="factura" 
+                      <RadioGroup.Option value="factura"
                         className={({ active, checked }) => `
-                        ${ checked ? 'bg-blue-500 text-white' : 'bg-white'} 
+                        ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
                         flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                       >
                         {({ checked }) => (
                           <span className="">Factura</span>
                         )}
                       </RadioGroup.Option>
-                      <RadioGroup.Option value="boleta" 
+                      <RadioGroup.Option value="boleta"
                         className={({ active, checked }) => `
-                        ${ checked ? 'bg-blue-500 text-white' : 'bg-white'} 
+                        ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
                         flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                       >
                         {({ checked }) => (

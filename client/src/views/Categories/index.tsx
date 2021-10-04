@@ -5,7 +5,6 @@ import { setToastData, setModalData } from '../../store/action/actions';
 import {
   ButtonComponent as Button,
   TableComponent as Table,
-  InputComponent as Input,
 	LoadingPageComponent as Loading,
 } from '../../components/common';
 import { RootState } from '../../store/store';
@@ -30,6 +29,7 @@ const CategoryView: React.FC = () => {
 
 	useEffect(() => {
 		getCategories()
+    //eslint-disable-next-line
 	}, [])
 
 	useEffect(() => {

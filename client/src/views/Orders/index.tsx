@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { RootState } from '../../store/store';
 import { useSelector, useDispatch } from 'react-redux';
-import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
+import { setModalData, setToastData } from '../../store/action/actions';
 
 import {
   CardOrderComponent as Card,
@@ -59,7 +59,7 @@ const OrderView: React.FC = () => {
   const [searchVal, setSearchVal] = useState('');
   const [startDate, setStartDate] = useState(dayStart)
   const [endDate, setEndDate] = useState(dayEnd)
-  const [orderModalOpen, setOrderModalOpen] = useState<number>(0)
+  //const [orderModalOpen, setOrderModalOpen] = useState<number>(0)
 
   const { access_token, userData: userDataT } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
@@ -76,7 +76,6 @@ const OrderView: React.FC = () => {
   }, [searchVal]);
 
   useEffect(() => {
-    //console.log(orderData.length);
     (orderData.length !== 0) && setShow(true) && setShowBlock(false);
   }, [orderData])
 
@@ -204,13 +203,12 @@ const OrderView: React.FC = () => {
     const data: IOrder[] = await getOrder();
     const newOrderData: IOrder[] = [];
 
-    const textLowerCase = (value: string) => {
+    /*const textLowerCase = (value: string) => {
       return value.toLowerCase()
-    }
-
-    const arrayLowerCase = data.map(value => {
+    }*/
+    /*const arrayLowerCase = data.map(value => {
       return textLowerCase(value.supplier.company)
-    })
+    })*/
     //console.log(arrayLowerCase);
     //console.log(textLowerCase(value));
     //const newFound = arrayLowerCase.find(element => element.includes(textLowerCase(value)))
@@ -277,8 +275,8 @@ const OrderView: React.FC = () => {
   }
 
   const orderComplete = (index: number) => {
-    setOrderModalOpen(index)
-    console.log(index)
+    //setOrderModalOpen(index)
+    //console.log(index)
 
     dispatch(setModalData({
       isOpen: true,
@@ -462,6 +460,7 @@ const OrderView: React.FC = () => {
       },
     };
     const res = await fetch(urlDelete, requestInit);
+    console.log(res)
     initialRender();
     dispatch(setModalData({ setisOpen: (prev => !prev) }))
     showAlert('toast')
@@ -609,11 +608,11 @@ const OrderView: React.FC = () => {
                 :
                 <div className="grid grid-cols-3 gap-6 mt-6 mb-6">
                   {
-                    orderData.map((order, index) => (
+                    orderData.slice(0).reverse().map((order, index) => (
                       <Card
                         key={index}
                         menuComplete={(order.status === "Aprobado") ? (e) => orderComplete(index) : undefined}
-                        menuUpdate={(order.status != "Completado" && order.status != "Cancelado" ) ? (e) => orderUpdate(index) : undefined}
+                        menuUpdate={(order.status !== "Completado" && order.status !== "Cancelado" ) ? (e) => orderUpdate(index) : undefined}
                         menuCancel={(order.status === "Completado") ? (e) => orderCancel(index) : undefined}
                         menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
                         createdBy={order.createdby.name}
