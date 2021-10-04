@@ -110,6 +110,7 @@ interface IProductResponse {
   active: boolean;
   category: string;
   company: string;
+  lastpricebuy?: string
 }
 
 interface IProductTableData {

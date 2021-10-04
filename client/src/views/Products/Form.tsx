@@ -28,6 +28,8 @@ const ProductForm: React.FC = () => {
   const [categoryOptions, setCategoryOptions] = useState<ISelectOption[]>([])
   const [selActive, setSelActive] = useState<ISelectOption>(activeOptions[0])
   const [selCategory, setSelCategory] = useState<ISelectOption>()
+  const [lastPrice, setLastPrice] = useState<string>('0')
+  const [newLastPrice, setNewLastPrice] = useState<string>('0')
   const { control, handleSubmit, setValue } = useForm<TFormValues<IFormProduct>>({
     defaultValues: {
       values: {
@@ -68,11 +70,13 @@ const ProductForm: React.FC = () => {
   const getProduct = async () => {
     const urlReq: RequestInfo = urlPro + `/${id}`;
     const response = await fetch(urlReq);
-    const { name, barcode, stock, pricebuy, pricesell, description, active, category, company }: IProductResponse = await response.json();
+    const { name, barcode, stock, pricebuy, pricesell, description, active, category, company, lastpricebuy }: IProductResponse = await response.json();
     const activeOption = active ? activeOptions[0] : activeOptions[1];
     const categoryOption = categoryOptions.find(cat => cat.value === category)
     const dateNow = new Date()
     if (response.ok) {
+      lastpricebuy && setLastPrice(lastpricebuy)
+      setNewLastPrice(pricebuy)
       setValue('values', {
         barcode,
         name,
@@ -151,6 +155,7 @@ const ProductForm: React.FC = () => {
         'date': dateNow.toString(),
         'active': data.active.value,
         'category': data.category?.value,
+        'lastpricebuy': (newLastPrice === data.pricebuy) ? lastPrice : newLastPrice
       }),
     }
     const res = await fetch(url, requestInit);
@@ -191,7 +196,7 @@ const ProductForm: React.FC = () => {
         'date': dateNow.toString(),
         'active': data.active.value,
         'category': data.category?.value,
-        'lastpricebuy': '',
+        'lastpricebuy': '0',
       }),
     }
     const res = await fetch(urlPro, requestInit);

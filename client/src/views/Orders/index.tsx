@@ -323,7 +323,7 @@ const OrderView: React.FC = () => {
         color: 'success',
         delay: 5
       }))
-      getOrder()
+      initialRender()
     } else {
       console.log(res)
       dispatch(setToastData({
@@ -351,6 +351,7 @@ const OrderView: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          lastpricebuy: quantityProd.pricebuy,
           pricebuy: roundDecimals(Number(product.price) / Number(product.quantity)) + '',
           stock: (Number(product.quantity) + Number(quantityProd.stock)) + '',
         }),
@@ -365,7 +366,7 @@ const OrderView: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pricebuy: '0.5',
+          pricebuy: quantityProd.lastpricebuy,
           stock: (Number(quantityProd.stock) - Number(product.quantity)) + '',
         }),
       }
@@ -613,7 +614,7 @@ const OrderView: React.FC = () => {
                       <Card
                         key={index}
                         menuComplete={(order.status === "Aprobado") ? (e) => orderComplete(index) : undefined}
-                        menuUpdate={(order.status != "Completado" && order.status != "Cancelado" ) ? (e) => orderUpdate(index) : undefined}
+
                         menuCancel={(order.status === "Completado") ? (e) => orderCancel(index) : undefined}
                         menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
                         createdBy={order.createdby.name}
@@ -641,3 +642,4 @@ const OrderView: React.FC = () => {
 }
 export default OrderView;
 //menuDelete={() => showAlert('delete',order._id)}
+//menuUpdate={(order.status != "Completado" && order.status != "Cancelado" ) ? (e) => orderUpdate(index) : undefined}
