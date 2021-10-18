@@ -11,6 +11,8 @@ import OrderView from "../views/Orders";
 import OrderForm from "../views/Orders/Form";
 import CategoryView from "../views/Categories";
 import CategoryForm from "../views/Categories/Form";
+import SaleView from "../views/Sales";
+import SaleForm from "../views/Sales/Form";
 
 
 const appRoutes: RouteData[] = [
@@ -145,6 +147,27 @@ const appRoutes: RouteData[] = [
     exact: true,
     type: 'private',
     roles: ['Administrador']
+  },
+  {
+    path: '/sale',
+    component: SaleView,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Empleado']
+  },
+  {
+    path: '/sale/form',
+    component: SaleForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Empleado']
+  },
+  {
+    path: '/sale/form/:id',
+    component: SaleForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador', 'Empleado']
   },
 ]
 

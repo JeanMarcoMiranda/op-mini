@@ -46,8 +46,8 @@ const InputComponent: React.FC<InputComponentProps> = ({
       }
       <input
         type={type}
-        className={`border-0 px-3 py-3 placeholder-gray-300 text-gray-600 
-        ${disabled ? 'bg-gray-200' : 'bg-white'} 
+        className={`border-0 px-3 py-2 placeholder-gray-300 text-gray-600
+        ${disabled ? 'bg-gray-200' : 'bg-white'}
         text-sm shadow focus:outline-none focus:ring w-full`}
         placeholder={label ? label : placeholder}
         value={value}

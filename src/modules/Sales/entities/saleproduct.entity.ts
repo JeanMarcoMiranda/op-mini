@@ -4,7 +4,7 @@ import { Document, Types } from 'mongoose';
 import { Product } from 'src/modules/Products/entities/product.entity';
 
 @Schema()
-export class OrderProduct extends Document {
+export class SaleProduct extends Document {
 
   @Prop({ required: true, type: Types.ObjectId, ref: Product.name })
   product: Product | Types.ObjectId;
@@ -13,10 +13,7 @@ export class OrderProduct extends Document {
   quantity: string;
 
   @Prop()
-  note: string;
-
-  @Prop()
   price: string;
 }
 
-export const OrderProductSchema = SchemaFactory.createForClass(OrderProduct);
+export const SaleProductSchema = SchemaFactory.createForClass(SaleProduct);

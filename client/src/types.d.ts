@@ -42,6 +42,16 @@ interface IFormSupplier {
   active: ISelectOption;
 }
 
+// Sales
+interface ISaleProduct {
+  product: {
+    name: string;
+    _id: string;
+  };
+  quantity: string;
+  price: string;
+}
+
 // Orders
 interface IOrderProduct {
   product: string | {

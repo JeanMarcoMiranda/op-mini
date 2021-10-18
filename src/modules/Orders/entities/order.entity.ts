@@ -9,6 +9,7 @@ export interface Product {
   product: Types.ObjectId;
   quantity: string;
   note: string;
+  price: string;
 }
 
 @Schema()
