@@ -24,6 +24,9 @@ export class Product extends Document {
   pricesell: string;
 
   @Prop()
+  lastpricesell: string;
+
+  @Prop()
   date: string;
 
   @Prop()

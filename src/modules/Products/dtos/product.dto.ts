@@ -22,6 +22,9 @@ export class CreateProductDto {
   readonly lastpricebuy: string
 
   @IsString()
+  readonly lastpricesell: string
+
+  @IsString()
   @IsNotEmpty()
   readonly pricesell: string
 

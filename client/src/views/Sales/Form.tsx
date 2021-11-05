@@ -30,6 +30,9 @@ const tableFieldData = [
 
 const SaleForm: React.FC = () => {
 
+  const dispatch = useDispatch()
+  const history = useHistory()
+
   //Búsqueda de Productos
   const [productData, setProductData] = useState<IProduct[]>([]);
   const [searchVal, setSearchVal] = useState('')
@@ -125,8 +128,15 @@ const SaleForm: React.FC = () => {
   const addProductSale = (data: any) => {
     let dataS = data as IProductTableData
 
+    if (dataS.stock === '0') {
+      return
+    }
+
     let alreadyExist = saleProducts.find( product => product.name === dataS.name)
-    if (alreadyExist) return
+    if (alreadyExist) {
+      addQuantity(alreadyExist.name)
+      return
+    }
 
     let salep: ISaleProduct = {
       product: {
@@ -139,6 +149,178 @@ const SaleForm: React.FC = () => {
 
     setSaleList([...saleList, salep])
     setSaleProducts([...saleProducts, dataS])
+  }
+
+  const addQuantity = (name: string, num?: number) => {
+    let newList = [...saleList]
+    for (let i = 0; i < newList.length; i++) {
+      const nameP = newList[i].product.name;
+      if (nameP === name) {
+        let newQuantity = num ? num : Number(newList[i].quantity) + 1
+        if (newQuantity <= Number(saleProducts[i].stock)) {
+          newList[i].quantity = '' + newQuantity
+          newList[i].price = '' + roundDecimals(Number(saleProducts[i].pricesell) * Number(newList[i].quantity))
+          break
+        } else {
+          return
+        }
+      }
+    }
+    setSaleList(newList)
+  }
+
+  const deleteProductSale = (index: number) => {
+    let newList = [...saleList]
+    let newProducts = [...saleProducts]
+    newList.splice(index, 1)
+    newProducts.splice(index, 1)
+
+    setSaleList(newList)
+    setSaleProducts(newProducts)
+  }
+
+  const handleChangeQP = (type: string, index: number, {target}: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === 'quantity') {
+      addQuantity(saleList[index].product.name, Number(target.value))
+    } else if (type === 'pricesell') {
+      if( Number(target.value) < 0) {
+        return
+      }
+      let newProducts = [...saleProducts]
+      newProducts[index].pricesell = target.value
+      addQuantity(saleList[index].product.name, Number(saleList[index].quantity))
+      setSaleProducts(newProducts)
+    }
+  }
+
+  const totalSale = () => {
+    let total = 0
+    for (let i = 0; i < saleList.length; i++) {
+      const element = saleList[i];
+      total = total + Number(element.price)
+    }
+    return roundDecimals(total)
+  }
+
+  const changeSale = () => {
+    let change = roundDecimals(Number(paymentCash) - totalSale())
+    if (change <= 0) {
+      change = 0
+    }
+    return change
+  }
+
+  const checkSaleBeforeCreate = () => {
+    //Situaciones donde dará errores con el backend
+    let check = true
+    if (paymentCash === '' || Number(paymentCash) <= 0 ) {
+      check = false
+    }
+    if (saleList.length < 0) {
+      check = false
+    }
+    if (totalSale() === 0) {
+      check = false
+    }
+    return check
+  }
+
+  const createSale = async () => {
+    if (!checkSaleBeforeCreate()) {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `No se puede completar la venta por falta de datos`,
+        color: 'warning',
+        delay: 5
+      }))
+      return
+    }
+
+    //Crear Venta
+    const urlSale = "http://localhost:8000/sales"
+    let dateNow: Date = new Date()
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        createdby: userData._id,
+        client: clientName ? clientName : 'Cliente',
+        date: dateNow,
+        cash: paymentCash,
+        subtotal: totalSale() + '',
+        change: changeSale() + '',
+        methodpay: paymentMethod,
+        voucher: voucherType,
+        status: 'Completado',
+        products: saleList,
+      }),
+    }
+    const res = await fetch(urlSale, requestInit)
+    if (res.ok) {
+      await saleProducts.map((product, index) => {
+        updateProductQuantityPrice(product, index)
+      })
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'Se ha realizado la venta con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      history.push('/sale')
+    } else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const updateProductQuantityPrice = async (product: IProductTableData, index: number) => {
+    const oldProduct = await getProduct(product._id)
+
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const url: RequestInfo = urlPro + `/${product._id}`;
+    let requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        lastpricesell: oldProduct.pricesell,
+        pricesell: product.pricesell,
+        stock: (Number(oldProduct.stock) - Number(saleList[index].quantity)) + '',
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      console.log('Quantity & Price Product updated')
+    }else {
+      console.log('No se pudo we');
+    }
+  }
+
+  const getProduct = async (pId: string) => {
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlReq: RequestInfo = urlPro + `/${pId}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlReq, requestInit);
+    const data = await res.json();
+    return data
   }
 
   return (
@@ -165,10 +347,11 @@ const SaleForm: React.FC = () => {
             <div className="flex">
               <div className="col-span-2 py-3 px-6 flex-1">
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                  Productos del Pedido
+                  Productos de la Venta
                 </h6>
                 {saleList.length > 0 ?
                   saleList.map((prod, index) => (
+                    <>
                     <div className="flex items-center" key={index}>
                       <div className="flex-initial">
                       <Icon
@@ -176,13 +359,13 @@ const SaleForm: React.FC = () => {
                         color="red"
                         Icon={XIcon}
                         hover
-                        onClick={() => {}}
+                        onClick={() => {deleteProductSale(index)}}
                       />
                       </div>
                       <div className="flex-auto px-3">
                         <Input
                           type="text"
-                          label="Nombre"
+                          label="Producto"
                           name={prod.product.name}
                           value={saleList[index].product.name}
                           disabled={true}
@@ -194,16 +377,18 @@ const SaleForm: React.FC = () => {
                           label="Cantidad"
                           name={prod.quantity}
                           value={saleList[index].quantity}
-                          onChange={e => {}}
+                          onChange={e => {handleChangeQP('quantity', index, e)}}
+                          focus
                         />
                       </div>
                       <div className="flex-auto px-3">
                         <Input
-                          type="text"
+                          type="number"
                           label="Precio Individual"
                           name={prod.price}
                           value={saleProducts[index].pricesell}
-                          onChange={e => {}}
+                          onChange={e => {handleChangeQP('pricesell', index, e)}}
+                          focus
                         />
                       </div>
                       <div className="flex-auto px-3">
@@ -216,8 +401,18 @@ const SaleForm: React.FC = () => {
                         />
                       </div>
                     </div>
+                    </>
                   )) : '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
                 }
+                <div className="flex">
+                  <h6 className="text-left text-black-400 text-sm mt-3 mb-6 mx-12 font-bold uppercase flex-1">
+                    Total: {totalSale()}
+                  </h6>
+                  <h6 className="text-left text-black-400 text-sm mt-3 mb-6 mx-12 font-bold uppercase flex-1">
+                    Cambio: {changeSale()}
+                  </h6>
+                </div>
+
               </div>
 
               <div className="col-span-2 py-3 px-6 bg-white flex-initial w-96">
@@ -296,6 +491,15 @@ const SaleForm: React.FC = () => {
                   name={"cash"}
                   value={paymentCash}
                   onChange={e => handleChange(e,setPaymentCash)}
+                  focus
+                />
+
+                <Button
+                  label="Finalizar Venta"
+                  textColor="white"
+                  bgColor="my-2 bg-gradient-to-r from-green-400 to-green-500"
+                  onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                  onClick={createSale}
                 />
               </div>
             </div>
