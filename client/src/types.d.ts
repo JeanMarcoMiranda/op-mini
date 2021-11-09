@@ -52,6 +52,40 @@ interface ISaleProduct {
   price: string;
 }
 
+interface ISale {
+  _id: string;
+  createdby: IUserSale;
+  client: string;
+  date: string;
+  cash: string;
+  subtotal: string;
+  change: string;
+  methodpay: string;
+  voucher: string;
+  status: string;
+  products: ISaleProduct[];
+}
+
+interface ISaleTableData {
+  _id: string;
+  createdby: string;
+  client: string;
+  date: string;
+  cash: string;
+  change: string;
+  methodpay: string;
+  voucher: string;
+  status: string;
+  active?: JSX.Element;
+  actions?: JSX.Element;
+}
+
+interface IUserSale {
+  _id: string;
+  name: string;
+}
+
+
 // Orders
 interface IOrderProduct {
   product: string | {

@@ -298,6 +298,8 @@ const ProductForm: React.FC = () => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          min="0"
+                          step="1"
                           focus
                         />
                       )}
@@ -354,6 +356,8 @@ const ProductForm: React.FC = () => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          min="0"
+                          step=".01"
                           focus
                         />
                       )}
@@ -370,6 +374,8 @@ const ProductForm: React.FC = () => {
                           name={name}
                           value={value}
                           onChange={onChange}
+                          min="0"
+                          step=".01"
                           focus
                         />
                       )}

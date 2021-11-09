@@ -1,12 +1,98 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+//import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
 
 import {
+  TableComponent as Table,
   ButtonComponent as Button,
 } from '../../components/common';
-import { toHoverStyle } from '../../components/utils';
+import { RootState } from '../../store/store';
+import { formatDate, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+
+
+const tableFieldData = [
+  { text: 'Creado por', width: 2, name: 'createdby' },
+  { text: 'Cliente', width: 1, name: 'client' },
+  { text: 'Fecha', width: 1, name: 'date' },
+  { text: 'Efectivo', width: 1, name: 'cash' },
+  { text: 'Cambio', width: 1, name: 'change' },
+  { text: 'Metodo de pago', width:2, name: 'methodpay' },
+  { text: 'Boleta', width: 1, name: 'voucher' },
+  { text: 'Estado', width: 1, name: 'status' },
+  { text: 'Acciones', width: 2, name: 'actions' },
+];
+
 
 const SaleView: React.FC = () => {
+  //const dispatch = useDispatch()
+  const [ saleData, setSaleData ] = useState<ISale[]>([]);
+  const [ tableData, setTableData ] = useState<ISaleTableData[]>([]);
+  const { access_token, userData } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
+
+  const url: RequestInfo = 'http://localhost:8000/sales';
+
+  useEffect(() => {
+      getSaletData();
+    // eslint-disable-next-line
+  }, []);
+
+  const getSaletData = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(url, requestInit);
+    const data = await res.json();
+    setSaleData(data);
+  };
+
+  useEffect(() => {
+    if (saleData.length === 0) return;
+
+    const prepareTableData = () => {
+
+
+      let newTableData: ISaleTableData[] = saleData.map(
+        ({
+          _id,
+          createdby,
+          client,
+          date,
+          cash,
+          subtotal,
+          change,
+          methodpay,
+          voucher,
+          status,
+        }: ISale) => {
+          let newData: ISaleTableData = {
+            _id,
+            createdby: createdby.name,
+            client,
+            date: formatDate(new Date(date)),
+            cash,
+            change,
+            methodpay,
+            voucher,
+            status,
+          };
+          return newData;
+        },
+      );
+      //console.log(newTableData)
+      setTableData(newTableData);
+    };
+
+    prepareTableData();
+    // eslint-disable-next-line
+  }, [saleData]);
+
   return (
     <>
       <div className="container mx-auto">
@@ -26,6 +112,11 @@ const SaleView: React.FC = () => {
                   />
                 </Link>
               </div>
+
+              <div className="mb-3">
+                <Table theadData={tableFieldData} tbodyData={tableData} />
+              </div>
+
             </div>
           </div>
         </div>

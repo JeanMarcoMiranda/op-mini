@@ -372,6 +372,7 @@ const OrderView: React.FC = () => {
     const res = await fetch(url, requestInit);
     if (res.ok) {
       console.log('Quantity Product')
+      console.log(res.body)
     }else {
       console.log('no se pudo we');
     }

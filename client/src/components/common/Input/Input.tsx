@@ -9,7 +9,9 @@ interface InputComponentProps {
   value?: string | number;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   focus?: boolean;
-  disabled?:boolean;
+  disabled?: boolean;
+  min?: string;
+  step?: string;
   icon?: {
     isActive: boolean;
     Icon: (props: ComponentProps<'svg'>) => JSX.Element;
@@ -23,6 +25,8 @@ const InputComponent: React.FC<InputComponentProps> = ({
   value,
   onChange = () => {},
   focus = false,
+  min,
+  step,
   icon,
   disabled = false,
 }) => {
@@ -53,6 +57,8 @@ const InputComponent: React.FC<InputComponentProps> = ({
         value={value}
         disabled={disabled}
         onChange={onChange}
+        min={min}
+        step={step}
         onFocus={(e) => {
           focus && e.target.select()
         }}
