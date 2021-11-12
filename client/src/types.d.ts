@@ -240,6 +240,21 @@ interface IFormUser {
   role: ISelectOption | undefined;
 }
 
+//Shifts
+
+
+interface IShif {
+  _id: string; //nulo
+  user: IUserSale; //no nulo
+  start: string; //nulo
+  end: string;//nulo
+  orders: ISale[];//nulo
+  sales: IOrder[];//nulo
+  startAmount: string;//nulo
+  endAmount: string;//nulo
+  status: string;//no nulo
+}
+
 // Others
 
 interface ISelectOption {

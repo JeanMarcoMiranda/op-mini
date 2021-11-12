@@ -16,18 +16,6 @@ interface HeaderProps {
   navToggle: Dispatch<SetStateAction<boolean>>;
 }
 
-interface IShif {
-  _id: string; //nulo
-  user: IUserSale; //no nulo
-  start: string; //nulo
-  end: string;//nulo
-  orders: ISale[];//nulo
-  sales: IOrder[];//nulo
-  startAmount: string;//nulo
-  endAmount: string;//nulo
-  status: string;//no nulo
-}
-
 interface IOrderShift {
   _id: string;
   createdby: {
@@ -54,7 +42,6 @@ const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     //console.log(inShift);
     getCheckLastShift();
-    getOrder();
     // eslint-disable-next-line
   }, [inShift]);
 
@@ -80,30 +67,16 @@ const Header: React.FC<HeaderProps> = ({
     } else {
       setInShift(false)
     }
-    setShifts(data)
+    setShifts(dataOrderDesc)
   };
 
   const changeCheckShift = async () => {
     console.log('Turnos', shifts);
-    //const shiftsOrderDesc = shifts.reverse();
-    //console.log('Turnos priemro', shiftsOrderDesc[0]);
-    /*if(shiftsOrderDesc[0]){
-      if (shifts[0].end === '') {
-        //finalizar ultimo turno activo
-        console.log('Actualizar turno');
-        console.log('Turnos normal', shifts[0]);
-        console.log('Turnos reverse', shiftsOrderDesc[0]);
-      } else {
-        //empezar nuevo turno si se finalizó el ultimo turno
-        console.log('Nuevo turno 2');
-      }
-    } else {
-      console.log('Nuevo turno 1');
-    }*/
     if (shifts[0]) {
       if (shifts[0].end === '') {
         //finalizar ultimo turno activo
-        updateShift(shifts[0]._id)
+        //updateShift(shifts[0]._id)
+        getOrder();
         setInShift(false)
       } else {
         //empezar nuevo turno si se finalizó el ultimo turno
@@ -127,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({
       },
       body: JSON.stringify({
         user: userData._id,
-        start: formatDateHours(dateNow),
+        start: dateNow,
         end: '',
         orders: [],
         sales: [],
@@ -159,7 +132,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
-  const updateShift = async (id: string) => {
+  const updateShift = async (id: string, data: string[]) => {
     //console.log("Turno inShift: ",inShift);
     const dateNow = new Date();
     const urlUpdate: RequestInfo = urlShift + `/${id}`;
@@ -172,8 +145,8 @@ const Header: React.FC<HeaderProps> = ({
       body: JSON.stringify({
         user: userData._id,
         //start: formatDateHours(dateNow),
-        end: formatDateHours(dateNow),
-        orders: [],
+        end: dateNow,
+        orders: data,
         sales: [],
         startAmount: '0',
         endAmount: '0',
@@ -215,7 +188,18 @@ const Header: React.FC<HeaderProps> = ({
     const res = await fetch(urlOrder, requestInit);
     //const data: IOrder[] = await res.json();
     const data: IOrderShift[] = await res.json();
-    console.log('Get Order data: ',data)
+    const currentUserOrders = data.filter((order) => order.createdby.name == userData.name)
+    const currentUserStartDate = shifts[0].start;
+    const ordersInShift = currentUserOrders.filter( (order) => {
+      return new Date(order.createdate).getTime() >= new Date(currentUserStartDate).getTime();
+    });
+    console.log('coincidencia', ordersInShift);
+    const ordersInShiftId = ordersInShift.map((order) => order._id)
+    updateShift(shifts[0]._id, ordersInShiftId)
+
+    //console.log('Filtro: ',ordersInShift);
+    //console.log('Name User: ',userData.name);
+    //console.log('Get Order data: ',data)
   }
 
   return (

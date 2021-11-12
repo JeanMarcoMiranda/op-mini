@@ -63,6 +63,10 @@ const OrderForm: React.FC = () => {
   const [endDate] = useState(new Date())
   const [estimatedTotal, setEstimatedTotal] = useState('0')
 
+  const [inShift, setInShift] = useState(false)
+  const [lastshifts, setLastshifts] = useState<IShif>()
+  const urlShift: RequestInfo = 'http://localhost:8000/shifts';
+
   useEffect(() => {
     setOrderData({...orderData, supplier: id})
     getSupplierData(id)
@@ -174,43 +178,58 @@ const OrderForm: React.FC = () => {
   };
 
   const createOrder = async (data: IOrderProduct[]) => {
-    const urlPro = "http://localhost:8000/orders"
-    let dateNow: Date = new Date()
-    const requestInit: RequestInit = {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...orderData,
-        products: data,
-        estimatedamount: estimatedTotal,
-        createdate: dateNow,
-        createdby: userData._id,
-        receivedby: userData._id,
-        receptiondate: startDate,
-      }),
-    }
-    const res = await fetch(urlPro, requestInit);
-    if (res.ok) {
+    //const value = await getCheckLastShift()
+    //if(value){
+      //console.log('El turno esta iniciado');
+      const urlPro = "http://localhost:8000/orders"
+      let dateNow: Date = new Date()
+      const requestInit: RequestInit = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...orderData,
+          products: data,
+          estimatedamount: estimatedTotal,
+          createdate: dateNow,
+          createdby: userData._id,
+          receivedby: userData._id,
+          receptiondate: startDate,
+        }),
+      }
+      const res = await fetch(urlPro, requestInit);
+      console.log('ress', res);
+      console.log(res.body);
+      if (res.ok) {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: 'El pedido se ha creado con exito.',
+          color: 'success',
+          delay: 5
+        }))
+        //addOrderToShift(lastshifts!, '')
+        history.push('/order')
+      } else {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+          color: 'warning',
+          delay: 5
+        }))
+      }
+    /*}else{
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
-        contentText: 'El pedido se ha creado con exito.',
-        color: 'success',
-        delay: 5
-      }))
-      history.push('/order')
-    } else {
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        contentText: `Necesitas iniciar un turno primero`,
         color: 'warning',
         delay: 5
       }))
-    }
+    }*/
   }
 
   const updateQuantity = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -272,6 +291,32 @@ const OrderForm: React.FC = () => {
 
     setOrderListObj([...nOrderListObj2])
   }
+
+  const getCheckLastShift = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlShift, requestInit);
+    const data: IShif[] = await res.json();
+    const dataOrderDesc = data.reverse();
+    if (dataOrderDesc[0]) {
+      if (dataOrderDesc[0].end === '') {
+        setInShift(false)
+        setLastshifts(dataOrderDesc[0])
+        console.log('Ultimo turno no finalizado');
+      } else {
+        setInShift(true)
+        console.log('Ultimo turno finalizado');
+      }
+    } else {
+      setInShift(true)
+    }
+    return inShift
+  };
 
   return (
     <>
