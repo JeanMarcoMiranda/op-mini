@@ -214,13 +214,14 @@ const Home: React.FC = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        lastpricebuy: quantityProd.pricebuy,
         pricebuy: roundDecimals(Number(product.price) / Number(product.quantity)) + '',
-        stock: (Number(product.quantity) + Number(quantityProd)) + '',
+        stock: (Number(product.quantity) + Number(quantityProd.stock)) + '',
       }),
     }
     const res = await fetch(url, requestInit);
     if (res.ok) {
-      console.log('Quantity Product')
+      console.log('Quantity Product Home')
     }
   }
 
@@ -236,7 +237,8 @@ const Home: React.FC = () => {
     };
     const res = await fetch(urlReq, requestInit);
     const data = await res.json();
-    return data.stock
+    return data
+    //return data.stock
   }
 
   return show ? (

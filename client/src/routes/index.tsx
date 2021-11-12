@@ -13,6 +13,8 @@ import CategoryView from "../views/Categories";
 import CategoryForm from "../views/Categories/Form";
 import SaleView from "../views/Sales";
 import SaleForm from "../views/Sales/Form";
+import ShiftView from "../views/Shifts";
+import ShiftForm from "../views/Shifts/Form";
 
 
 const appRoutes: RouteData[] = [
@@ -169,6 +171,20 @@ const appRoutes: RouteData[] = [
     type: 'private',
     roles: ['Administrador', 'Empleado']
   },
+  {
+    path: '/shift',
+    component: ShiftView,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
+  },
+  {
+    path: '/shift/form',
+    component: ShiftForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
+  }
 ]
 
 export { appRoutes, navRoutes }

@@ -217,25 +217,25 @@ const OrderView: React.FC = () => {
     await data.map(async (order) => {
       //console.log(newFound?.supplier.company)
       if (order.supplier.company === newFound?.supplier.company) {
-      const createDate = new Date(order.createdate);
-      const receptionDate = new Date(order.receptiondate);
-      const newObject: IOrder = {
-        _id: order._id,
-        createdby: order.createdby,
-        createdate: createDate,
-        receivedby: order.receivedby,
-        receptiondate: receptionDate,
-        estimatedamount: order.estimatedamount,
-        finalamount: order.finalamount,
-        type: order.type,
-        supplier: {
-          company: order.supplier.company,
-          name: order.supplier.name,
-        },
-        products: order.products,
-        status: order.status
-      }
-      newOrderData.push(newObject)
+        const createDate = new Date(order.createdate);
+        const receptionDate = new Date(order.receptiondate);
+        const newObject: IOrder = {
+          _id: order._id,
+          createdby: order.createdby,
+          createdate: createDate,
+          receivedby: order.receivedby,
+          receptiondate: receptionDate,
+          estimatedamount: order.estimatedamount,
+          finalamount: order.finalamount,
+          type: order.type,
+          supplier: {
+            company: order.supplier.company,
+            name: order.supplier.name,
+          },
+          products: order.products,
+          status: order.status
+        }
+        newOrderData.push(newObject)
       }
     })
     setOrderData(newOrderData)
@@ -291,7 +291,7 @@ const OrderView: React.FC = () => {
     }))
   }
 
-  const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index:number) => {
+  const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index: number) => {
     const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
     const requestInit: RequestInit = {
       method: 'PUT',
@@ -332,7 +332,7 @@ const OrderView: React.FC = () => {
         delay: 5
       }))
     }
-    dispatch(setModalData({setisOpen: (prev => !prev)}))
+    dispatch(setModalData({ setisOpen: (prev => !prev) }))
   }
 
   const updateProductQuantity = async (product: IProductOrder, action: string) => {
@@ -341,7 +341,7 @@ const OrderView: React.FC = () => {
     const urlPro: RequestInfo = 'http://localhost:8000/products'
     const url: RequestInfo = urlPro + `/${product.product._id}`;
     let requestInit: RequestInit = {}
-    if(action === "completar") {
+    if (action === "completar") {
       requestInit = {
         method: 'PUT',
         headers: {
@@ -354,9 +354,9 @@ const OrderView: React.FC = () => {
           stock: (Number(product.quantity) + Number(quantityProd.stock)) + '',
         }),
       }
-    }else if (action === "cancelar"){
-      console.log(quantityProd.lastpricebuy);
-      console.log((Number(quantityProd.stock) - Number(product.quantity)) + '');
+    } else if (action === "cancelar") {
+      console.log(quantityProd);
+      console.log(quantityProd.pricebuy);
       requestInit = {
         method: 'PUT',
         headers: {
@@ -371,9 +371,9 @@ const OrderView: React.FC = () => {
     }
     const res = await fetch(url, requestInit);
     if (res.ok) {
-      console.log('Quantity Product')
+      console.log('Quantity Product Index Order')
       console.log(res.body)
-    }else {
+    } else {
       console.log('no se pudo we');
     }
   }
@@ -428,7 +428,7 @@ const OrderView: React.FC = () => {
     const res = await fetch(url, requestInit);
     if (res.ok) {
       await orderData[index].products.map(product => {
-        updateProductQuantity(product,'cancelar')
+        updateProductQuantity(product, 'cancelar')
       })
       dispatch(setToastData({
         isOpen: true,
@@ -448,7 +448,7 @@ const OrderView: React.FC = () => {
         delay: 5
       }))
     }
-    dispatch(setModalData({setisOpen: (prev => !prev)}))
+    dispatch(setModalData({ setisOpen: (prev => !prev) }))
   }
 
   const orderDelete = async (id: string) => {
@@ -615,11 +615,11 @@ const OrderView: React.FC = () => {
                         key={index}
                         menuComplete={(order.status === "Aprobado") ? (e) => orderComplete(index) : undefined}
                         menuCancel={(order.status === "Completado") ? (e) => {
-                          const newIndex : number = orderData.length - index;
+                          const newIndex: number = orderData.length - index;
                           orderCancel(newIndex - 1)
                         } : undefined}
                         menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
-                        menuDelete={(userDataT.role.name === "Administrador") ? () => showAlert('delete',order._id) : undefined}
+                        menuDelete={(userDataT.role.name === "Administrador") ? () => showAlert('delete', order._id) : undefined}
                         createdBy={order.createdby.name}
                         company={order.supplier.company}
                         supplier={order.supplier.name}
