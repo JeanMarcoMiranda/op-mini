@@ -1,6 +1,7 @@
 import fillDecimals from "./fillDecimals";
 import filterDuplicate from "./filterDuplicate";
 import formatDate from "./formatDate";
+import formatDateHours from "./formatDateHours";
 import generateString from "./generateString";
 import isNumeric from "./isNumeric";
 import renderActiveChip from "./renderActiveChip";
@@ -19,5 +20,6 @@ export {
   truncate,
   filterDuplicate,
   roundDecimals,
-  fillDecimals
+  fillDecimals,
+  formatDateHours
 }
