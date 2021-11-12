@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-//import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
+import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
 
 import {
   TableComponent as Table,
@@ -25,7 +25,7 @@ const tableFieldData = [
 
 
 const SaleView: React.FC = () => {
-  //const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const [ saleData, setSaleData ] = useState<ISale[]>([]);
   const [ tableData, setTableData ] = useState<ISaleTableData[]>([]);
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
@@ -56,7 +56,10 @@ const SaleView: React.FC = () => {
     if (saleData.length === 0) return;
 
     const prepareTableData = () => {
-
+      let showActions = {
+        edit: true,
+        more: false,
+      }
 
       let newTableData: ISaleTableData[] = saleData.map(
         ({
@@ -81,17 +84,29 @@ const SaleView: React.FC = () => {
             methodpay,
             voucher,
             status,
+            actions: renderIconActions(_id, 'sale', showAlert, showActions)
           };
           return newData;
         },
       );
-      //console.log(newTableData)
       setTableData(newTableData);
     };
 
     prepareTableData();
     // eslint-disable-next-line
   }, [saleData]);
+
+  const showAlert = (type: string, id?: string) => {
+    if (type === 'toast') {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El producto ha sido eliminado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+    }
+  }
 
   return (
     <>
