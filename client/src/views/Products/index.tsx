@@ -272,7 +272,7 @@ const ProductsView: React.FC = () => {
             </div>
 
             <div className="mb-3">
-              <Table theadData={tableFieldData} tbodyData={tableData} />
+              <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled: true, fieldsPerPage: 5}} />
             </div>
           </div>
         </div>

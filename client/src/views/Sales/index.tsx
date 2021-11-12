@@ -35,28 +35,29 @@ const SaleView: React.FC = () => {
   const url: RequestInfo = 'http://localhost:8000/sales';
 
   useEffect(() => {
-      getSaletData();
+    const getSaletData = async () => {
+      const requestInit: RequestInit = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = await fetch(url, requestInit);
+      const data = await res.json();
+      setSaleData(data);
+    }; 
+
+    getSaletData();
     // eslint-disable-next-line
   }, []);
 
-  const getSaletData = async () => {
-    const requestInit: RequestInit = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-    const res = await fetch(url, requestInit);
-    const data = await res.json();
-    setSaleData(data);
-  };
+
 
   useEffect(() => {
     if (saleData.length === 0) return;
 
     const prepareTableData = () => {
-
 
       let newTableData: ISaleTableData[] = saleData.map(
         ({
@@ -98,8 +99,8 @@ const SaleView: React.FC = () => {
       <div className="container mx-auto">
         <div className="w-full lg:w-10/12 mx-auto my-8">
           <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0">
-            <div className="rounded-lg bg-white mb-0 px-6 py-3">
-              <div className="flex items-center justify-between">
+            <div className="rounded-lg bg-white mb-0 px-6 py-6">
+              <div className="flex items-center justify-between mx-6">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">
                   Ventas
                 </h6>
@@ -114,7 +115,7 @@ const SaleView: React.FC = () => {
               </div>
 
               <div className="mb-3">
-                <Table theadData={tableFieldData} tbodyData={tableData} />
+                <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled : true, fieldsPerPage: 5}}/>
               </div>
 
             </div>

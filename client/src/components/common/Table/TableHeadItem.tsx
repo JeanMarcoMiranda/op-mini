@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TableField } from './Table';
 
 interface TableHeadProps {
