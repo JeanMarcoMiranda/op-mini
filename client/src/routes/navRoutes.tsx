@@ -1,4 +1,4 @@
-import { BriefcaseIcon, ClipboardListIcon, HomeIcon, UsersIcon, ClipboardCheckIcon, BookmarkAltIcon, ShoppingCartIcon } from "@heroicons/react/solid";
+import { BriefcaseIcon, ClipboardListIcon, HomeIcon, UsersIcon, ClipboardCheckIcon, BookmarkAltIcon, ShoppingCartIcon, ClipboardIcon } from "@heroicons/react/solid";
 
 const navRoutes: RouteSideBar[] = [
   {
@@ -43,6 +43,12 @@ const navRoutes: RouteSideBar[] = [
     path: '/sale',
     roles: ['Administrador', 'Empleado']
   },
+  {
+    label: 'Turnos',
+    Icon: ClipboardIcon,
+    path: '/shift',
+    roles: ['Administrador']
+  }
 ]
 
 export default navRoutes

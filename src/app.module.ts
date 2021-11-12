@@ -9,6 +9,7 @@ import { ProductsModule } from './modules/Products/products.module';
 import { SuppliersModule } from './modules/Suppliers/suppliers.module';
 import { OrdersModule } from './modules/Orders/orders.module';
 import { SalesModule } from './modules/Sales/sales.module'
+import { ShiftsModule } from './modules/Shifts/shifts.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 // - Config files
@@ -27,6 +28,7 @@ const myModules = [
   SuppliersModule,
   OrdersModule,
   SalesModule,
+  ShiftsModule,
   AuthModule
 ];
 
