@@ -242,7 +242,6 @@ interface IFormUser {
 
 //Shifts
 
-
 interface IShif {
   _id: string; //nulo
   user: IUserSale; //no nulo
@@ -253,6 +252,18 @@ interface IShif {
   startAmount: string;//nulo
   endAmount: string;//nulo
   status: string;//no nulo
+}
+
+interface IShiftTableData {
+  _id: string;
+  user: IUserSale;
+  start: string;
+  end: string;
+  startAmount: string;
+  endAmount: string;
+  status: string;
+  active?: JSX.Element;
+  actions?: JSX.Element;
 }
 
 // Others
