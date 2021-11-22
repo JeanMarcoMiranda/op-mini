@@ -135,6 +135,7 @@ interface IProduct {
   stock: string;
   pricebuy: string;
   pricesell: string;
+  mesureUnit?: string;
   date: string;
   description: string;
   active: boolean;
@@ -149,6 +150,7 @@ interface IProductResponse {
   stock: string;
   pricebuy: string;
   pricesell: string;
+  mesureUnit?: string
   date: string;
   description: string;
   active: boolean;
@@ -166,6 +168,7 @@ interface IProductTableData {
   stock: string;
   pricebuy: string;
   pricesell: string;
+  mesureUnit?: string;
   active?: JSX.Element;
   actions?: JSX.Element;
   company: string;
@@ -177,11 +180,12 @@ interface IFormProduct {
   stock: string;
   pricebuy: string;
   pricesell: string;
+  mesureUnit?: ISelectOption;
   date: string;
   description: string;
   active: ISelectOption;
   category: ISelectOption | undefined;
-  company: string;
+  company: ISelectOption | undefined;
 }
 
 interface ICategory {

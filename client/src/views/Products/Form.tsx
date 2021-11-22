@@ -14,21 +14,40 @@ import {
 import { RootState } from '../../store/store';
 import { toHoverStyle } from '../../components/utils';
 
+// SETTING OPTIONS FOR STATIC FIELDS
 const activeOptions: ISelectOption[] = [
   { label: 'Activo', value: true },
   { label: 'Inactivo', value: false },
 ];
 
+const mesureUnitOptions: ISelectOption[] = [
+  { label: 'Kg', value: "kg" },
+  { label: 'Unidad', value: "unidad" }
+]
+
+
+// API URLS
 const urlPro: RequestInfo = 'http://localhost:8000/products'
 const urlCat: RequestInfo = 'http://localhost:8000/categories'
+const urlSuppl: RequestInfo = 'http://localhost:8000/suppliers'
+
 
 const ProductForm: React.FC = () => {
 
   const [show, setShow] = useState(false)
+
+  // == SELECT DISPLAY OPTIONS STATE
   const [categoryOptions, setCategoryOptions] = useState<ISelectOption[]>([])
-  const [selActive, setSelActive] = useState<ISelectOption>(activeOptions[0])
+  const [supplierOptions, setSupplierOptions] = useState<ISelectOption[]>([])
+
+  // == OPTIONS SELECTED FOR EDITING FORM
   const [selCategory, setSelCategory] = useState<ISelectOption>()
-  const [lastPrice, setLastPrice] = useState<string>('0')
+  const [selActive, setSelActive] = useState<ISelectOption>(activeOptions[0])
+  const [selectedMesureUnit, setSelectedMesureUnit] = useState<ISelectOption>(mesureUnitOptions[0])
+  const [selectedSupplier, setSelectedSupplier] = useState<ISelectOption>()
+
+
+  const [lastPrice, setLastPrice] = useState<string>('0')   
   const [newLastPrice, setNewLastPrice] = useState<string>('0')
   const [lastPriceSell, setLastPriceSell] = useState<string>('0')
   const [newLastPriceSell, setNewLastPriceSell] = useState<string>('0')
@@ -42,7 +61,7 @@ const ProductForm: React.FC = () => {
         pricesell: '0',
         description: '',
         active: activeOptions[0],
-        company: '',
+        mesureUnit: mesureUnitOptions[0]
       }
     }
   })
@@ -57,6 +76,8 @@ const ProductForm: React.FC = () => {
   useEffect(() => {
     const initialRender = async () => {
       const catData = await getCategories()
+      const supplierData = await getSuppliers()
+      prepareSupplOptions(supplierData)
       prepareCatOptions(catData)
     }
     initialRender()
@@ -72,9 +93,12 @@ const ProductForm: React.FC = () => {
   const getProduct = async () => {
     const urlReq: RequestInfo = urlPro + `/${id}`;
     const response = await fetch(urlReq);
-    const { name, barcode, stock, pricebuy, pricesell, description, active, category, company, lastpricebuy, lastpricesell }: IProductResponse = await response.json();
+
+    const { name, barcode, stock, pricebuy, pricesell, description, active, category, company, lastpricebuy, lastpricesell, mesureUnit }: IProductResponse = await response.json();
     const activeOption = active ? activeOptions[0] : activeOptions[1];
     const categoryOption = categoryOptions.find(cat => cat.value === category)
+    const supplierOption = supplierOptions.find(supplier => supplier.label === company)
+    const mesureUnitOption = mesureUnit === "Unidad" ? mesureUnitOptions[1] : mesureUnitOptions[0]
     const dateNow = new Date()
     if (response.ok) {
       lastpricebuy && setLastPrice(lastpricebuy)
@@ -91,10 +115,13 @@ const ProductForm: React.FC = () => {
         date: dateNow.toString(),
         active: activeOption,
         category: categoryOption,
-        company,
+        company: supplierOption,
+        mesureUnit: mesureUnitOption
       });
       setSelCategory(categoryOption)
       setSelActive(activeOption)
+      setSelectedSupplier(supplierOption)
+      setSelectedMesureUnit(mesureUnitOption)
       setShow(true)
     } else {
       //console.log('Error: Unknow error || Server error');
@@ -108,6 +135,39 @@ const ProductForm: React.FC = () => {
     }
   }
 
+  
+
+
+  // == GETTING DATA TO DISPLAY ON SELECTS
+  const getCategories = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      }
+    }
+    const res = await fetch(urlCat, requestInit)
+    const data: ICategory[] = await res.json()
+    return data
+  }
+
+  const getSuppliers = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      }
+    }
+    const res = await fetch(urlSuppl, requestInit)
+    const data: ISupplier[] = await res.json()
+    return data
+  }
+
+
+
+  // == PREPARING DATA TO DISPLAY IN SELECT
   const prepareCatOptions = (data: ICategory[]) => {
     const catOptions: ISelectOption[] = []
     // eslint-disable-next-line
@@ -123,18 +183,21 @@ const ProductForm: React.FC = () => {
     setCategoryOptions(catOptions)
   }
 
-  const getCategories = async () => {
-    const requestInit: RequestInit = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+  const prepareSupplOptions = (data: ISupplier[]) => {
+    const supplierOptions: ISelectOption[] = []
+
+    data.map(supplier => {
+      const newObject: ISelectOption = {
+        label: supplier.company,
+        value: supplier._id
       }
-    }
-    const res = await fetch(urlCat, requestInit)
-    const data: ICategory[] = await res.json()
-    return data
+      supplierOptions.push(newObject)
+    })
+
+    setSupplierOptions(supplierOptions)
   }
+
+
 
   const onSubmit: SubmitHandler<TFormValues<IFormProduct>> = ({ values }) => {
     if (id) {
@@ -158,6 +221,8 @@ const ProductForm: React.FC = () => {
         ...data,
         'date': dateNow.toString(),
         'active': data.active.value,
+        'mesureUnit': data.mesureUnit?.value,
+        'company': data.company?.value,
         'category': data.category?.value,
         'lastpricebuy': (newLastPrice === data.pricebuy) ? lastPrice : newLastPrice,
         'lastpricesell': (newLastPriceSell === data.pricesell) ? lastPriceSell : newLastPriceSell
@@ -190,6 +255,7 @@ const ProductForm: React.FC = () => {
 
   const createProduct = async (data: IFormProduct) => {
     const dateNow = new Date()
+    console.log("this is the data", data)
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
@@ -200,6 +266,8 @@ const ProductForm: React.FC = () => {
         ...data,
         'date': dateNow.toString(),
         'active': data.active.value,
+        'mesureUnit': data.mesureUnit?.value,
+        'company': data.company?.value,
         'category': data.category?.value,
         'lastpricebuy': '0',
         'lastpricesell': '0',
@@ -326,12 +394,45 @@ const ProductForm: React.FC = () => {
                       control={control}
                       name="values.company"
                       render={({ field: { onChange, value, name } }) => (
-                        <Input
+                        /*<Input
                           type="text"
                           label="Empresa"
                           name={name}
                           value={value}
                           onChange={onChange}
+                        />*/
+
+                        <Select
+                          label="Empresa"
+                          onChange={onChange}
+                          options={supplierOptions}
+                          name={name}
+                          value={selectedSupplier}
+                          handleChange={setSelectedSupplier}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="px-4">
+                    <Controller
+                      control={control}
+                      name="values.mesureUnit"
+                      render={({ field: { onChange, value, name } }) => (
+                        /*<Input
+                          type="text"
+                          label="Empresa"
+                          name={name}
+                          value={value}
+                          onChange={onChange}
+                        />*/
+
+                        <Select
+                          label="Unidad de Medida"
+                          onChange={onChange}
+                          options={mesureUnitOptions}
+                          name={name}
+                          value={selectedMesureUnit}
+                          handleChange={setSelectedMesureUnit}
                         />
                       )}
                     />

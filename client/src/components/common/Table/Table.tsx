@@ -42,8 +42,6 @@ const TableComponent: React.FC<TableComponentProps> = ({
 
   // == PAGINATION STATE
   const [currentPage, setCurrentPage] = useState(1)
-  console.log(currentPage)
-  console.count()
   const [fieldsPerPage, setFieldsPerPage] = useState(pagination.fieldsPerPage)
   // == PAGINATION VARIABLES
   const indexOfLastPost = currentPage * fieldsPerPage
