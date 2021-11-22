@@ -47,7 +47,7 @@ const navRoutes: RouteSideBar[] = [
     label: 'Turnos',
     Icon: ClipboardIcon,
     path: '/shift',
-    roles: ['Administrador']
+    roles: ['Administrador', 'Empleado']
   }
 ]
 

@@ -12,7 +12,17 @@ const formatDateHours = (dateToFormat: Date) => {
     return val >= 10 ? val + '' : '0' + val
   }
 
-  return `${ lessThanTen(day) }/${ lessThanTen(month) }/${ year } ${lessThanTen(hour)}:${lessThanTen(minutes)}:${lessThanTen(seconds)}`
+  const Modulation = () =>{
+    let time = '';
+    if(hour <= 12 ){
+      time = 'a.m.'
+    } else {
+      time = 'p.m.'
+    }
+    return time
+  }
+
+  return `${ lessThanTen(day) }/${ lessThanTen(month) }/${ year } ${lessThanTen(hour)}:${lessThanTen(minutes)}:${lessThanTen(seconds)} ${Modulation()}`
 }
 
 export default formatDateHours

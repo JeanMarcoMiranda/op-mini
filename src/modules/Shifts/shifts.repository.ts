@@ -17,11 +17,13 @@ export class ShiftRepository {
   }
 
   public async findAllShift(): Promise<Shift[]> {
-    return this.shiftModel.find().exec();
+    return this.shiftModel.find()
+    .populate('user', 'name').exec();
   }
 
   public async findOneShift(id: string): Promise<Shift> {
-    const shift = this.shiftModel.findById(id).exec();
+    const shift = this.shiftModel.findById(id)
+    .populate('user', 'name').exec();
     if(!shift) {
       throw new NotFoundException('Shift not found');
     }
@@ -30,7 +32,8 @@ export class ShiftRepository {
 
   public async findUserShift(name: string): Promise<Shift[]> {
     let regex = new RegExp(["^.*", name, ".*$"].join(""), "i");
-    const shift = await this.shiftModel.find({$or:[{'user': regex}]}).exec()
+    const shift = await this.shiftModel.find({$or:[{'user': regex}]})
+    .populate('user', 'name').exec()
     return shift
   }
 

@@ -111,6 +111,20 @@ interface IOrder {
   status: string;
 }
 
+interface IOrderTableData {
+  _id: string;
+  createdby: string;
+  createdate: string;
+  receivedby: string;
+  receptiondate: string;
+  finalamount: string;
+  supplier: string;
+  ndocument?: string;
+  status: string;
+  active?: JSX.Element;
+  actions?: JSX.Element;
+}
+
 interface IFormOrder {
   createdby: string;
   createdate: string;
@@ -124,6 +138,15 @@ interface IFormOrder {
   status: string;
   ndocument?: string;
   tdocument?: string;
+}
+interface IProductOrder {
+  note: string;
+  product: {
+    name: string;
+    _id: string;
+  };
+  quantity: string;
+  price: string;
 }
 
 // Products
@@ -242,7 +265,7 @@ interface IFormUser {
 
 //Shifts
 
-interface IShif {
+interface IShift {
   _id: string; //nulo
   user: IUserSale; //no nulo
   start: string; //nulo
@@ -251,17 +274,31 @@ interface IShif {
   sales: IOrder[];//nulo
   startAmount: string;//nulo
   endAmount: string;//nulo
+  expectedAmount: string;//nulo
   status: string;//no nulo
 }
 
-interface IShiftTableData {
+interface IShiftSaleTable {
   _id: string;
   user: IUserSale;
   start: string;
   end: string;
+  orders: any[];
+  sales: any[];
   startAmount: string;
   endAmount: string;
+  expectedAmount: string;
   status: string;
+}
+
+interface IShiftTableData {
+  _id: string;
+  user: string;
+  start: string;
+  end: string;
+  startAmount: string;
+  endAmount: string;
+  expectedAmount: string;
   active?: JSX.Element;
   actions?: JSX.Element;
 }

@@ -169,22 +169,29 @@ const appRoutes: RouteData[] = [
     component: SaleForm,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Empleado']
+    roles: ['Administrador']
   },
   {
     path: '/shift',
     component: ShiftView,
     exact: true,
     type: 'private',
-    roles: ['Administrador']
+    roles: ['Administrador', 'Empleado']
   },
   {
     path: '/shift/form',
     component: ShiftForm,
     exact: true,
     type: 'private',
+    roles: ['Administrador', 'Empleado']
+  },
+  {
+    path: '/shift/form/:id',
+    component: ShiftForm,
+    exact: true,
+    type: 'private',
     roles: ['Administrador']
-  }
+  },
 ]
 
 export { appRoutes, navRoutes }

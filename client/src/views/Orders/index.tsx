@@ -14,16 +14,6 @@ import { roundDecimals, toHoverStyle } from '../../components/utils';
 import { formatDate, filterDuplicate } from '../../components/utils';
 import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid';
 
-interface IProductOrder {
-  note: string;
-  product: {
-    name: string;
-    _id: string;
-  };
-  quantity: string;
-  price: string;
-}
-
 interface IOrder {
   _id: string;
   createdby: {

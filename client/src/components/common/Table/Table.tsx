@@ -42,8 +42,8 @@ const TableComponent: React.FC<TableComponentProps> = ({
 
   // == PAGINATION STATE
   const [currentPage, setCurrentPage] = useState(1)
-  console.log(currentPage)
-  console.count()
+  //console.log(currentPage)
+  //console.count()
   const [fieldsPerPage, setFieldsPerPage] = useState(pagination.fieldsPerPage)
   // == PAGINATION VARIABLES
   const indexOfLastPost = currentPage * fieldsPerPage
@@ -106,7 +106,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {pagination.enabled ? 
+            {pagination.enabled ?
               currentFields.map((row) => (
                 <TableRow
                   onClick={onClick}
