@@ -55,7 +55,7 @@ export class ShiftController {
     return this.shiftService.updateShift(id, data);
   }
 
-  @Delete('id')
+  @Delete(':id')
   public async deleteShift(@Param('id') id: string) {
     return this.shiftService.removeShift(id);
   }

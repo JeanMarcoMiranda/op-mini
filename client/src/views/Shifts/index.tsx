@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 
 import {
   TableComponent as Table,
   ButtonComponent as Button,
+  LoadingPageComponent as Load,
 } from '../../components/common';
-import { formatDate } from '../../components/utils';
+import { formatDateHours, renderIconActions } from '../../components/utils';
+import { setModalData, setToastData } from '../../store/action/actions';
 
 const tableFieldData = [
   { text: 'Usuario', width: 2, name: 'user' },
   { text: 'Hora Inicio', width: 1, name: 'start'},
   { text: 'Hora Fin', width: 1, name: 'end'},
-  { text: 'Monto Inicial', width: 1, name: 'startAmount'},
-  { text: 'Monto Final', width: 1, name: 'endAmount'},
-  { text: 'Estado', width: 1, name: 'status'}
+  { text: 'Inicia Caja', width: 1, name: 'startAmount'},
+  { text: 'Finaliza Caja', width: 1, name: 'endAmount'},
+  { text: 'Monto Esperado', width: 1, name: 'status'},
+  { text: 'Acciones', width: 2, name: 'actions' },
 ];
 
 const ShiftView: React.FC = () => {
-  const [shiftsData, setShiftsData] = useState<IShif[]>([]);
+  const dispatch = useDispatch()
+  const [show, setShow] = useState(false)
+  const [shiftsData, setShiftsData] = useState<IShift[]>([]);
   const [ tableData, setTableData ] = useState<IShiftTableData[]>([]);
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
@@ -26,20 +31,6 @@ const ShiftView: React.FC = () => {
   const url: RequestInfo = "http://localhost:8000/shifts"
 
   useEffect(() => {
-    const getShiftData = async () => {
-      const requestInit: RequestInit = {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-      const res = await fetch(url, requestInit)
-      const data = await res.json()
-      //const dataOrderDesc = data.reverse()
-      setShiftsData(data)
-    };
-
     getShiftData();
     // eslint-disable-next-line
   }, []);
@@ -48,12 +39,28 @@ const ShiftView: React.FC = () => {
     if (shiftsData.length === 0) return;
 
     const prepareTableData = () => {
+      let { name: role } = userData.role
       let showActions = {
-        edit: true,
+        edit: false,
+        delete: false,
         more: false,
       }
+      if (role === "Administrador") {
+        showActions = {
+          edit: true,
+          delete: true,
+          more: false,
+        }
+      }
+      if (role === "Empleado") {
+        showActions = {
+          edit: false,
+          delete: false,
+          more: false,
+        }
+      }
 
-      let newTableData: IShiftTableData[] = shiftsData.map(
+      let newTableData: IShiftTableData[] = shiftsData.slice(0).reverse().map(
         ({
           _id,
           user,
@@ -63,30 +70,97 @@ const ShiftView: React.FC = () => {
           sales,
           startAmount,
           endAmount,
+          expectedAmount,
           status,
-        }: IShif) => {
+        }: IShift) => {
           let newData: IShiftTableData = {
             _id,
-            user,
-            start: formatDate(new Date(start)),
-            end: formatDate(new Date(end)),
+            user: user.name,
+            start: formatDateHours(new Date(start)),
+            end: end ? formatDateHours(new Date(end)) : 'No se ha finalizado el turno',
             startAmount,
             endAmount,
-            status,
-            //actions: renderIconActions(_id, 'sale', showAlert, showActions)
+            expectedAmount,
+            actions: renderIconActions(_id, 'shift', showAlert , showActions)
           };
           return newData;
         },
       );
       setTableData(newTableData);
-      console.log('data', newTableData);
+      //console.log('data', newTableData);
     };
 
     prepareTableData();
     // eslint-disable-next-line
   }, [shiftsData]);
 
-  return (
+  const getShiftData = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+    const res = await fetch(url, requestInit)
+    const data = await res.json()
+    //const dataOrderDesc = data.reverse()
+    setShiftsData(data)
+    setShow(true)
+  };
+
+  const deleteShift = async (id: string) => {
+    const urlDelete: RequestInfo = url + `/${id}`;
+    const requestInit: RequestInit = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      }
+    }
+    const res = await fetch(urlDelete, requestInit)
+    const data = await res.json()
+    if (res.ok) {
+      console.log('Shift deleted', data)
+      getShiftData();
+      dispatch(setModalData({setisOpen: (prev => !prev)}))
+      showAlert('toast')
+    }else{
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const showAlert = (type: string, id?: string) => {
+    if (type === 'toast') {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El turno ha sido eliminado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+    }
+    else {
+      dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: '¿Esta seguro que desea eliminar el elemento?',
+        contentText: 'El elemento seleccionado sera eliminado de la base de datos',
+        cancelButton: true,
+        typeButton: 'Si, Eliminalo',
+        colorTYB: 'danger',
+        onClickTYB: () => deleteShift(id!)
+      }))
+    }
+  }
+
+  return show ? (
     <>
       <div className="container mx-auto">
         <div className="w-full lg:w-10/12 mx-auto my-8">
@@ -107,7 +181,7 @@ const ShiftView: React.FC = () => {
         </div>
       </div>
     </>
-  );
+  ) : <Load/>
 }
 
 export default ShiftView

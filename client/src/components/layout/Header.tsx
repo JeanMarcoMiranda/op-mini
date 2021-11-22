@@ -1,14 +1,14 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { MenuIcon } from '@heroicons/react/solid';
 import { Link, useHistory } from 'react-router-dom';
-import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
+import { setToastData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
   IconComponent,
   MenuComponent
 } from '../common';
-import { formatDateHours, toHoverStyle } from '../utils';
+import { toHoverStyle } from '../utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 
@@ -26,21 +26,32 @@ interface IOrderShift {
   receptiondate: string | Date;
 }
 
+interface ISaleShift {
+  _id: string;
+  createdby: {
+    _id: string;
+    name: string;
+  };
+  client: string;
+  date: string;
+  status: string;
+}
+
 const Header: React.FC<HeaderProps> = ({
   navToggle,
 }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [inShift, setInShift] = useState(false)
-  const [shifts, setShifts] = useState<IShif[]>([])
+  const [shifts, setShifts] = useState<IShift[]>([])
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
   const urlShift: RequestInfo = 'http://localhost:8000/shifts';
   const urlOrder: RequestInfo = 'http://localhost:8000/orders';
+  const urlSale: RequestInfo = 'http://localhost:8000/sales';
 
   useEffect(() => {
-    //console.log(inShift);
     getCheckLastShift();
     // eslint-disable-next-line
   }, [inShift]);
@@ -56,27 +67,15 @@ const Header: React.FC<HeaderProps> = ({
     const res = await fetch(urlShift, requestInit);
     const data = await res.json();
     const dataOrderDesc = data.reverse();
-    console.log(dataOrderDesc)
-    //console.log(dataOrderDesc[0])
-    if (dataOrderDesc[0]) {
-      if (dataOrderDesc[0].end === '') {
-        setInShift(true)
-      } else {
-        setInShift(false)
-      }
-    } else {
-      setInShift(false)
-    }
     setShifts(dataOrderDesc)
   };
 
   const changeCheckShift = async () => {
-    console.log('Turnos', shifts);
+    //console.log('Turnos', shifts);
     if (shifts[0]) {
       if (shifts[0].end === '') {
         //finalizar ultimo turno activo
-        //updateShift(shifts[0]._id)
-        getOrder();
+        prepareUpdateShift()
         setInShift(false)
       } else {
         //empezar nuevo turno si se finalizó el ultimo turno
@@ -106,13 +105,13 @@ const Header: React.FC<HeaderProps> = ({
         sales: [],
         startAmount: '0',
         endAmount: '0',
+        expectedAmount: '0',
         status: inShift.toString(),
       }),
     }
     const res = await fetch(urlShift, requestInit);
     console.log('Info creada: ', res);
     if (res.ok) {
-      //console.log('Shift Created', res)
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -121,7 +120,6 @@ const Header: React.FC<HeaderProps> = ({
         delay: 5
       }))
     } else {
-      //console.log('Error: Unknow error || Server error');
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -132,8 +130,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
-  const updateShift = async (id: string, data: string[]) => {
-    //console.log("Turno inShift: ",inShift);
+  const updateShift = async (id: string, dataOrders: string[], dataSales: string[]) => {
     const dateNow = new Date();
     const urlUpdate: RequestInfo = urlShift + `/${id}`;
     const requestInit: RequestInit = {
@@ -144,19 +141,17 @@ const Header: React.FC<HeaderProps> = ({
       },
       body: JSON.stringify({
         user: userData._id,
-        //start: formatDateHours(dateNow),
         end: dateNow,
-        orders: data,
-        sales: [],
+        orders: dataOrders,
+        sales: dataSales,
         startAmount: '0',
         endAmount: '0',
+        expectedAmount: '0',
         status: inShift.toString(),
       }),
     }
     const res = await fetch(urlUpdate, requestInit);
-    console.log('Info actualizada: ', res);
     if (res.ok) {
-      //console.log('Product Created', dataRes)
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -165,7 +160,6 @@ const Header: React.FC<HeaderProps> = ({
         delay: 5
       }))
     } else {
-      //console.log('Error: Unknow error || Server error');
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -176,8 +170,15 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
+  const prepareUpdateShift = async() => {
+    const orders = await getOrder();
+    const sales = await getSales();
+    updateShift(shifts[0]._id, orders ,sales)
+  }
+
   const getOrder = async() => {
     console.log('Order Get');
+    const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -186,20 +187,37 @@ const Header: React.FC<HeaderProps> = ({
       },
     };
     const res = await fetch(urlOrder, requestInit);
-    //const data: IOrder[] = await res.json();
     const data: IOrderShift[] = await res.json();
     const currentUserOrders = data.filter((order) => order.createdby.name == userData.name)
     const currentUserStartDate = shifts[0].start;
+    const currentUserEndDate = dateNow;
     const ordersInShift = currentUserOrders.filter( (order) => {
-      return new Date(order.createdate).getTime() >= new Date(currentUserStartDate).getTime();
+      return new Date(order.createdate).getTime() >= new Date(currentUserStartDate).getTime() && new Date(order.createdate).getTime() <= currentUserEndDate.getTime();
     });
-    console.log('coincidencia', ordersInShift);
     const ordersInShiftId = ordersInShift.map((order) => order._id)
-    updateShift(shifts[0]._id, ordersInShiftId)
+    return ordersInShiftId
+  }
 
-    //console.log('Filtro: ',ordersInShift);
-    //console.log('Name User: ',userData.name);
-    //console.log('Get Order data: ',data)
+  const getSales = async() => {
+    console.log('Sales Get');
+    const dateNow = new Date();
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlSale, requestInit);
+    const data :ISaleShift[] = await res.json();
+    const currentUserSales = data.filter((sale) => sale.createdby.name == userData.name)
+    const currentUserStartDate = shifts[0].start;
+    const currentUserEndDate = dateNow;
+    const salesInShift = currentUserSales.filter( (sale) => {
+      return new Date(sale.date).getTime() >= new Date(currentUserStartDate).getTime() && new Date(sale.date).getTime() <= currentUserEndDate.getTime();
+    });
+    const salesInShiftId = salesInShift.map((sale) => sale._id)
+    return salesInShiftId
   }
 
   return (

@@ -45,7 +45,7 @@ const ModalComponent: React.FC<IModalProps> = ({
 
   return (
     <>
-      <div className={`fixed flex flex-col top-14 left-0 w-full h-full duration-500 border-none z-10 transform
+      <div className={`fixed flex flex-col top-14 left-0 w-full h-full duration-500 border-none z-20 transform
       ${isOpen
             ? "translate-x-0 ease-out transition-medium"
             : "-translate-x-full ease-in transition-medium"

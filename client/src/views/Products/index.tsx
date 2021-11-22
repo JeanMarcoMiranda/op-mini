@@ -30,6 +30,7 @@ const tableFieldData = [
   { text: 'Stock', width: 1, name: 'stock' },
   { text: 'Precio Compra', width: 1, name: 'pricebuy' },
   { text: 'Precio Venta', width: 1, name: 'pricesell' },
+  { text: 'Unidad Medida', width: 1, name: 'mesureUnit' },
   { text: 'Estado', width: 1, name: 'active' },
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
@@ -96,12 +97,13 @@ const ProductsView: React.FC = () => {
           stock,
           pricebuy,
           pricesell,
+          mesureUnit = '',
           date,
           description,
           active,
-          company = ''
+          company = '',
         }: IProduct) => {
-          let newData: IProductTableData = {
+          const newData: IProductTableData = {
             _id,
             barcode,
             name,
@@ -109,6 +111,7 @@ const ProductsView: React.FC = () => {
             stock,
             pricebuy,
             pricesell,
+            mesureUnit: mesureUnit,
             active: renderActiveChip(active),
             actions: renderIconActions(_id, 'product', showAlert, showActions),
             company,

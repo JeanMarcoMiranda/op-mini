@@ -33,6 +33,9 @@ export class Shift extends Document {
   @Prop()
   endAmount: string;
 
+  @Prop()
+  expectedAmount: string;
+
   @Prop({ required: true })
   status: string;
 

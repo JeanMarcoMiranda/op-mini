@@ -64,7 +64,7 @@ const OrderForm: React.FC = () => {
   const [estimatedTotal, setEstimatedTotal] = useState('0')
 
   const [inShift, setInShift] = useState(false)
-  const [lastshifts, setLastshifts] = useState<IShif>()
+  const [lastshifts, setLastshifts] = useState<IShift>()
   const urlShift: RequestInfo = 'http://localhost:8000/shifts';
 
   useEffect(() => {
@@ -301,7 +301,7 @@ const OrderForm: React.FC = () => {
       },
     };
     const res = await fetch(urlShift, requestInit);
-    const data: IShif[] = await res.json();
+    const data: IShift[] = await res.json();
     const dataOrderDesc = data.reverse();
     if (dataOrderDesc[0]) {
       if (dataOrderDesc[0].end === '') {

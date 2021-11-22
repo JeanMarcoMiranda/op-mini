@@ -27,6 +27,9 @@ export class CreateShiftDto {
   readonly endAmount: string;
 
   @IsString()
+  readonly expectedAmount: string;
+
+  @IsString()
   @IsNotEmpty()
   readonly status: string;
 }

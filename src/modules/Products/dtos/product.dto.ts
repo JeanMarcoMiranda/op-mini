@@ -29,6 +29,9 @@ export class CreateProductDto {
   readonly pricesell: string
 
   @IsString()
+  readonly mesureUnit: "unidad" | "kg"
+
+  @IsString()
   @IsNotEmpty()
   readonly date: string
 
@@ -43,7 +46,7 @@ export class CreateProductDto {
   @IsNotEmpty()
   readonly category: string
 
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   readonly company: string
 }
