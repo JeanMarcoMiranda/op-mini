@@ -41,6 +41,7 @@ const SaleForm: React.FC = () => {
   const [searchVal, setSearchVal] = useState('')
   const [searchTableShow, setSearchTableShow] = useState(false)
   const [searchTableData, setSearchTableData] = useState<IProductTableData[]>([])
+  const [saleData, setSaleData] = useState<ISale>()
 
   //Lista de Productos de la Venta
   const [saleProducts, setSaleProducts] = useState<IProductTableData[]>([])
@@ -125,6 +126,7 @@ const SaleForm: React.FC = () => {
     if (res.ok) {
       let a = data.products.slice()
       console.log(data)
+      setSaleData(data)
       setUpdateForm(true)
       setClientName(data.client)
       setVoucherType(data.voucher)
@@ -571,15 +573,17 @@ const SaleForm: React.FC = () => {
                 {saleList.length > 0 ?
                   saleList.map((prod, index) => (
                     <div className="flex items-center" key={index}>
-                      <div className="flex-initial">
-                      <Icon
-                        width={8}
-                        color="red"
-                        Icon={XIcon}
-                        hover
-                        onClick={() => {deleteProductSale(index)}}
-                      />
-                      </div>
+                      {saleData?.status != 'Anulado' &&
+                        (<div className="flex-initial">
+                        <Icon
+                          width={8}
+                          color="red"
+                          Icon={XIcon}
+                          hover
+                          onClick={() => {deleteProductSale(index)}}
+                        />
+                        </div>)
+                      }
                       <div className="flex-auto px-3">
                         <Input
                           type="text"
@@ -597,6 +601,7 @@ const SaleForm: React.FC = () => {
                           value={saleList[index].quantity}
                           onChange={e => {handleChangeQP('quantity', index, e)}}
                           focus
+                          disabled={saleData?.status === 'Anulado' ? true : false}
                         />
                       </div>
                       <div className="flex-auto px-3">
@@ -630,7 +635,7 @@ const SaleForm: React.FC = () => {
 
               </div>
 
-              <div className="col-span-2 py-3 px-6 bg-white flex-initial w-96">
+              <div className="col-span-2 pt-3 pb-3 px-6 bg-white flex-initial w-96">
                 <Input
                   type="text"
                   label="Nombre de Cliente"
@@ -646,7 +651,12 @@ const SaleForm: React.FC = () => {
                   <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
                     Documento de Compra
                   </label>
-                  <RadioGroup value={voucherType} onChange={setVoucherType} className="flex">
+                  <RadioGroup
+                    value={voucherType}
+                    onChange={setVoucherType}
+                    className="flex"
+                    disabled={saleData?.status === 'Anulado' ? true : false}
+                  >
                     <RadioGroup.Option value="ticket"
                       className={({ active, checked }) => `
                       ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
@@ -683,7 +693,12 @@ const SaleForm: React.FC = () => {
                   <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
                     Forma de Pago
                   </label>
-                  <RadioGroup value={paymentMethod} onChange={setPaymentMethod} className="flex mb-3">
+                  <RadioGroup
+                    value={paymentMethod}
+                    onChange={setPaymentMethod}
+                    className="flex mb-3"
+                    disabled={saleData?.status === 'Anulado' ? true : false}
+                  >
                     <RadioGroup.Option value="efectivo"
                       className={({ active, checked }) => `
                       ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
@@ -712,7 +727,12 @@ const SaleForm: React.FC = () => {
                       )}
                     </RadioGroup.Option>
                   </RadioGroup>
-                  <RadioGroup value={paymentMethod} onChange={setPaymentMethod} className="flex mb-3">
+                  <RadioGroup
+                    value={paymentMethod}
+                    onChange={setPaymentMethod}
+                    className="flex mb-3"
+                    disabled={saleData?.status === 'Anulado' ? true : false}
+                  >
                     <RadioGroup.Option value="plin"
                       className={({ active, checked }) => `
                       ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
@@ -733,7 +753,12 @@ const SaleForm: React.FC = () => {
                     </RadioGroup.Option>
                   </RadioGroup>
                   {paymentMethod.includes("transferencia") && (
-                    <RadioGroup value={transferPaymentMethod} onChange={setTransferPaymentMethod} className="flex">
+                    <RadioGroup
+                      value={transferPaymentMethod}
+                      onChange={setTransferPaymentMethod}
+                      className="flex"
+                      disabled={saleData?.status === 'Anulado' ? true : false}
+                    >
                       <RadioGroup.Option value="transferencia bcp"
                         className={({ active, checked }) => `
                         ${ checked ? 'bg-green-500 text-white' : 'bg-white'}
@@ -765,53 +790,59 @@ const SaleForm: React.FC = () => {
                   value={paymentCash}
                   onChange={e => handleChange(e,setPaymentCash)}
                   focus
+                  disabled={saleData?.status === 'Anulado' ? true : false}
                 />
 
                 <h6 className="text-left text-red-500 text-xl mt-3 font-bold uppercase">
                   Cambio: {changeSale()}
                 </h6>
-
-                <Button
-                  label={updateForm ? "Actualizar Venta" : "Finalizar Venta"}
-                  textColor="white"
-                  bgColor="my-2 bg-gradient-to-r from-green-400 to-green-500"
-                  onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
-                  onClick={updateForm ? updateSale : createSale}
-                />
+                {saleData?.status != 'Anulado' &&
+                  (
+                    <Button
+                      label={updateForm ? "Actualizar Venta" : "Finalizar Venta"}
+                      textColor="white"
+                      bgColor="my-2 bg-gradient-to-r from-green-400 to-green-500"
+                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                      onClick={updateForm ? updateSale : createSale}
+                    />
+                  )
+                }
               </div>
             </div>
 
-            <div className="col-span-2 py-3 px-6">
-              <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                Seleccionar Productos
-              </h6>
+            {saleData?.status != 'Anulado' && (
+              <div className="col-span-2 py-3 px-6">
+                <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                  Seleccionar Productos
+                </h6>
 
-              <div className="box mx-6 mt-6 mb-3">
-                <div className="box-wrapper">
-                  <div className=" bg-white rounded flex items-center w-full shadow-sm border border-gray-200">
-                    <Input
-                      type="search"
-                      label=""
-                      name="search"
-                      value={searchVal}
-                      onChange={e => handleChange(e, setSearchVal)}
-                      placeholder="Buscar producto..."
-                      icon={iconValue}
-                    />
+                <div className="box mx-6 mt-6 mb-3">
+                  <div className="box-wrapper">
+                    <div className=" bg-white rounded flex items-center w-full shadow-sm border border-gray-200">
+                      <Input
+                        type="search"
+                        label=""
+                        name="search"
+                        value={searchVal}
+                        onChange={e => handleChange(e, setSearchVal)}
+                        placeholder="Buscar producto..."
+                        icon={iconValue}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {searchTableShow &&
-                <div className="mb-3">
-                  <Table
-                    theadData={tableFieldData}
-                    tbodyData={searchTableData}
-                    onClick={addProductSale}
-                  />
-                </div>
-              }
-            </div>
+                {searchTableShow &&
+                  <div className="mb-3">
+                    <Table
+                      theadData={tableFieldData}
+                      tbodyData={searchTableData}
+                      onClick={addProductSale}
+                    />
+                  </div>
+                }
+              </div>
+            )}
           </div>
         </div>
       </div>

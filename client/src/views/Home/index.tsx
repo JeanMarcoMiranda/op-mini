@@ -241,6 +241,68 @@ const Home: React.FC = () => {
     //return data.stock
   }
 
+  const getCash = async () => {
+    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlPro, requestInit);
+    const data = await res.json();
+    return data[0]
+  }
+
+  const setCash = async (putCash:number, id: string) => {
+    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cash: putCash + '',
+      })
+    };
+    const res = await fetch(urlPro, requestInit);
+    if (res.ok) {
+      console.log('Cash updated')
+    }else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Hubo un error al actualizar la caja`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const retreatCash = async (inputCash: string) => {
+    const cash = await getCash()
+    let cashfinal = Number(cash.cash) - Number(inputCash)
+    if (cashfinal >= 0) {
+      setCash(cashfinal, cash._id)
+    } else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `La caja no puede estar con numeros negativos`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const refillCash = async (inputCash: string) => {
+    const cash = await getCash()
+    let cashfinal = Number(cash.cash) + Number(inputCash)
+    setCash(cashfinal, cash._id)
+  }
+
   return show ? (
     <div className="grid my-8 py-6 px-6 mx-8 rounded-3xl bg-white">
       <div className="col-span-12 ">

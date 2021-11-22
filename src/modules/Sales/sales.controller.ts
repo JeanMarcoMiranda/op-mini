@@ -42,6 +42,12 @@ export class SaleController {
     return this.saleService.findOneSale(id);
   }
 
+  @Get('search/:name')
+  @Public()
+  public async getNameProduct(@Param('name') name: string): Promise<Sale[]> {
+    return this.saleService.findNameSale(name);
+  }
+
   @Put(':id')
   public async putSale(
     @Param('id') id: string,

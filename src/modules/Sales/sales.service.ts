@@ -22,6 +22,10 @@ export class SaleService {
     return this.saleRepository.findOneSale(id);
   }
 
+  public async findNameSale(name: string): Promise<Sale[]> {
+    return this.saleRepository.findNameSale(name);
+  }
+
   public async updateSale(
     id: string,
     documentUpdate: UpdateSaleDto,

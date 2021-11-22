@@ -37,6 +37,23 @@ export class SaleRepository {
     return sale;
   }
 
+  public async findNameSale(name:string): Promise<Sale[]> {
+    let regex = new RegExp(["^.*", name, ".*$"].join(""), "i");
+    const product = await this.saleModel.find()
+      .populate({path: 'createdby', match: { name: regex }, select: 'name'})
+      .populate({path:'products.product', model: this.productmodel, select: 'name pricesell'}).exec()
+
+    let sale = product.filter(function(sal){
+      if (sal.createdby) {
+        return true
+      } else {
+        return false
+      }
+    })
+
+    return sale
+  }
+
   public async updateSale(
     id: string,
     updateDocument: UpdateSaleDto,

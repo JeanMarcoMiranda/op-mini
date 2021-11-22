@@ -75,7 +75,8 @@ interface ISaleTableData {
   change: string;
   methodpay: string;
   voucher: string;
-  status: string;
+  subtotal: string;
+  status: string | JSX.Element;
   active?: JSX.Element;
   actions?: JSX.Element;
 }

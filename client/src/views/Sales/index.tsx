@@ -6,28 +6,37 @@ import { setModalData, setNotificationData, setToastData } from '../../store/act
 import {
   TableComponent as Table,
   ButtonComponent as Button,
+  ChipComponent as Chip,
+  InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
 import { formatDate, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
+import {
+  SearchIcon,
+} from '@heroicons/react/outline';
 
 const tableFieldData = [
   { text: 'Creado por', width: 2, name: 'createdby' },
-  { text: 'Cliente', width: 1, name: 'client' },
+  { text: 'Cliente', width: 2, name: 'client' },
   { text: 'Fecha', width: 1, name: 'date' },
-  { text: 'Efectivo', width: 1, name: 'cash' },
-  { text: 'Cambio', width: 1, name: 'change' },
+  { text: 'Total', width: 1, name: 'subtotal' },
   { text: 'Metodo de pago', width:2, name: 'methodpay' },
   { text: 'Boleta', width: 1, name: 'voucher' },
   { text: 'Estado', width: 1, name: 'status' },
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 
+const iconValue = {
+  isActive: true,
+  Icon: SearchIcon,
+};
 
 const SaleView: React.FC = () => {
   const dispatch = useDispatch()
   const [ saleData, setSaleData ] = useState<ISale[]>([]);
   const [ tableData, setTableData ] = useState<ISaleTableData[]>([]);
+  const [searchValue, setSearchValue] = useState<string>('')
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
@@ -35,33 +44,24 @@ const SaleView: React.FC = () => {
   const url: RequestInfo = 'http://localhost:8000/sales';
 
   useEffect(() => {
-    const getSaletData = async () => {
-      const requestInit: RequestInit = {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-      };
-      const res = await fetch(url, requestInit);
-      const data = await res.json();
-      setSaleData(data);
-    }; 
+    if (searchValue.length > 2) {
+      getSearchSale(searchValue);
+    } else {
+      getSaletData();
+    }
+    // eslint-disable-next-line
+  }, [searchValue])
 
+  useEffect(() => {
     getSaletData();
     // eslint-disable-next-line
   }, []);
-
-
 
   useEffect(() => {
     if (saleData.length === 0) return;
 
     const prepareTableData = () => {
-      let showActions = {
-        edit: true,
-        more: false,
-      }
+      let showActions: any
 
       let newTableData: ISaleTableData[] = saleData.map(
         ({
@@ -76,16 +76,32 @@ const SaleView: React.FC = () => {
           voucher,
           status,
         }: ISale) => {
+          if (status === 'Anulado') {
+            showActions = {
+              edit: true,
+              more: false,
+            }
+          } else {
+            showActions = {
+              edit: true,
+              more: false,
+              cancel: {
+                show: true,
+                action: cancelSale
+              }
+            }
+          }
           let newData: ISaleTableData = {
             _id,
             createdby: createdby.name,
             client,
             date: formatDate(new Date(date)),
-            cash,
-            change,
+            cash: 'S/ ' + cash,
+            change: 'S/ ' + change,
+            subtotal: 'S/ ' + subtotal,
             methodpay,
             voucher,
-            status,
+            status: renderChip(status),
             actions: renderIconActions(_id, 'sale', showAlert, showActions)
           };
           return newData;
@@ -98,6 +114,65 @@ const SaleView: React.FC = () => {
     // eslint-disable-next-line
   }, [saleData]);
 
+  const renderChip = (status: string) => {
+    let bg = 'white'
+    switch (status) {
+      case 'Anulado':
+        bg = 'red'
+        break;
+      case 'Completado':
+        bg = 'green'
+        break;
+      case 'Actualizado':
+        bg = 'blue'
+        break;
+    }
+    return (
+      <Chip
+        label={status}
+        bgColor={bg}
+        txtColor="white"
+      />
+    )
+  }
+
+  const getSearchSale = async (searchVal: string) => {
+    const urlSearch: RequestInfo = `http://localhost:8000/sales/search/${searchVal}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlSearch, requestInit);
+    const data = await res.json();
+    if (res.ok) {
+      data.reverse()
+      setSaleData(data);
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
+
+  const getSaletData = async () => {
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(url, requestInit);
+    const data = await res.json();
+    if (res.ok) {
+      data.reverse()
+      setSaleData(data);
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  };
+
   const showAlert = (type: string, id?: string) => {
     if (type === 'toast') {
       dispatch(setToastData({
@@ -108,6 +183,93 @@ const SaleView: React.FC = () => {
         delay: 5
       }))
     }
+  }
+
+  const cancelSale = async (id: string) => {
+    console.log("HELLOT HERE",id)
+    const urlSale: RequestInfo = `http://localhost:8000/sales/${id}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlSale, requestInit);
+    if (res.ok) {
+      const data = await res.json() as ISale;
+      let products = [...data.products]
+      for (let i = 0; i < products.length; i++) {
+        const prod = products[i];
+        await updateProductSale(prod.product._id, prod.quantity)
+      }
+      const requestInit: RequestInit = {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: 'Anulado',
+        }),
+      }
+      const res2 = await fetch(urlSale, requestInit)
+      if (res2.ok) {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: 'Se ha anulado la venta con exito.',
+          color: 'success',
+          delay: 5
+        }))
+        getSaletData()
+      } else {
+        console.log('Error: Unknow error || Server error UpdateSale');
+      }
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
+
+  const updateProductSale = async (id: string, quantity: string) => {
+    const oldProduct = await getProduct(id)
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const url: RequestInfo = urlPro + `/${id}`;
+    let requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        stock: (Number(oldProduct.stock) + Number(quantity)) + '',
+      }),
+    }
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      console.log('Quantity Product updated')
+    }else {
+      console.log('No se pudo we');
+    }
+  }
+
+  const getProduct = async (pId: string) => {
+    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlReq: RequestInfo = urlPro + `/${pId}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlReq, requestInit);
+    const data = await res.json();
+    return data
+  }
+
+  const handleChangeSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value)
   }
 
   return (
@@ -129,6 +291,22 @@ const SaleView: React.FC = () => {
                   />
                 </Link>
               </div>
+
+              <div className="box mx-6 mt-6 mb-3">
+              <div className="box-wrapper">
+                <div className=" bg-white rounded flex items-center w-full shadow-sm border border-gray-200">
+                  <Input
+                    type="search"
+                    label=""
+                    name={'busqueda'}
+                    value={searchValue}
+                    onChange={handleChangeSV}
+                    placeholder="Buscar producto..."
+                    icon={iconValue}
+                  />
+                </div>
+              </div>
+            </div>
 
               <div className="mb-3">
                 <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled : true, fieldsPerPage: 5}}/>

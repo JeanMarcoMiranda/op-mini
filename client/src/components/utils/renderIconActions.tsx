@@ -5,18 +5,26 @@ import {
   PencilAltIcon,
   ArchiveIcon,
   BellIcon,
+  BanIcon,
 } from '@heroicons/react/outline';
 
 const renderIconActions = (
   idCRUD: string,
   crudName: string,
   showAlert: (type: string, id?: string | undefined) => void,
-  showAction: {edit?: boolean, delete?: boolean, order?: boolean, more?: boolean} = {}
+  showAction: {
+    edit?: boolean,
+    delete?: boolean,
+    order?: boolean,
+    more?: boolean,
+    cancel?: {show: boolean, action: (id:string) => void}} = {}
 ) => {
   let editAct = false
   let deleteAct = false
   let orderAct = false
   let moreAct = true
+  let cancelAct = false
+  let action = (id: string) => {}
   for (const property in showAction) {
     switch (property) {
       case "edit":
@@ -30,12 +38,18 @@ const renderIconActions = (
         break;
       case "more":
         moreAct = showAction[property] ? true : false
-        break
+        break;
+      case "cancel":
+        cancelAct = showAction[property]?.show ? true : false
+        if (showAction.cancel) {
+          action = showAction.cancel.action
+        }
+        break;
     }
   }
   return (
   <div className="flex item-center justify-center">
-    {moreAct && 
+    {moreAct &&
       <Icon
         width={5}
         color="blue"
@@ -71,6 +85,15 @@ const renderIconActions = (
         Icon={ArchiveIcon}
         hover
         onClick={() => showAlert('delete',idCRUD)}
+      />
+    }
+    {cancelAct &&
+      <Icon
+        width={5}
+        color="red"
+        Icon={BanIcon}
+        hover
+        onClick={() => action(idCRUD)}
       />
     }
   </div> )
