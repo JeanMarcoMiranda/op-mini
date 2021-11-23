@@ -296,7 +296,7 @@ const Home: React.FC = () => {
     const cash = await getCash()
     let cashfinal = Number(cash.cash) - Number(inputCash)
     if (cashfinal >= 0) {
-      setCash(cashfinal, cash._id)
+      setCash(roundDecimals(cashfinal), cash._id)
       setValue('')
     } else {
       dispatch(setToastData({
@@ -312,7 +312,7 @@ const Home: React.FC = () => {
   const refillCash = async (inputCash: string) => {
     const cash = await getCash()
     let cashfinal = Number(cash.cash) + Number(inputCash)
-    setCash(cashfinal, cash._id)
+    setCash(roundDecimals(cashfinal), cash._id)
     setValue('')
   }
 

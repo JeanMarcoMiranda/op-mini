@@ -164,7 +164,7 @@ interface IProduct {
   description: string;
   active: boolean;
   category: ICategory;
-  company: string;
+  company: ISupplier;
 }
 
 interface IProductResponse {
@@ -216,6 +216,11 @@ interface ICategory {
   _id: string;
   name: string;
   active: boolean;
+}
+
+interface ICompany {
+  _id: string;
+  name: string;
 }
 
 interface IFormCategory {

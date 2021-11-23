@@ -19,7 +19,7 @@ export class ProductRepository {
 
 
   public async findAllProducts(): Promise<Product[]> {
-    return this.productModel.find().populate("category").exec();
+    return this.productModel.find().populate("category").populate("company", "company").exec();
   }
 
   public async findOneProduct(id: string): Promise<Product> {

@@ -12,8 +12,8 @@ import { setModalData, setToastData } from '../../store/action/actions';
 
 const tableFieldData = [
   { text: 'Usuario', width: 2, name: 'user' },
-  { text: 'Hora Inicio', width: 1, name: 'start'},
-  { text: 'Hora Fin', width: 1, name: 'end'},
+  { text: 'Hora Inicio', width: 2, name: 'start'},
+  { text: 'Hora Fin', width: 2, name: 'end'},
   { text: 'Inicia Caja', width: 1, name: 'startAmount'},
   { text: 'Finaliza Caja', width: 1, name: 'endAmount'},
   { text: 'Monto Esperado', width: 1, name: 'status'},

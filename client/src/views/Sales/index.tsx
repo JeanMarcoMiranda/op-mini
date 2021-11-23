@@ -23,7 +23,7 @@ const tableFieldData = [
   { text: 'Total', width: 1, name: 'subtotal' },
   { text: 'Metodo de pago', width:2, name: 'methodpay' },
   { text: 'Boleta', width: 1, name: 'voucher' },
-  { text: 'Estado', width: 1, name: 'status' },
+  { text: 'Estado', width: 2, name: 'status' },
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 

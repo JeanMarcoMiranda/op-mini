@@ -47,7 +47,7 @@ const ProductForm: React.FC = () => {
   const [selectedSupplier, setSelectedSupplier] = useState<ISelectOption>()
 
 
-  const [lastPrice, setLastPrice] = useState<string>('0')   
+  const [lastPrice, setLastPrice] = useState<string>('0')
   const [newLastPrice, setNewLastPrice] = useState<string>('0')
   const [lastPriceSell, setLastPriceSell] = useState<string>('0')
   const [newLastPriceSell, setNewLastPriceSell] = useState<string>('0')
@@ -135,7 +135,7 @@ const ProductForm: React.FC = () => {
     }
   }
 
-  
+
 
 
   // == GETTING DATA TO DISPLAY ON SELECTS

@@ -603,12 +603,18 @@ const OrderView: React.FC = () => {
                     orderData.slice(0).reverse().map((order, index) => (
                       <Card
                         key={index}
-                        menuComplete={(order.status === "Aprobado") ? (e) => orderComplete(index) : undefined}
+                        menuComplete={(order.status === "Aprobado") ? (e) => {
+                          const newIndex: number = orderData.length - index;
+                          orderComplete(newIndex - 1)
+                        } : undefined}
                         menuCancel={(order.status === "Completado") ? (e) => {
                           const newIndex: number = orderData.length - index;
                           orderCancel(newIndex - 1)
                         } : undefined}
-                        menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => approveOrder(index) : undefined}
+                        menuApprove={(userDataT.role.name === "Administrador" && order.status === "Pendiente") ? (e) => {
+                          const newIndex: number = orderData.length - index;
+                          approveOrder(newIndex - 1)
+                        } : undefined}
                         menuDelete={(userDataT.role.name === "Administrador") ? () => showAlert('delete', order._id) : undefined}
                         createdBy={order.createdby.name}
                         company={order.supplier.company}
