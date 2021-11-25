@@ -101,7 +101,7 @@ const ProductsView: React.FC = () => {
           date,
           description,
           active,
-          company = '',
+          company,
         }: IProduct) => {
           const newData: IProductTableData = {
             _id,
@@ -114,7 +114,7 @@ const ProductsView: React.FC = () => {
             mesureUnit: mesureUnit,
             active: renderActiveChip(active),
             actions: renderIconActions(_id, 'product', showAlert, showActions),
-            company,
+            company: company.company,
           };
           return newData;
         },

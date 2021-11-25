@@ -90,7 +90,7 @@ const SaleForm: React.FC = () => {
           stock,
           pricebuy,
           pricesell,
-          company = ''
+          company,
         }: IProduct) => {
           let newData: IProductTableData = {
             _id,
@@ -100,7 +100,7 @@ const SaleForm: React.FC = () => {
             stock,
             pricebuy,
             pricesell,
-            company,
+            company: company.company,
           };
           return newData;
         },

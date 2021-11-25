@@ -138,7 +138,7 @@ const OrderForm: React.FC = () => {
 
   const prepareSearchTableData = (productsSearch: IProduct[] = companyProducts) => {
     const std: IProductTableData[] = productsSearch.map((product) => {
-      let nobj = {...product, category: product.category.name}
+      let nobj = {...product, category: product.category.name, company: product.company.company}
       let {date, description, active ,...tnobj} = nobj
       return tnobj as IProductTableData
     })
