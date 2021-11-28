@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { MenuIcon } from '@heroicons/react/solid';
-import { Link, useHistory } from 'react-router-dom';
-import { setToastData } from '../../store/action/actions';
+import { Link } from 'react-router-dom';
+import { setToastData, setShiftData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
@@ -41,20 +41,25 @@ const Header: React.FC<HeaderProps> = ({
   navToggle,
 }) => {
   const dispatch = useDispatch()
-  const history = useHistory()
-  const [inShift, setInShift] = useState(false)
+  //const history = useHistory()
+  //const [inShift, setInShift] = useState(false)
   const [shifts, setShifts] = useState<IShift[]>([])
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+  const { shiftData } = useSelector<RootState, RootState['shift']>(
+    (state) => state.shift,
+  );
+
   const urlShift: RequestInfo = 'http://localhost:8000/shifts';
   const urlOrder: RequestInfo = 'http://localhost:8000/orders';
   const urlSale: RequestInfo = 'http://localhost:8000/sales';
 
   useEffect(() => {
     getCheckLastShift();
+    console.log(shiftData);
     // eslint-disable-next-line
-  }, [inShift]);
+  }, [shiftData?.inShift]);
 
   const getCheckLastShift = async () => {
     const requestInit: RequestInit = {
@@ -76,16 +81,22 @@ const Header: React.FC<HeaderProps> = ({
       if (shifts[0].end === '') {
         //finalizar ultimo turno activo
         prepareUpdateShift()
-        setInShift(false)
+        //setInShift(false)
+        dispatch(setShiftData({inShift: false,}))
+        localStorage.setItem('shift', 'false')
       } else {
         //empezar nuevo turno si se finalizó el ultimo turno
         createShift()
-        setInShift(true)
+        //setInShift(true)
+        dispatch(setShiftData({inShift: true,}))
+        localStorage.setItem('shift', 'true')
       }
     } else {
       //Nuevo turno
       createShift()
-      setInShift(true)
+      //setInShift(true)
+      dispatch(setShiftData({inShift: true,}))
+      localStorage.setItem('shift', 'true')
     }
   }
 
@@ -106,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({
         startAmount: '0',
         endAmount: '0',
         expectedAmount: '0',
-        status: inShift.toString(),
+        status: shiftData?.inShift!.toString(),
       }),
     }
     const res = await fetch(urlShift, requestInit);
@@ -147,7 +158,7 @@ const Header: React.FC<HeaderProps> = ({
         startAmount: '0',
         endAmount: '0',
         expectedAmount: '0',
-        status: inShift.toString(),
+        status: shiftData?.inShift!.toString(),
       }),
     }
     const res = await fetch(urlUpdate, requestInit);
@@ -177,7 +188,7 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   const getOrder = async() => {
-    console.log('Order Get');
+    //console.log('Order Get');
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
@@ -199,7 +210,7 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   const getSales = async() => {
-    console.log('Sales Get');
+    //console.log('Sales Get');
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
@@ -235,7 +246,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex justify-center">
         <div className="mr-8">
           <Button
-            label={inShift ? "Terminar Turno" : "Empezar Turno"}
+            label={shiftData?.inShift ? "Terminar Turno" : "Empezar Turno"}
             textColor="white"
             bgColor="bg-gradient-to-r from-blue-500 to-blue-500"
             onHoverStyles={toHoverStyle('bg-gradient-to-r from-blue-500 to-blue-600')}

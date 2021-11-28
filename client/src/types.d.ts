@@ -324,6 +324,23 @@ interface IParamTypes {
   id: string;
 }
 
+// ========== Redux State Shift Types ==========
+
+interface IShiftProps {
+  inShift?: boolean,
+}
+
+interface SetShiftDataAction {
+  type: "SET_SHIFT";
+  shift: IShiftProps;
+};
+
+type ShiftState = {
+  shiftData?: IShiftProps,
+};
+
+type ShiftActionTypes = SetShiftDataActions
+
 // ========== Redux Alert Types ==========
 
 interface IModalProps {

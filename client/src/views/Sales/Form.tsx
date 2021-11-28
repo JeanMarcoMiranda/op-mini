@@ -59,6 +59,9 @@ const SaleForm: React.FC = () => {
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+  const { shiftData } = useSelector<RootState, RootState['shift']>(
+    (state) => state.shift,
+  );
 
   useEffect(() => {
     id ? getSaleProducts(id) : console.log('f')
@@ -130,10 +133,10 @@ const SaleForm: React.FC = () => {
       setUpdateForm(true)
       setClientName(data.client)
       setVoucherType(data.voucher)
-      if(data.methodpay.includes("transferencia")){
+      if (data.methodpay.includes("transferencia")) {
         setPaymentMethod("transferencia")
         setTransferPaymentMethod(data.methodpay)
-      }else {
+      } else {
         setPaymentMethod(data.methodpay)
       }
       setPaymentCash(data.cash)
@@ -199,7 +202,7 @@ const SaleForm: React.FC = () => {
       return
     }
 
-    let alreadyExist = saleProducts.find( product => product.name === dataS.name)
+    let alreadyExist = saleProducts.find(product => product.name === dataS.name)
     if (alreadyExist) {
       addQuantity(alreadyExist.name)
       return
@@ -225,7 +228,7 @@ const SaleForm: React.FC = () => {
       lastsale = await getSale()
       if (lastsale) {
         for (let i = 0; i < lastsale?.products.length; i++) {
-          if (name === lastsale?.products[i].product.name){
+          if (name === lastsale?.products[i].product.name) {
             for (let i = 0; i < newList.length; i++) {
               const nameP = newList[i].product.name;
               if (nameP === name) {
@@ -241,11 +244,11 @@ const SaleForm: React.FC = () => {
                 }
               }
             }
-          }else {
+          } else {
             for (let i = 0; i < newList.length; i++) {
               const nameP = newList[i].product.name;
               if (nameP === name) {
-                let stockp =  Number(saleProducts[i].stock)
+                let stockp = Number(saleProducts[i].stock)
                 let newQuantity = num ? num : Number(newList[i].quantity) + 1
                 if (newQuantity <= stockp) {
                   newList[i].quantity = '' + newQuantity
@@ -256,14 +259,14 @@ const SaleForm: React.FC = () => {
                 }
               }
             }
-          } ;
+          };
         }
       }
     } else {
       for (let i = 0; i < newList.length; i++) {
         const nameP = newList[i].product.name;
         if (nameP === name) {
-          let stockp =  Number(saleProducts[i].stock)
+          let stockp = Number(saleProducts[i].stock)
           let newQuantity = num ? num : Number(newList[i].quantity) + 1
           if (newQuantity <= stockp) {
             newList[i].quantity = '' + newQuantity
@@ -281,7 +284,7 @@ const SaleForm: React.FC = () => {
   const deleteProductSale = async (index: number) => {
     if (updateForm) {
       let a = await getSale()
-      let b:ISale
+      let b: ISale
       if (a) {
         b = a
         if (b) {
@@ -305,7 +308,7 @@ const SaleForm: React.FC = () => {
               const res = await fetch(url, requestInit);
               if (res.ok) {
                 console.log('Quantity & Price Product updated')
-              }else {
+              } else {
                 console.log('No se pudo we');
               }
             }
@@ -322,11 +325,11 @@ const SaleForm: React.FC = () => {
     setSaleProducts(newProducts)
   }
 
-  const handleChangeQP = (type: string, index: number, {target}: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeQP = (type: string, index: number, { target }: React.ChangeEvent<HTMLInputElement>) => {
     if (type === 'quantity') {
       addQuantity(saleList[index].product.name, Number(target.value))
     } else if (type === 'pricesell') {
-      if( Number(target.value) < 0) {
+      if (Number(target.value) < 0) {
         return
       }
       let newProducts = [...saleProducts]
@@ -358,7 +361,7 @@ const SaleForm: React.FC = () => {
     //Situaciones donde dará errores con el backend
     let check = true
     let message = "No se puede completar la venta por falta de datos"
-    if (paymentCash === '' || Number(paymentCash) <= 0 ) {
+    if (paymentCash === '' || Number(paymentCash) <= 0) {
       check = false
       message = "Falta colocar un precio de pago"
     }
@@ -368,7 +371,7 @@ const SaleForm: React.FC = () => {
     }
     if (totalSale() === 0) {
       check = false
-      message = "Literal no se estan vendiendo cosas"
+      message = "Literal no se estan vendiendo productos"
     }
     if (typeof changeSale() != 'number') {
       check = false
@@ -391,46 +394,56 @@ const SaleForm: React.FC = () => {
       return
     }
 
-    //Crear Venta
-    const urlSale = "http://localhost:8000/sales"
-    let dateNow: Date = new Date()
-    const requestInit: RequestInit = {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        createdby: userData._id,
-        client: clientName ? clientName : 'Cliente',
-        date: dateNow,
-        cash: paymentCash,
-        subtotal: totalSale() + '',
-        change: changeSale() + '',
-        methodpay: (paymentMethod === "transferencia") ? transferPaymentMethod : paymentMethod,
-        voucher: voucherType,
-        status: 'Completado',
-        products: saleList,
-      }),
-    }
-    const res = await fetch(urlSale, requestInit)
-    if (res.ok) {
-      await saleProducts.map((product, index) => {
-        updateProductQuantityPrice(product, index)
-      })
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: 'Se ha realizado la venta con exito.',
-        color: 'success',
-        delay: 5
-      }))
-      history.push('/sale')
+    if (shiftData?.inShift) {
+      //Crear Venta
+      const urlSale = "http://localhost:8000/sales"
+      let dateNow: Date = new Date()
+      const requestInit: RequestInit = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          createdby: userData._id,
+          client: clientName ? clientName : 'Cliente',
+          date: dateNow,
+          cash: paymentCash,
+          subtotal: totalSale() + '',
+          change: changeSale() + '',
+          methodpay: (paymentMethod === "transferencia") ? transferPaymentMethod : paymentMethod,
+          voucher: voucherType,
+          status: 'Completado',
+          products: saleList,
+        }),
+      }
+      const res = await fetch(urlSale, requestInit)
+      if (res.ok) {
+        await saleProducts.map((product, index) => {
+          updateProductQuantityPrice(product, index)
+        })
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: 'Se ha realizado la venta con exito.',
+          color: 'success',
+          delay: 5
+        }))
+        history.push('/sale')
+      } else {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+          color: 'warning',
+          delay: 5
+        }))
+      }
     } else {
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
-        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        contentText: `Necesitas iniciar un turno primero`,
         color: 'warning',
         delay: 5
       }))
@@ -463,7 +476,7 @@ const SaleForm: React.FC = () => {
       }),
     }
     let a = await getSale()
-    let b:ISale
+    let b: ISale
     if (a) {
       b = a
     }
@@ -524,7 +537,7 @@ const SaleForm: React.FC = () => {
     const res = await fetch(url, requestInit);
     if (res.ok) {
       console.log('Quantity & Price Product updated')
-    }else {
+    } else {
       console.log('No se pudo we');
     }
   }
@@ -575,13 +588,13 @@ const SaleForm: React.FC = () => {
                     <div className="flex items-center" key={index}>
                       {saleData?.status != 'Anulado' &&
                         (<div className="flex-initial">
-                        <Icon
-                          width={8}
-                          color="red"
-                          Icon={XIcon}
-                          hover
-                          onClick={() => {deleteProductSale(index)}}
-                        />
+                          <Icon
+                            width={8}
+                            color="red"
+                            Icon={XIcon}
+                            hover
+                            onClick={() => { deleteProductSale(index) }}
+                          />
                         </div>)
                       }
                       <div className="flex-auto px-3">
@@ -599,7 +612,7 @@ const SaleForm: React.FC = () => {
                           label="Cantidad"
                           name={prod.quantity}
                           value={saleList[index].quantity}
-                          onChange={e => {handleChangeQP('quantity', index, e)}}
+                          onChange={e => { handleChangeQP('quantity', index, e) }}
                           focus
                           disabled={saleData?.status === 'Anulado' ? true : false}
                         />
@@ -611,8 +624,8 @@ const SaleForm: React.FC = () => {
                           name={prod.price}
                           value={saleProducts[index].pricesell}
                           disabled={true}
-                          />
-                          {/* onChange={e => {handleChangeQP('pricesell', index, e)}}
+                        />
+                        {/* onChange={e => {handleChangeQP('pricesell', index, e)}}
                           focus */}
                       </div>
                       <div className="flex-auto px-3">
@@ -641,11 +654,11 @@ const SaleForm: React.FC = () => {
                   label="Nombre de Cliente"
                   name={"cliente"}
                   value={clientName}
-                  onChange={e => handleChange(e,setClientName)}
+                  onChange={e => handleChange(e, setClientName)}
                   disabled={updateForm ? true : false}
                 />
 
-                <hr className="my-3"/>
+                <hr className="my-3" />
 
                 <div className="mb-3">
                   <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
@@ -659,7 +672,7 @@ const SaleForm: React.FC = () => {
                   >
                     <RadioGroup.Option value="ticket"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -668,7 +681,7 @@ const SaleForm: React.FC = () => {
                     </RadioGroup.Option>
                     <RadioGroup.Option value="boleta"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -677,7 +690,7 @@ const SaleForm: React.FC = () => {
                     </RadioGroup.Option>
                     <RadioGroup.Option value="factura"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -687,7 +700,7 @@ const SaleForm: React.FC = () => {
                   </RadioGroup>
                 </div>
 
-                <hr className="my-3"/>
+                <hr className="my-3" />
 
                 <div className="mb-3">
                   <label className="text-left block uppercase text-gray-600 text-xs font-bold mb-2">
@@ -701,7 +714,7 @@ const SaleForm: React.FC = () => {
                   >
                     <RadioGroup.Option value="efectivo"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -710,7 +723,7 @@ const SaleForm: React.FC = () => {
                     </RadioGroup.Option>
                     <RadioGroup.Option value="tarjeta"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -719,7 +732,7 @@ const SaleForm: React.FC = () => {
                     </RadioGroup.Option>
                     <RadioGroup.Option value="yape"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -735,7 +748,7 @@ const SaleForm: React.FC = () => {
                   >
                     <RadioGroup.Option value="plin"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -744,7 +757,7 @@ const SaleForm: React.FC = () => {
                     </RadioGroup.Option>
                     <RadioGroup.Option value="transferencia"
                       className={({ active, checked }) => `
-                      ${ checked ? 'bg-blue-500 text-white' : 'bg-white'}
+                      ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
                       {({ checked }) => (
@@ -761,7 +774,7 @@ const SaleForm: React.FC = () => {
                     >
                       <RadioGroup.Option value="transferencia bcp"
                         className={({ active, checked }) => `
-                        ${ checked ? 'bg-green-500 text-white' : 'bg-white'}
+                        ${checked ? 'bg-green-500 text-white' : 'bg-white'}
                         flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                       >
                         {({ checked }) => (
@@ -770,7 +783,7 @@ const SaleForm: React.FC = () => {
                       </RadioGroup.Option>
                       <RadioGroup.Option value="transferencia interbank"
                         className={({ active, checked }) => `
-                        ${ checked ? 'bg-green-500 text-white' : 'bg-white'}
+                        ${checked ? 'bg-green-500 text-white' : 'bg-white'}
                         flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                       >
                         {({ checked }) => (
@@ -781,14 +794,14 @@ const SaleForm: React.FC = () => {
                   )}
                 </div>
 
-                <hr className="my-3"/>
+                <hr className="my-3" />
 
                 <Input
                   type="number"
                   label="Pago en Efectivo"
                   name={"cash"}
                   value={paymentCash}
-                  onChange={e => handleChange(e,setPaymentCash)}
+                  onChange={e => handleChange(e, setPaymentCash)}
                   focus
                   disabled={saleData?.status === 'Anulado' ? true : false}
                 />

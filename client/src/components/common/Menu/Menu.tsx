@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon,
@@ -12,7 +12,7 @@ import {
   LogoutIcon as OutlineLogoutIcon
 } from '@heroicons/react/outline'
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserData, setToken, setAuthUser } from '../../../store/action/actions';
+import { setUserData, setToken, setAuthUser, setShiftData, setToastData } from '../../../store/action/actions';
 import { RootState } from '../../../store/store';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -40,21 +40,34 @@ const MenuComponent: React.FC = () => {
   const { userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+  const { shiftData } = useSelector<RootState, RootState['shift']>(
+    (state) => state.shift,
+  );
 
   const userRole = userData.role;
   const dispatch = useDispatch()
   const history = useHistory()
 
   const logOutUser = () => {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    if(shiftData?.inShift){
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Necesitas terminar turno primero`,
+        color: 'warning',
+        delay: 5
+      }))
+    }else{
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
 
-    dispatch(setUserData(initialUserState))
-    dispatch(setAuthUser(false))
-    dispatch(setToken(''))
-
-    history.push('/login')
+      dispatch(setUserData(initialUserState))
+      dispatch(setAuthUser(false))
+      dispatch(setToken(''))
+      history.push('/login')
+    }
   }
+
 
   return (
     <Menu as="div" className="relative inline-block text-left">
