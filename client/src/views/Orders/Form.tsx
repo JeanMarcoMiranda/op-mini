@@ -118,7 +118,7 @@ const OrderForm: React.FC = () => {
   }
 
   const getProductsCompany = async (supplierResponse: ISupplier) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/products/company/${supplierResponse?.company}`;
+    const urlSearch: RequestInfo = `http://localhost:8000/products/company/${supplierResponse?._id}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -129,7 +129,6 @@ const OrderForm: React.FC = () => {
     const res = await fetch(urlSearch, requestInit);
     const data = await res.json();
     if (res.ok) {
-      console.log("data", data)
       setCompanyProducts(data);
     } else {
       console.log('Error: Unknow error || Server error');

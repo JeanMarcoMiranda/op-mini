@@ -30,14 +30,14 @@ export class ProductRepository {
     return product;
   }
 
-  public async findNameProduct(name:string): Promise<Product[]> {
+  public async findNameProduct(name: string): Promise<Product[]> {
     let regex = new RegExp(["^.*", name, ".*$"].join(""), "i");
     const product = await this.productModel.find({$or:[{"name": regex},{"barcode": regex}]}).populate("category").exec()
     return product
   }
 
-  public async findCompanyProducts(name:string): Promise<Product[]> {
-    const products = await this.productModel.find({company: name}).populate("category").exec()
+  public async findCompanyProducts(companyId: string): Promise<Product[]> {
+    const products = await this.productModel.find({company: companyId}).populate("category").exec()
     return products
   }
 

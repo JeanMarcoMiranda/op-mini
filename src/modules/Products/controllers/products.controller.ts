@@ -46,10 +46,10 @@ export class ProductController {
     return this.productService.findNameProduct(name);
   }
 
-  @Get('company/:name')
+  @Get('company/:companyId')
   @Public()
-  public async getCompanyProducts(@Param('name') name: string): Promise<Product[]> {
-    return this.productService.findCompanyProducts(name);
+  public async getCompanyProducts(@Param('companyId') companyId: string): Promise<Product[]> {
+    return this.productService.findCompanyProducts(companyId);
   }
 
   @Put(':id')
