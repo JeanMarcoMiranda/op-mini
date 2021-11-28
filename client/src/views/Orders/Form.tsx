@@ -51,6 +51,9 @@ const OrderForm: React.FC = () => {
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+  const { shiftData } = useSelector<RootState, RootState['shift']>(
+    (state) => state.shift,
+  );
   const [orderData, setOrderData] = useState<IFormOrder>(initialValues)
   const [supplierData, setSupplierData] = useState<ISupplier>()
   const [searchVal, setSearchVal] = useState('')
@@ -63,17 +66,13 @@ const OrderForm: React.FC = () => {
   const [endDate] = useState(new Date())
   const [estimatedTotal, setEstimatedTotal] = useState('0')
 
-  const [inShift, setInShift] = useState(false)
-  const [lastshifts, setLastshifts] = useState<IShift>()
-  const urlShift: RequestInfo = 'http://localhost:8000/shifts';
-
   useEffect(() => {
-    setOrderData({...orderData, supplier: id})
+    setOrderData({ ...orderData, supplier: id })
     getSupplierData(id)
     //eslint-disable-next-line
   }, [])
 
-  useEffect( () => {
+  useEffect(() => {
     if (companyProducts.length > 0) {
       if (searchVal.length > 2) {
         getSearchProduct(searchVal);
@@ -84,14 +83,14 @@ const OrderForm: React.FC = () => {
     //eslint-disable-next-line
   }, [searchVal])
 
-  useEffect( () => {
+  useEffect(() => {
     if (companyProducts.length > 0) {
       prepareSearchTableData()
     }
     //eslint-disable-next-line
   }, [companyProducts])
 
-  useEffect(()=> {
+  useEffect(() => {
     let estTotal = 0
     for (let i = 0; i < orderListObj.length; i++) {
       estTotal = estTotal + Number(orderListObj[i].price);
@@ -99,7 +98,7 @@ const OrderForm: React.FC = () => {
     setEstimatedTotal(estTotal + '')
   }, [orderListObj])
 
-  const getSupplierData = async ( idSupp: string) => {
+  const getSupplierData = async (idSupp: string) => {
     const url: RequestInfo = `http://localhost:8000/suppliers/${idSupp}`;
     const response = await fetch(url);
     const supplierResponse: ISupplier = await response.json();
@@ -118,7 +117,7 @@ const OrderForm: React.FC = () => {
   }
 
   const getProductsCompany = async (supplierResponse: ISupplier) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/products/company/${supplierResponse?.company}`;
+    const urlSearch: RequestInfo = `http://localhost:8000/products/company/${supplierResponse?._id}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -129,7 +128,6 @@ const OrderForm: React.FC = () => {
     const res = await fetch(urlSearch, requestInit);
     const data = await res.json();
     if (res.ok) {
-      console.log("data", data)
       setCompanyProducts(data);
     } else {
       console.log('Error: Unknow error || Server error');
@@ -138,8 +136,8 @@ const OrderForm: React.FC = () => {
 
   const prepareSearchTableData = (productsSearch: IProduct[] = companyProducts) => {
     const std: IProductTableData[] = productsSearch.map((product) => {
-      let nobj = {...product, category: product.category.name, company: product.company.company}
-      let {date, description, active ,...tnobj} = nobj
+      let nobj = { ...product, category: product.category.name, company: product.company.company }
+      let { date, description, active, ...tnobj } = nobj
       return tnobj as IProductTableData
     })
     setSearchTableData(std)
@@ -148,7 +146,7 @@ const OrderForm: React.FC = () => {
   const getSearchProduct = async (search: string) => {
     let regex = new RegExp(["^.*", search, ".*$"].join(""), "i");
     const found = companyProducts.filter(product => product.name.match(regex))
-    if ( found ) {
+    if (found) {
       prepareSearchTableData(found)
     }
   };
@@ -156,7 +154,7 @@ const OrderForm: React.FC = () => {
   const addProductOrder = (data: any) => {
     let datap = data as IProductTableData
 
-    let alreadyExist = orderListData.find( product => product.name === datap.name)
+    let alreadyExist = orderListData.find(product => product.name === datap.name)
     if (alreadyExist) return
 
     let nprol = companyProducts.find(product => product.name === datap.name)
@@ -178,9 +176,7 @@ const OrderForm: React.FC = () => {
   };
 
   const createOrder = async (data: IOrderProduct[]) => {
-    //const value = await getCheckLastShift()
-    //if(value){
-      //console.log('El turno esta iniciado');
+    if (shiftData?.inShift) {
       const urlPro = "http://localhost:8000/orders"
       let dateNow: Date = new Date()
       const requestInit: RequestInit = {
@@ -210,7 +206,6 @@ const OrderForm: React.FC = () => {
           color: 'success',
           delay: 5
         }))
-        //addOrderToShift(lastshifts!, '')
         history.push('/order')
       } else {
         dispatch(setToastData({
@@ -221,7 +216,7 @@ const OrderForm: React.FC = () => {
           delay: 5
         }))
       }
-    /*}else{
+    } else {
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -229,7 +224,7 @@ const OrderForm: React.FC = () => {
         color: 'warning',
         delay: 5
       }))
-    }*/
+    }
   }
 
   const updateQuantity = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -292,32 +287,6 @@ const OrderForm: React.FC = () => {
     setOrderListObj([...nOrderListObj2])
   }
 
-  const getCheckLastShift = async () => {
-    const requestInit: RequestInit = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-    const res = await fetch(urlShift, requestInit);
-    const data: IShift[] = await res.json();
-    const dataOrderDesc = data.reverse();
-    if (dataOrderDesc[0]) {
-      if (dataOrderDesc[0].end === '') {
-        setInShift(false)
-        setLastshifts(dataOrderDesc[0])
-        console.log('Ultimo turno no finalizado');
-      } else {
-        setInShift(true)
-        console.log('Ultimo turno finalizado');
-      }
-    } else {
-      setInShift(true)
-    }
-    return inShift
-  };
-
   return (
     <>
       <div className="container mx-auto">
@@ -347,13 +316,13 @@ const OrderForm: React.FC = () => {
                   orderListData.map((prod, index) => (
                     <div className="flex items-center" key={index}>
                       <div className="flex-initial">
-                      <Icon
-                        width={8}
-                        color="red"
-                        Icon={XIcon}
-                        hover
-                        onClick={() => deleteProductOrder(index)}
-                      />
+                        <Icon
+                          width={8}
+                          color="red"
+                          Icon={XIcon}
+                          hover
+                          onClick={() => deleteProductOrder(index)}
+                        />
                       </div>
                       <div className="flex-auto px-3">
                         <Input
@@ -406,36 +375,36 @@ const OrderForm: React.FC = () => {
               </div>
 
               <div className="flex items-center">
-                  <div className="flex-auto my-3 ml-6">
-                    <Button
-                      label="Crear Pedido"
-                      bgColor="bg-gradient-to-r from-green-400 to-green-500"
-                      textColor="white"
-                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
-                      onClick={() => createOrder(orderListObj)}
+                <div className="flex-auto my-3 ml-6">
+                  <Button
+                    label="Crear Pedido"
+                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                    textColor="white"
+                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                    onClick={() => createOrder(orderListObj)}
+                  />
+                </div>
+                <div className="flex-auto my-3">
+                  <DatePicker
+                    text={"Recepción:"}
+                    selected={startDate}
+                    startDate={startDate}
+                    endDate={endDate}
+                    handleDateChange={setStartDate}
+                  />
+                </div>
+                <div className="flex-auto my-3 mr-3">
+                  <div className="px-3">
+                    <Input
+                      type="text"
+                      label="Total Estimado"
+                      name="Total Estimado"
+                      value={estimatedTotal}
+                      disabled={true}
                     />
-                  </div>
-                  <div className="flex-auto my-3">
-                    <DatePicker
-                      text={"Recepción:"}
-                      selected={startDate}
-                      startDate={startDate}
-                      endDate={endDate}
-                      handleDateChange={setStartDate}
-                    />
-                  </div>
-                  <div className="flex-auto my-3 mr-3">
-                    <div className="px-3">
-                      <Input
-                        type="text"
-                        label="Total Estimado"
-                        name="Total Estimado"
-                        value={estimatedTotal}
-                        disabled={true}
-                      />
-                    </div>
                   </div>
                 </div>
+              </div>
 
               <div className="col-span-2 py-3 px-6">
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">

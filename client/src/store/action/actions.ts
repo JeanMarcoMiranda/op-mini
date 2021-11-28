@@ -30,3 +30,7 @@ export const setNotificationData = (notification: INotificationProps): AlertActi
   notification
 })
 
+export const setShiftData = (shift: IShiftProps): ShiftActionTypes => ({
+  type: actionTypes.SET_SHIFT,
+  shift
+})

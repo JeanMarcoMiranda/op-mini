@@ -63,6 +63,9 @@ const Home: React.FC = () => {
   const { userData, access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
+  const { shiftData } = useSelector<RootState, RootState['shift']>(
+    (state) => state.shift,
+  );
   const icon = `https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/${city?.weather[0]["icon"]}.svg`;
   const timeValue = useDateTime()
   const [orderTodayData, setOrderTodayData] = useState<IOrder[]>([])
@@ -123,87 +126,126 @@ const Home: React.FC = () => {
   };
 
   const completeOrder = (index: number) => {
-    setOrderModalOpen(index)
-    console.log(index)
+    if (shiftData?.inShift) {
 
-    dispatch(setModalData({
-      isOpen: true,
-      setisOpen: (prev => !prev),
-      title: `Completar el pedido de ${orderTodayData[index].supplier.company}`,
-      inpComplete: true,
-      cancelButton: true,
-      typeButton: 'Completar Pedido',
-      colorTYB: 'success',
-      numOrdCompl: index,
-      onClickOrdCompl: onClickOrdCompl
-    }))
-  }
+      setOrderModalOpen(index)
+      console.log(index)
 
-  const approveOrder = async (index: number) => {
-    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
-    const requestInit: RequestInit = {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status: 'Aprobado',
-      }),
-    }
-    console.log(requestInit)
-    const res = await fetch(url, requestInit);
-    if (res.ok) {
+      dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: `Completar el pedido de ${orderTodayData[index].supplier.company}`,
+        inpComplete: true,
+        cancelButton: true,
+        typeButton: 'Completar Pedido',
+        colorTYB: 'success',
+        numOrdCompl: index,
+        onClickOrdCompl: onClickOrdCompl
+      }))
+    } else {
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
-        contentText: 'El pedido se ha aprobado con exito.',
-        color: 'success',
+        contentText: `Necesitas iniciar un turno primero`,
+        color: 'warning',
         delay: 5
       }))
-      getOrder();
+    }
+  }
+
+  const approveOrder = async (index: number) => {
+    if (shiftData?.inShift) {
+      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
+      const requestInit: RequestInit = {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: 'Aprobado',
+        }),
+      }
+      console.log(requestInit)
+      const res = await fetch(url, requestInit);
+      if (res.ok) {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: 'El pedido se ha aprobado con exito.',
+          color: 'success',
+          delay: 5
+        }))
+        getOrder();
+      } else {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: `Method Approved, Error${res.status} : ${res.statusText}`,
+          color: 'warning',
+          delay: 5
+        }))
+      }
+    } else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Necesitas iniciar un turno primero`,
+        color: 'warning',
+        delay: 5
+      }))
     }
   }
 
   const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index: number) => {
-    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
-    console.log(orderModalOpen);
-    const requestInit: RequestInit = {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        createdby: orderTodayData[index].createdby._id,
-        supplier: orderTodayData[index].supplier._id,
-        finalamount: FinAmount,
-        ndocument: Doc,
-        tdocument: tDoc,
-        receivedby: userData._id,
-        status: 'Completado',
-      }),
-    }
-    console.log(requestInit)
-    const res = await fetch(url, requestInit);
-    if (res.ok) {
-      await orderTodayData[index].products.map(product => {
-        updateProductQuantity(product)
-      })
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: 'El pedido se ha completado con exito.',
-        color: 'success',
-        delay: 5
-      }))
-      getOrder()
+    if (shiftData?.inShift) {
+      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
+      console.log(orderModalOpen);
+      const requestInit: RequestInit = {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          createdby: orderTodayData[index].createdby._id,
+          supplier: orderTodayData[index].supplier._id,
+          finalamount: FinAmount,
+          ndocument: Doc,
+          tdocument: tDoc,
+          receivedby: userData._id,
+          status: 'Completado',
+        }),
+      }
+      console.log(requestInit)
+      const res = await fetch(url, requestInit);
+      if (res.ok) {
+        await orderTodayData[index].products.map(product => {
+          updateProductQuantity(product)
+        })
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: 'El pedido se ha completado con exito.',
+          color: 'success',
+          delay: 5
+        }))
+        getOrder()
+      } else {
+        console.log(res)
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+          color: 'warning',
+          delay: 5
+        }))
+      }
     } else {
-      console.log(res)
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
-        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        contentText: `Necesitas iniciar un turno primero`,
         color: 'warning',
         delay: 5
       }))
@@ -265,7 +307,7 @@ const Home: React.FC = () => {
     return data[0]
   }
 
-  const setCash = async (putCash:number, id: string) => {
+  const setCash = async (putCash: number, id: string) => {
     const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
     const requestInit: RequestInit = {
       method: 'PUT',
@@ -281,7 +323,7 @@ const Home: React.FC = () => {
     if (res.ok) {
       setCashState()
       console.log('Cash updated')
-    }else {
+    } else {
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
