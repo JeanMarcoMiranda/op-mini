@@ -15,7 +15,7 @@ import SaleView from "../views/Sales";
 import SaleForm from "../views/Sales/Form";
 import ShiftView from "../views/Shifts";
 import ShiftForm from "../views/Shifts/Form";
-
+import ActivityView from "../views/Activities";
 
 const appRoutes: RouteData[] = [
   {
@@ -188,6 +188,13 @@ const appRoutes: RouteData[] = [
   {
     path: '/shift/form/:id',
     component: ShiftForm,
+    exact: true,
+    type: 'private',
+    roles: ['Administrador']
+  },
+  {
+    path: '/activity',
+    component: ActivityView,
     exact: true,
     type: 'private',
     roles: ['Administrador']

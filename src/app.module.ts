@@ -11,6 +11,7 @@ import { OrdersModule } from './modules/Orders/orders.module';
 import { SalesModule } from './modules/Sales/sales.module'
 import { ShiftsModule } from './modules/Shifts/shifts.module';
 import { CashModule } from './modules/Cash/cash.module';
+import { ActivityModule } from './modules/Activity/activity.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 // - Config files
@@ -31,6 +32,7 @@ const myModules = [
   SalesModule,
   ShiftsModule,
   CashModule,
+  ActivityModule,
   AuthModule
 ];
 

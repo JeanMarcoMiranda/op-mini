@@ -48,6 +48,12 @@ const navRoutes: RouteSideBar[] = [
     Icon: ClipboardIcon,
     path: '/shift',
     roles: ['Administrador', 'Empleado']
+  },
+  {
+    label: 'Movimientos',
+    Icon: ClipboardIcon,
+    path: '/activity',
+    roles: ['Administrador', 'Empleado']
   }
 ]
 

@@ -52,6 +52,28 @@ interface ISaleProduct {
   price: string;
 }
 
+interface IActivity {
+  _id: string,
+  createdby: IUserSale;
+  date: string;
+  actamount: string;
+  curramount: string;
+  name: string;
+  status: string;
+  activityid: string;
+}
+
+interface IActivityTableData {
+  _id: string,
+  createdby: string;
+  date: string;
+  actamount: string;
+  curramount: string;
+  name: JSX.Element;
+  status: JSX.Element;
+  actions?: JSX.Element;
+}
+
 interface ISale {
   _id: string;
   createdby: IUserSale;

@@ -23,7 +23,7 @@ export class ProductRepository {
   }
 
   public async findOneProduct(id: string): Promise<Product> {
-    const product = this.productModel.findById(id).exec();
+    const product = this.productModel.findById(id).populate("category").populate("company", "company").exec();
     if (!product) {
       throw new NotFoundException('Product not found');
     }
@@ -32,7 +32,7 @@ export class ProductRepository {
 
   public async findNameProduct(name:string): Promise<Product[]> {
     let regex = new RegExp(["^.*", name, ".*$"].join(""), "i");
-    const product = await this.productModel.find({$or:[{"name": regex},{"barcode": regex}]}).populate("category").exec()
+    const product = await this.productModel.find({$or:[{"name": regex},{"barcode": regex}]}).populate("category").populate("company", "company").exec()
     return product
   }
 

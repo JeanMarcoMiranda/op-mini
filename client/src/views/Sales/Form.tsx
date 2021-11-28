@@ -182,6 +182,7 @@ const SaleForm: React.FC = () => {
     const data = await res.json();
     if (res.ok) {
       setSearchTableShow(true)
+      console.log(data)
       setProductData(data);
     } else {
       console.log('Error: Unknow error || Server error');
@@ -415,9 +416,11 @@ const SaleForm: React.FC = () => {
     }
     const res = await fetch(urlSale, requestInit)
     if (res.ok) {
+      let data = await res.json()
       await saleProducts.map((product, index) => {
         updateProductQuantityPrice(product, index)
       })
+      addActivity(data._id)
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -544,6 +547,76 @@ const SaleForm: React.FC = () => {
     return data
   }
 
+  const addActivity = async (id: string) => {
+    let cash = await getCash()
+    let curramount = Number(cash.cash) + totalSale()
+    const urlSale = "http://localhost:8000/activities"
+    let dateNow: Date = new Date()
+    setCash(curramount, cash._id)
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: dateNow,
+        actamount: totalSale() + '',
+        curramount: curramount + '',
+        createdby: userData._id,
+        name: 'Venta',
+        status: 'Completado',
+        activityid: id,
+      }),
+    }
+    const res = await fetch(urlSale, requestInit);
+    if (res.ok) {
+      console.log('Activity created')
+    } else {
+      console.log('No se pudo we');
+    }
+  }
+
+  const setCash = async (putCash:number, id: string) => {
+    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cash: putCash + '',
+      })
+    };
+    const res = await fetch(urlPro, requestInit);
+    if (res.ok) {
+      console.log('Cash updated')
+    }else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Hubo un error al actualizar la caja`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const getCash = async () => {
+    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlPro, requestInit);
+    const data = await res.json();
+    return data[0]
+  }
+
   return (
     <>
       <div className="container mx-auto">
@@ -554,14 +627,13 @@ const SaleForm: React.FC = () => {
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">
                   Ventas
                 </h6>
-                <Link to={`/sale`}>
-                  <Button
-                    label="Regresar"
-                    textColor="white"
-                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
-                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
-                  />
-                </Link>
+                <Button
+                  label="Regresar"
+                  textColor="white"
+                  bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                  onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                  onClick={() => history.goBack()}
+                />
               </div>
             </div>
 

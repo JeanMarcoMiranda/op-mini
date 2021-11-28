@@ -309,7 +309,7 @@ const SaleView: React.FC = () => {
             </div>
 
               <div className="mb-3">
-                <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled : true, fieldsPerPage: 5}}/>
+                <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled : true, fieldsPerPage: 10}}/>
               </div>
 
             </div>
