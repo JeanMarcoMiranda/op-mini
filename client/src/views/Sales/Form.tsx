@@ -56,7 +56,10 @@ const SaleForm: React.FC = () => {
   const [transferPaymentMethod, setTransferPaymentMethod] = useState<string>('')
 
   //Redux
-  const { access_token, userData } = useSelector<RootS  const { shiftData } = useSelector<RootState, RootState['shift']>(
+  const { userData, access_token } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
+  const { shiftData } = useSelector<RootState, RootState['shift']>(
     (state) => state.shift,
   );
 
@@ -863,27 +866,6 @@ const SaleForm: React.FC = () => {
                 </div>
 
                 <hr className="my-3" />
-
-                <Input
-                  type="number"
-                  label="Pago en Efectivo"
-                  name={"cash"}
-                  value={paymentCash}
-                  onChange={e => handleChange(e, setPaymentCash)}
-         <RadioGroup.Option value="transferencia interbank"
-                        className={({ active, checked }) => `
-                        ${ checked ? 'bg-green-500 text-white' : 'bg-white'}
-                        flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
-                      >
-                        {({ checked }) => (
-                          <span className="">Interbank</span>
-                        )}
-                      </RadioGroup.Option>
-                    </RadioGroup>
-                  )}
-                </div>
-
-                <hr className="my-3"/>
 
                 <Input
                   type="number"

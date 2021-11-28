@@ -210,6 +210,12 @@ const ActivityView = () => {
         setTableData([])
       }
       setSaleData(a)
+    } else if (filterActivity === 'Retiro') {
+      setTableData([])
+      setSaleData([])
+    } else if (filterActivity === 'Ingreso') {
+      setTableData([])
+      setSaleData([])
     }
   }
 
