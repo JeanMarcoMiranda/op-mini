@@ -456,6 +456,20 @@ const SaleForm: React.FC = () => {
     if (!checkSaleBeforeCreate()) {
       return
     }
+    let lastdata: any = await getSale()
+    let cash = await getCash()
+
+    if (roundDecimals(Number(cash.cash) - (Number(lastdata.subtotal) - totalSale())) < 0) {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'No hay suficiente cantidad en caja, contacte un admin',
+        color: 'warning',
+        delay: 5
+      }))
+      return
+    }
+
     const urlSale = "http://localhost:8000/sales/" + id
     let dateNow: Date = new Date()
     const requestInit: RequestInit = {
@@ -487,6 +501,7 @@ const SaleForm: React.FC = () => {
       await saleProducts.map((product, index) => {
         updateProductQuantityPrice(product, index, b)
       })
+      addActivityUp(lastdata)
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -559,9 +574,39 @@ const SaleForm: React.FC = () => {
     return data
   }
 
+  const addActivityUp = async (lastdata: any) => {
+    let cash = await getCash()
+    let curramount = roundDecimals(Number(cash.cash) - (Number(lastdata.subtotal) - totalSale()))
+    const urlSale = "http://localhost:8000/activities"
+    let dateNow: Date = new Date()
+    setCash(curramount, cash._id)
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: dateNow,
+        actamount: totalSale() + '',
+        curramount: curramount + '',
+        createdby: userData._id,
+        name: 'Venta',
+        status: 'Actualizado',
+        activityid: lastdata._id,
+      }),
+    }
+    const res = await fetch(urlSale, requestInit);
+    if (res.ok) {
+      console.log('Activity created')
+    } else {
+      console.log('No se pudo we');
+    }
+  }
+
   const addActivity = async (id: string) => {
     let cash = await getCash()
-    let curramount = Number(cash.cash) + totalSale()
+    let curramount = roundDecimals(Number(cash.cash) + totalSale())
     const urlSale = "http://localhost:8000/activities"
     let dateNow: Date = new Date()
     setCash(curramount, cash._id)

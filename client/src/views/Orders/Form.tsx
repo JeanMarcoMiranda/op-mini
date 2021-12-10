@@ -95,7 +95,7 @@ const OrderForm: React.FC = () => {
     for (let i = 0; i < orderListObj.length; i++) {
       estTotal = estTotal + Number(orderListObj[i].price);
     }
-    setEstimatedTotal(estTotal + '')
+    setEstimatedTotal(roundDecimals(estTotal) + '')
   }, [orderListObj])
 
   const getSupplierData = async (idSupp: string) => {
@@ -296,14 +296,15 @@ const OrderForm: React.FC = () => {
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Pedidos</h6>
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">{supplierData?.name} - {supplierData?.company}</h6>
-                <Link to="/supplier">
+
                   <Button
                     label="Regresar"
                     bgColor="bg-gradient-to-r from-green-400 to-green-500"
                     textColor="white"
                     onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                    onClick={() => history.goBack()}
                   />
-                </Link>
+
               </div>
             </div>
 

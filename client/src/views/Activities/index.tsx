@@ -154,6 +154,25 @@ const ActivityView = () => {
     }
   }
 
+  const getSearchAct = async (search: string) => {
+    const urlSearch: RequestInfo = `http://localhost:8000/activities/search/${search}`;
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlSearch, requestInit);
+    const data = await res.json();
+    if (res.ok) {
+      data.reverse()
+      return data
+    } else {
+      console.log('Error: Unknow error || Server error');
+    }
+  }
+
   const renderChip = (status: string) => {
     let bg = 'white'
     switch (status) {
@@ -165,6 +184,15 @@ const ActivityView = () => {
         break;
       case 'Actualizado':
         bg = 'blue'
+        break;
+      case 'Orden':
+        bg = 'blue'
+        break;
+      case 'Retiro':
+        bg = 'red'
+        break;
+      case 'Ingreso':
+        bg = 'yellow'
         break;
       default:
         bg = 'green'
@@ -187,7 +215,12 @@ const ActivityView = () => {
     if (filterActivity === 'All') {
       getActivitiesData()
     } else if (filterActivity === 'Venta') {
-      let b = await getActData()
+      let b
+      if (searchValue.length > 2) {
+        b = await getSearchAct(searchValue);
+      } else {
+        b = await getActData();
+      }
       let a = []
       for (let i = 0; i < b.length; i++) {
         if (b[i].name === 'Venta') {
@@ -199,10 +232,15 @@ const ActivityView = () => {
       }
       setSaleData(a)
     } else if (filterActivity === 'Pedido') {
-      let b = await getActData()
+      let b
+      if (searchValue.length > 2) {
+        b = await getSearchAct(searchValue);
+      } else {
+        b = await getActData();
+      }
       let a = []
       for (let i = 0; i < b.length; i++) {
-        if (b[i].name === 'Pedido') {
+        if (b[i].name === 'Orden') {
           a.push(b[i])
         }
       }
@@ -211,11 +249,39 @@ const ActivityView = () => {
       }
       setSaleData(a)
     } else if (filterActivity === 'Retiro') {
-      setTableData([])
-      setSaleData([])
+      let b
+      if (searchValue.length > 2) {
+        b = await getSearchAct(searchValue);
+      } else {
+        b = await getActData();
+      }
+      let a = []
+      for (let i = 0; i < b.length; i++) {
+        if (b[i].name === 'Retiro') {
+          a.push(b[i])
+        }
+      }
+      if(a.length === 0) {
+        setTableData([])
+      }
+      setSaleData(a)
     } else if (filterActivity === 'Ingreso') {
-      setTableData([])
-      setSaleData([])
+      let b
+      if (searchValue.length > 2) {
+        b = await getSearchAct(searchValue);
+      } else {
+        b = await getActData();
+      }
+      let a = []
+      for (let i = 0; i < b.length; i++) {
+        if (b[i].name === 'Ingreso') {
+          a.push(b[i])
+        }
+      }
+      if(a.length === 0) {
+        setTableData([])
+      }
+      setSaleData(a)
     }
   }
 

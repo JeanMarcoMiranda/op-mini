@@ -92,6 +92,9 @@ interface IOrder {
 }
 
 const ShiftForm: React.FC = () => {
+
+  const history = useHistory()
+
   const dispatch = useDispatch()
   const [show, setShow] = useState(false)
   const [saleData, setSaleData] = useState<ISale[]>([]);
@@ -296,14 +299,14 @@ const ShiftForm: React.FC = () => {
             <div className="rounded-t bg-white mb-0 px-6 py-3">
               <div className="text-center flex justify-between">
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">Turno</h6>
-                <Link to="/shift">
+
                   <Button
                     label="Regresar"
                     bgColor="bg-gradient-to-r from-green-400 to-green-500"
                     textColor="white"
                     onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                    onClick={() => history.goBack()}
                   />
-                </Link>
               </div>
             </div>
             <div className="flex-auto">

@@ -10,7 +10,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { formatDate, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+import { formatDate, renderActiveChip, renderIconActions, roundDecimals, toHoverStyle } from '../../components/utils';
 
 import {
   SearchIcon,
@@ -186,7 +186,7 @@ const SaleView: React.FC = () => {
   }
 
   const cancelSale = async (id: string) => {
-    console.log("HELLOT HERE",id)
+
     const urlSale: RequestInfo = `http://localhost:8000/sales/${id}`;
     const requestInit: RequestInit = {
       method: 'GET',
@@ -198,6 +198,19 @@ const SaleView: React.FC = () => {
     const res = await fetch(urlSale, requestInit);
     if (res.ok) {
       const data = await res.json() as ISale;
+
+      let cash = await getCash()
+      if (Number(cash.cash) - Number(data.subtotal) < 0) {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: `No hay suficiente cantidad en caja, contacte un admin`,
+          color: 'warning',
+          delay: 5
+        }))
+        return
+      }
+
       let products = [...data.products]
       for (let i = 0; i < products.length; i++) {
         const prod = products[i];
@@ -215,6 +228,9 @@ const SaleView: React.FC = () => {
       }
       const res2 = await fetch(urlSale, requestInit)
       if (res2.ok) {
+        let data = await res2.json()
+        console.log('res', data)
+        addActivity(data)
         dispatch(setToastData({
           isOpen: true,
           setisOpen: (prev => !prev),
@@ -229,6 +245,76 @@ const SaleView: React.FC = () => {
     } else {
       console.log('Error: Unknow error || Server error');
     }
+  }
+
+  const addActivity = async (data: any) => {
+    let cash = await getCash()
+    let curramount = roundDecimals(Number(cash.cash) - Number(data.subtotal))
+    const urlSale = "http://localhost:8000/activities"
+    let dateNow: Date = new Date()
+    setCash(curramount, cash._id)
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: dateNow,
+        actamount: data.subtotal,
+        curramount: curramount + '',
+        createdby: userData._id,
+        name: 'Venta',
+        status: 'Anulado',
+        activityid: data._id,
+      }),
+    }
+    const res = await fetch(urlSale, requestInit);
+    if (res.ok) {
+      console.log('Activity created')
+    } else {
+      console.log('No se pudo we');
+    }
+  }
+
+  const setCash = async (putCash:number, id: string) => {
+    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cash: putCash + '',
+      })
+    };
+    const res = await fetch(urlPro, requestInit);
+    if (res.ok) {
+      console.log('Cash updated')
+    }else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Hubo un error al actualizar la caja`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+  }
+
+  const getCash = async () => {
+    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlPro, requestInit);
+    const data = await res.json();
+    return data[0]
   }
 
   const updateProductSale = async (id: string, quantity: string) => {

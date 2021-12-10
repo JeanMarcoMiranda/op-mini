@@ -199,8 +199,19 @@ const Home: React.FC = () => {
 
   const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index: number) => {
     if (shiftData?.inShift) {
+      let cash = await getCash()
+      if (Number(cash.cash) - Number(FinAmount) < 0) {
+        dispatch(setToastData({
+          isOpen: true,
+          setisOpen: (prev => !prev),
+          contentText: `No hay suficiente cantidad en caja, contacte un admin`,
+          color: 'warning',
+          delay: 5
+        }))
+        return
+      }
+
       const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
-      console.log(orderModalOpen);
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -220,6 +231,7 @@ const Home: React.FC = () => {
       console.log(requestInit)
       const res = await fetch(url, requestInit);
       if (res.ok) {
+        let data = await res.json()
         await orderTodayData[index].products.map(product => {
           updateProductQuantity(product)
         })
@@ -230,6 +242,7 @@ const Home: React.FC = () => {
           color: 'success',
           delay: 5
         }))
+        addActivity(data._id, FinAmount)
         getOrder()
       } else {
         console.log(res)
@@ -251,6 +264,63 @@ const Home: React.FC = () => {
       }))
     }
     dispatch(setModalData({ setisOpen: (prev => !prev) }))
+  }
+
+  const addActivity = async (id: string, orderAmount: string) => {
+    let cash = await getCash()
+    let curramount = roundDecimals(Number(cash.cash) - Number(orderAmount))
+    const urlSale = "http://localhost:8000/activities"
+    let dateNow: Date = new Date()
+    setCash(curramount, cash._id)
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: dateNow,
+        actamount: orderAmount,
+        curramount: curramount + '',
+        createdby: userData._id,
+        name: 'Orden',
+        status: 'Completado',
+        activityid: id,
+      }),
+    }
+    const res = await fetch(urlSale, requestInit);
+    if (res.ok) {
+      console.log('Activity created')
+    } else {
+      console.log('No se pudo we');
+    }
+  }
+
+  const addActivityRe = async (name: string, orderAmount: string, curramount: number) => {
+    const urlSale = "http://localhost:8000/activities"
+    let dateNow: Date = new Date()
+    const requestInit: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: dateNow,
+        actamount: orderAmount,
+        curramount: curramount + '',
+        createdby: userData._id,
+        name: name,
+        status: 'Completado',
+        activityid: '',
+      }),
+    }
+    const res = await fetch(urlSale, requestInit);
+    if (res.ok) {
+      console.log('Activity created')
+    } else {
+      console.log('No se pudo we');
+    }
   }
 
   const updateProductQuantity = async (product: Product) => {
@@ -336,9 +406,10 @@ const Home: React.FC = () => {
 
   const retreatCash = async (inputCash: string) => {
     const cash = await getCash()
-    let cashfinal = Number(cash.cash) - Number(inputCash)
+    let cashfinal = roundDecimals(Number(cash.cash) - Number(inputCash))
     if (cashfinal >= 0) {
-      setCash(roundDecimals(cashfinal), cash._id)
+      await setCash(cashfinal, cash._id)
+      addActivityRe('Retiro', inputCash, cashfinal)
       setValue('')
     } else {
       dispatch(setToastData({
@@ -353,8 +424,9 @@ const Home: React.FC = () => {
 
   const refillCash = async (inputCash: string) => {
     const cash = await getCash()
-    let cashfinal = Number(cash.cash) + Number(inputCash)
-    setCash(roundDecimals(cashfinal), cash._id)
+    let cashfinal = roundDecimals(Number(cash.cash) + Number(inputCash))
+    await setCash(cashfinal, cash._id)
+    addActivityRe('Ingreso', inputCash, cashfinal)
     setValue('')
   }
 
