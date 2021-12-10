@@ -1,8 +1,8 @@
 import * as actionTypes from '../action/actionTypes';
 
 const initialShiftState: IShiftProps = {
-  //inShift: false,
-  inShift: JSON.parse(localStorage.getItem('shift') as string) ? true : false,
+  inShift: false,
+  //inShift: JSON.parse(localStorage.getItem('shift') as string) ? true : false,
 };
 
 const initialState: ShiftState = {
