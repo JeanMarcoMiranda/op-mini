@@ -567,16 +567,12 @@ const Home: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-10 gap-6 mt-6">
-          {navRoutes.map(({ label, path }, index) => (
+          {navRoutes.map((navRoute, index) => (
             <Card
               key={index}
-              img="https://marketplace.canva.com/EAEK5jeIncM/1/0/1600w/canva-rosa%2C-azul-y-verde-ciberpunk-tendencia-moderna-fondo-para-zoom-bb3t9Mk6Ti8.jpg"
               title="Dashboard"
-              label={label}
-              bgCardColor="bg-white"
-              textTitleColor="blue-700"
-              link={path}
               button={buttonProps}
+              navRoute={navRoute}
             />
           ))}
         </div>

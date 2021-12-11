@@ -16,6 +16,7 @@ import SaleForm from "../views/Sales/Form";
 import ShiftView from "../views/Shifts";
 import ShiftForm from "../views/Shifts/Form";
 import ActivityView from "../views/Activities";
+import ReportView from "../views/Reports";
 
 const appRoutes: RouteData[] = [
   {
@@ -199,6 +200,13 @@ const appRoutes: RouteData[] = [
     type: 'private',
     roles: ['Administrador']
   },
+  {
+    path: '/reportes',
+    component: ReportView,
+    exact: false,
+    type: 'private',
+    roles: ['Administrador']
+  }
 ]
 
 export { appRoutes, navRoutes }
