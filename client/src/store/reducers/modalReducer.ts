@@ -17,6 +17,8 @@ const initialModalState: IModalProps = {
   onClickTYB: '',
   onClickOrdCompl: (a:string, b:string) => {},
   numOrdCompl: 0,
+  shiftComplete: false,
+  onClickShiftCompl: ''
 };
 
 const initialState: AlertState = {

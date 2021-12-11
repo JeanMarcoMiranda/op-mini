@@ -15,6 +15,7 @@ import MenuComponent from "./Menu/Menu"
 import CardOrderComponent from "./Card/CardOrder";
 import DatePickerComponent from "./DatePicker/DatePicker";
 import MenuComponentOrder from "./Menu/MenuOrder";
+import ModalShiftComponent from "./Alert/ModalShift";
 
 export {
   InputComponent,
@@ -33,6 +34,7 @@ export {
   MenuComponent,
   CardOrderComponent,
   DatePickerComponent,
-  MenuComponentOrder
+  MenuComponentOrder,
+  ModalShiftComponent
 }
 

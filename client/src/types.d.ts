@@ -371,6 +371,8 @@ interface IModalProps {
   title?: string,
   img?: string,
   inpComplete?: boolean,
+  shiftComplete?: boolean,
+  onClickShiftCompl?: MouseEventHandler<HTMLButtonElement>,
   contentText?: string,
   contentObj? :any[],
   cancelButton?: boolean,

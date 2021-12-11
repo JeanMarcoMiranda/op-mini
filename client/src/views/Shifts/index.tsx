@@ -16,7 +16,7 @@ const tableFieldData = [
   { text: 'Hora Fin', width: 2, name: 'end'},
   { text: 'Inicia Caja', width: 1, name: 'startAmount'},
   { text: 'Finaliza Caja', width: 1, name: 'endAmount'},
-  { text: 'Monto Real', width: 1, name: 'status'},
+  { text: 'Monto Esperado', width: 1, name: 'expectedAmount'},
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 

@@ -260,7 +260,8 @@ const ShiftForm: React.FC = () => {
 
   const renderChip = (value: string) => {
     const isActive = value === "true" ? true : false;
-    if (value === "true" || value === "false") {
+    const data = dataShift
+    if (data.endAmount === data.expectedAmount ) {
       return (
         <Chip
           label={isActive ? 'El turno no presenta problemas' : 'El turno no ha finalizado'}

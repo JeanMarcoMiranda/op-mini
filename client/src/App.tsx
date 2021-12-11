@@ -51,6 +51,8 @@ const App = () => {
         inpComplete={modalData?.inpComplete}
         onClickOrdCompl={modalData?.onClickOrdCompl}
         numOrdCompl={modalData?.numOrdCompl}
+        shiftComplete={modalData?.shiftComplete}
+        onClickShiftCompl={modalData?.onClickShiftCompl}
       />
       <Toast
         isOpen={toastData?.isOpen}
