@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const dispatch = useDispatch()
   //const history = useHistory()
-  //const [inShift, setInShift] = useState(false)
+  const [inShift, setInShift] = useState(false)
   const [shifts, setShifts] = useState<IShift[]>([])
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
@@ -77,30 +77,31 @@ const Header: React.FC<HeaderProps> = ({
 
   const changeCheckShift = async () => {
     //console.log('Turnos', shifts);
+    const cash = await getCash();
     if (shifts[0]) {
       if (shifts[0].end === '') {
         //finalizar ultimo turno activo
-        prepareUpdateShift()
+        await prepareUpdateShift()
         //setInShift(false)
         dispatch(setShiftData({inShift: false,}))
-        localStorage.setItem('shift', 'false')
+        //localStorage.setItem('shift', 'false')
       } else {
         //empezar nuevo turno si se finalizó el ultimo turno
-        createShift()
+        createShift(cash.cash)
         //setInShift(true)
         dispatch(setShiftData({inShift: true,}))
-        localStorage.setItem('shift', 'true')
+        //localStorage.setItem('shift', 'true')
       }
     } else {
       //Nuevo turno
-      createShift()
+      createShift(cash.cash)
       //setInShift(true)
       dispatch(setShiftData({inShift: true,}))
-      localStorage.setItem('shift', 'true')
+      //localStorage.setItem('shift', 'true')
     }
   }
 
-  const createShift = async () => {
+  const createShift = async (cash: string) => {
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'POST',
@@ -114,7 +115,7 @@ const Header: React.FC<HeaderProps> = ({
         end: '',
         orders: [],
         sales: [],
-        startAmount: '0',
+        startAmount: cash,
         endAmount: '0',
         expectedAmount: '0',
         status: shiftData?.inShift!.toString(),
@@ -141,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
-  const updateShift = async (id: string, dataOrders: string[], dataSales: string[]) => {
+  const updateShift = async (id: string, dataOrders: string[], dataSales: string[], cash: string) => {
     const dateNow = new Date();
     const urlUpdate: RequestInfo = urlShift + `/${id}`;
     const requestInit: RequestInit = {
@@ -155,8 +156,7 @@ const Header: React.FC<HeaderProps> = ({
         end: dateNow,
         orders: dataOrders,
         sales: dataSales,
-        startAmount: '0',
-        endAmount: '0',
+        endAmount: cash,
         expectedAmount: '0',
         status: shiftData?.inShift!.toString(),
       }),
@@ -184,7 +184,8 @@ const Header: React.FC<HeaderProps> = ({
   const prepareUpdateShift = async() => {
     const orders = await getOrder();
     const sales = await getSales();
-    updateShift(shifts[0]._id, orders ,sales)
+    const cash = await getCash();
+    updateShift(shifts[0]._id, orders ,sales, cash.cash)
   }
 
   const getOrder = async() => {
@@ -229,6 +230,20 @@ const Header: React.FC<HeaderProps> = ({
     });
     const salesInShiftId = salesInShift.map((sale) => sale._id)
     return salesInShiftId
+  }
+
+  const getCash = async () => {
+    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const requestInit: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await fetch(urlPro, requestInit);
+    const data = await res.json();
+    return data[0]
   }
 
   return (
