@@ -1,12 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { MenuIcon } from '@heroicons/react/solid';
 import { Link } from 'react-router-dom';
-import { setToastData, setShiftData } from '../../store/action/actions';
+import { setToastData, setShiftData, setModalData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
   IconComponent,
-  MenuComponent
+  MenuComponent,
+  ModalShiftComponent as ShiftModal,
 } from '../common';
 import { toHoverStyle } from '../utils';
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,7 +43,8 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const dispatch = useDispatch()
   //const history = useHistory()
-  const [inShift, setInShift] = useState(false)
+  //const [inShift, setInShift] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const [shifts, setShifts] = useState<IShift[]>([])
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
@@ -57,9 +59,9 @@ const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     getCheckLastShift();
-    console.log(shiftData);
+    //console.log(shiftData);
     // eslint-disable-next-line
-  }, [shiftData?.inShift]);
+  }, [shiftData?.inShift, isOpen]);
 
   const getCheckLastShift = async () => {
     const requestInit: RequestInit = {
@@ -77,16 +79,32 @@ const Header: React.FC<HeaderProps> = ({
 
   const changeCheckShift = async () => {
     //console.log('Turnos', shifts);
+    console.log(shiftData);
     const cash = await getCash();
+
     if (shifts[0]) {
       if (shifts[0].end === '') {
+        console.log('finalizar turno');
         //finalizar ultimo turno activo
-        await prepareUpdateShift()
+        setIsOpen(prev => !prev)
+        //await prepareUpdateShift(expAmount)
         //setInShift(false)
-        dispatch(setShiftData({inShift: false,}))
+        /*dispatch(setModalData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        title: '¿Desea terminar turno?',
+        contentText: 'Ingrese el monto actual en caja',
+        shiftComplete: true,
+        cancelButton: true,
+        typeButton: 'Completar Turno',
+        colorTYB: 'success',
+        onClickShiftCompl: prepareUpdateShift
+      }))*/
+      dispatch(setShiftData({inShift: false,}))
         //localStorage.setItem('shift', 'false')
       } else {
         //empezar nuevo turno si se finalizó el ultimo turno
+        console.log('iniciar turno');
         createShift(cash.cash)
         //setInShift(true)
         dispatch(setShiftData({inShift: true,}))
@@ -142,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
-  const updateShift = async (id: string, dataOrders: string[], dataSales: string[], cash: string) => {
+  const updateShift = async (id: string, dataOrders: string[], dataSales: string[], cash: string, expectedAmount: string) => {
     const dateNow = new Date();
     const urlUpdate: RequestInfo = urlShift + `/${id}`;
     const requestInit: RequestInit = {
@@ -157,11 +175,12 @@ const Header: React.FC<HeaderProps> = ({
         orders: dataOrders,
         sales: dataSales,
         endAmount: cash,
-        expectedAmount: '0',
+        expectedAmount: expectedAmount,
         status: shiftData?.inShift!.toString(),
       }),
     }
     const res = await fetch(urlUpdate, requestInit);
+    setIsOpen(prev => !prev)
     if (res.ok) {
       dispatch(setToastData({
         isOpen: true,
@@ -181,11 +200,13 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
-  const prepareUpdateShift = async() => {
+  const prepareUpdateShift = async(expectedAmount: string) => {
+    //console.log('expectedAmount: ', expectedAmount);
+    //dispatch(setModalData({setisOpen: (prev => !prev)}))
     const orders = await getOrder();
     const sales = await getSales();
     const cash = await getCash();
-    updateShift(shifts[0]._id, orders ,sales, cash.cash)
+    updateShift(shifts[0]._id, orders ,sales, cash.cash, expectedAmount)
   }
 
   const getOrder = async() => {
@@ -248,6 +269,17 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 flex items-center justify-between py-3 w-full h-14 z-10 bg-gradient-to-l from-green-400 to-green-600">
+      <ShiftModal
+        isOpen= {isOpen}
+        setisOpen= {setIsOpen}
+        title='¿Desea terminar turno?'
+        contentText= 'Ingrese el monto actual en caja'
+        shiftComplete= {true}
+        cancelButton= {true}
+        typeButton= 'Completar Turno'
+        colorTYB= 'success'
+        onClickShiftCompl= {async (e) => await prepareUpdateShift(e)}
+      />
       <div className="text-white flex items-center ml-6">
         <IconComponent
           Icon={MenuIcon}

@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { InputComponent as Input } from '../index';
-import { setModalData } from '../../../store/action/actions';
 
 import { truncate } from '../../utils';
-import { RadioGroup } from '@headlessui/react';
-const ModalComponent: React.FC<IModalProps> = ({
+
+interface IModalShiftProps {
+  isOpen?: boolean,
+  setisOpen?: React.Dispatch<React.SetStateAction<boolean>> | undefined,
+  title?: string,
+  img?: string,
+  inpComplete?: boolean,
+  shiftComplete?: boolean,
+  onClickShiftCompl?: (x: string) => void,
+  contentText?: string,
+  contentObj? :any[],
+  cancelButton?: boolean,
+  defaultButton?: string,
+  colorDB?: string,
+  onClickDB?: MouseEventHandler<HTMLButtonElement>,
+  typeButton?: string,
+  colorTYB?: string,
+  onClickTYB?: MouseEventHandler<HTMLButtonElement>,
+  onClickOrdCompl?: MouseEventHandler<HTMLButtonElement>,
+  numOrdCompl?: number,
+}
+
+const ModalShiftComponent: React.FC<IModalShiftProps> = ({
   isOpen,
+  setisOpen,
   title,
   img,
   contentText,
@@ -18,18 +38,15 @@ const ModalComponent: React.FC<IModalProps> = ({
   typeButton,
   colorTYB,
   onClickTYB,
-  inpComplete,
-  onClickOrdCompl,
-  numOrdCompl,
   shiftComplete,
   onClickShiftCompl,
-
 }) => {
-  const dispatch = useDispatch()
-  const [ordComplDoc, setOrdComplDoc] = useState<string>('')
-  const [ordComplAmo, setOrdComplAmo] = useState<string>('')
+
   const [shiftCompl, setShiftCompl] = useState<string>('')
-  const [ordTDoc, setOrdTDoc] = useState<string>('factura')
+
+  useEffect(() => {
+    console.log(isOpen);
+  }, [isOpen]);
 
   const tableHeadStyle = "px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
   const tableRowStyle = "px-5 py-2 border-b border-gray-200 bg-white text-sm has-tooltip"
@@ -66,47 +83,7 @@ const ModalComponent: React.FC<IModalProps> = ({
                   <img src={img} alt='some img' className="w-1/5" />
                 </div> : <></>}
 
-              {inpComplete ?
-                (<div className="px-4 py-6">
-                  <Input
-                    type="text"
-                    label="Nro. Documento"
-                    name="ndocument"
-                    value={ordComplDoc}
-                    onChange={e => setOrdComplDoc(e.target.value)}
-                  />
-                  <div className="mb-3">
-                    <RadioGroup value={ordTDoc} onChange={setOrdTDoc} className="flex">
-                      <RadioGroup.Option value="factura"
-                        className={({ active, checked }) => `
-                        ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
-                        flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
-                      >
-                        {({ checked }) => (
-                          <span className="">Factura</span>
-                        )}
-                      </RadioGroup.Option>
-                      <RadioGroup.Option value="boleta"
-                        className={({ active, checked }) => `
-                        ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
-                        flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
-                      >
-                        {({ checked }) => (
-                          <span className="">Boleta</span>
-                        )}
-                      </RadioGroup.Option>
-                    </RadioGroup>
-                  </div>
-                  <Input
-                    type="number"
-                    label="Monto Final"
-                    name="finalamount"
-                    value={ordComplAmo}
-                    onChange={e => setOrdComplAmo(e.target.value)}
-                  />
-                </div>)
-                :
-                contentText ?
+              {contentText ?
                   <div className={`${img ? "pt-0" : ""} px-6 py-4 flex-grow`}>
                     <p className="text-gray-700 text-base">{contentText}</p>
                   </div>
@@ -160,7 +137,7 @@ const ModalComponent: React.FC<IModalProps> = ({
               <div className="px-5 py-3 border-t bg-gray-100 flex justify-end">
                 {cancelButton ?
                   <button className="bg-gray-300 text-gray-600 font-medium text-sm py-1 px-5 rounded mr-3"
-                    onClick={() => dispatch(setModalData({ setisOpen: (prev => !prev) }))}>
+                    onClick={() => {if(setisOpen) setisOpen(prev => !prev)}}>
                     Cancelar
                   </button> : <></>}
                 {defaultButton ?
@@ -171,14 +148,13 @@ const ModalComponent: React.FC<IModalProps> = ({
                 {typeButton ?
                   <button className={`${colorTYB ? renderSwitch(colorTYB) : "bg-gray-300 text-gray-600"} font-medium text-sm py-1 px-5 rounded`}
                     onClick={
-                      inpComplete ? () => {
-                      onClickOrdCompl(ordComplDoc, ordComplAmo, ordTDoc, numOrdCompl)
-                      setOrdComplAmo('')
-                      setOrdComplDoc('')
-                      }
-                      : shiftComplete ?
-                      async () => {
-                        await onClickShiftCompl(shiftCompl!)
+                      shiftComplete ?
+                      () => {
+                        {
+                          if(onClickShiftCompl) onClickShiftCompl(shiftCompl!)
+                          //if(setisOpen) setisOpen(prev => !prev)
+                        }
+                        //{if(setisOpen) setisOpen(prev => !prev)}
                         setShiftCompl('')
                       }
                       :
@@ -195,4 +171,4 @@ const ModalComponent: React.FC<IModalProps> = ({
   )
 }
 
-export default ModalComponent;
+export default ModalShiftComponent;
