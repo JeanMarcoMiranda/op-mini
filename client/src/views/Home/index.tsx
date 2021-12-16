@@ -154,39 +154,39 @@ const Home: React.FC = () => {
   }
 
   const approveOrder = async (index: number) => {
-    if (shiftData?.inShift) {
-      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
-      const requestInit: RequestInit = {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: 'Aprobado',
-        }),
-      }
-      console.log(requestInit)
-      const res = await fetch(url, requestInit);
-      if (res.ok) {
-        dispatch(setToastData({
-          isOpen: true,
-          setisOpen: (prev => !prev),
-          contentText: 'El pedido se ha aprobado con exito.',
-          color: 'success',
-          delay: 5
-        }))
-        getOrder();
-      } else {
-        dispatch(setToastData({
-          isOpen: true,
-          setisOpen: (prev => !prev),
-          contentText: `Method Approved, Error${res.status} : ${res.statusText}`,
-          color: 'warning',
-          delay: 5
-        }))
-      }
+    //if (shiftData?.inShift) {
+    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
+    const requestInit: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: 'Aprobado',
+      }),
+    }
+    console.log(requestInit)
+    const res = await fetch(url, requestInit);
+    if (res.ok) {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: 'El pedido se ha aprobado con exito.',
+        color: 'success',
+        delay: 5
+      }))
+      getOrder();
     } else {
+      dispatch(setToastData({
+        isOpen: true,
+        setisOpen: (prev => !prev),
+        contentText: `Method Approved, Error${res.status} : ${res.statusText}`,
+        color: 'warning',
+        delay: 5
+      }))
+    }
+    /*} else {
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -194,7 +194,7 @@ const Home: React.FC = () => {
         color: 'warning',
         delay: 5
       }))
-    }
+    }*/
   }
 
   const onClickOrdCompl = async (Doc: string, FinAmount: string, tDoc: string, index: number) => {
@@ -527,42 +527,46 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div
-              className="flex flex-col rounded p-2 items-center mt-10"
-            >
-              <h2 className=" font-bold pb-2">Dinero en Caja: {`S/${cashRegister}`}</h2>
+            {(userData.role.name === "Administrador") ?
+              <div
+                className="flex flex-col rounded p-2 items-center mt-10"
+              >
+                <h2 className=" font-bold pb-2">Dinero en Caja: {`S/${cashRegister}`}</h2>
 
-              <div className="flex flex-wrap w-full pr-auto pl-auto">
-                <Input
-                  type="text"
-                  label=""
-                  name="caja"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  placeholder="Dinero"
-                />
-              </div>
-              <div className="flex justify-between ">
-                <div className="px-2 py-1 mr-2">
-                  <Button
-                    label="Ingresar"
-                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
-                    textColor="white"
-                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
-                    onClick={() => refillCash(value)}
+                <div className="flex flex-wrap w-full pr-auto pl-auto">
+                  <Input
+                    type="text"
+                    label=""
+                    name="caja"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    placeholder="Dinero"
                   />
                 </div>
-                <div className="px-2 py-1 mr-2">
-                  <Button
-                    label="Retirar"
-                    bgColor="bg-gradient-to-r from-green-400 to-green-500"
-                    textColor="white"
-                    onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
-                    onClick={() => retreatCash(value)}
-                  />
+                <div className="flex justify-between ">
+                  <div className="px-2 py-1 mr-2">
+                    <Button
+                      label="Ingresar"
+                      bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                      textColor="white"
+                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                      onClick={() => refillCash(value)}
+                    />
+                  </div>
+                  <div className="px-2 py-1 mr-2">
+                    <Button
+                      label="Retirar"
+                      bgColor="bg-gradient-to-r from-green-400 to-green-500"
+                      textColor="white"
+                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                      onClick={() => retreatCash(value)}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+              :
+              false
+            }
           </div>
         </div>
 

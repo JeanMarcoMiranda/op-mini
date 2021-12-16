@@ -23,6 +23,10 @@ interface IOrderShift {
     name: string;
     _id: string;
   };
+  receivedby: {
+    name: string;
+    _id: string;
+  };
   createdate: string | Date;
   receptiondate: string | Date;
 }
@@ -79,27 +83,18 @@ const Header: React.FC<HeaderProps> = ({
 
   const changeCheckShift = async () => {
     //console.log('Turnos', shifts);
-    console.log(shiftData);
+    //console.log(shiftData);
     const cash = await getCash();
+    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
 
+    console.log('currentUser', currentUser);
     if (shifts[0]) {
-      if (shifts[0].end === '') {
+      if (currentUser/*shifts[0].end === ''*/) {
         console.log('finalizar turno');
         //finalizar ultimo turno activo
         setIsOpen(prev => !prev)
         //await prepareUpdateShift(expAmount)
         //setInShift(false)
-        /*dispatch(setModalData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        title: '¿Desea terminar turno?',
-        contentText: 'Ingrese el monto actual en caja',
-        shiftComplete: true,
-        cancelButton: true,
-        typeButton: 'Completar Turno',
-        colorTYB: 'success',
-        onClickShiftCompl: prepareUpdateShift
-      }))*/
       dispatch(setShiftData({inShift: false,}))
         //localStorage.setItem('shift', 'false')
       } else {
@@ -136,7 +131,8 @@ const Header: React.FC<HeaderProps> = ({
         startAmount: cash,
         endAmount: '0',
         expectedAmount: '0',
-        status: shiftData?.inShift!.toString(),
+        status: 'false',
+        //status: shiftData?.inShift!.toString(),
       }),
     }
     const res = await fetch(urlShift, requestInit);
@@ -176,7 +172,8 @@ const Header: React.FC<HeaderProps> = ({
         sales: dataSales,
         endAmount: cash,
         expectedAmount: expectedAmount,
-        status: shiftData?.inShift!.toString(),
+        status: 'true',
+        //status: shiftData?.inShift!.toString(),
       }),
     }
     const res = await fetch(urlUpdate, requestInit);
@@ -206,11 +203,14 @@ const Header: React.FC<HeaderProps> = ({
     const orders = await getOrder();
     const sales = await getSales();
     const cash = await getCash();
-    updateShift(shifts[0]._id, orders ,sales, cash.cash, expectedAmount)
+    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
+    updateShift(currentUser._id, orders ,sales, cash.cash, expectedAmount)
+    //updateShift(shifts[0]._id, orders ,sales, cash.cash, expectedAmount)
   }
 
   const getOrder = async() => {
     //console.log('Order Get');
+    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
@@ -221,8 +221,11 @@ const Header: React.FC<HeaderProps> = ({
     };
     const res = await fetch(urlOrder, requestInit);
     const data: IOrderShift[] = await res.json();
+
+    //const currentUserOrders = data.filter((order) => order.createdby.name == userData.name || order.receivedby.name == userData.name)
     const currentUserOrders = data.filter((order) => order.createdby.name == userData.name)
-    const currentUserStartDate = shifts[0].start;
+    const currentUserStartDate = currentUser.start;
+    //const currentUserStartDate = shifts[0].start;
     const currentUserEndDate = dateNow;
     const ordersInShift = currentUserOrders.filter( (order) => {
       return new Date(order.createdate).getTime() >= new Date(currentUserStartDate).getTime() && new Date(order.createdate).getTime() <= currentUserEndDate.getTime();
@@ -233,6 +236,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const getSales = async() => {
     //console.log('Sales Get');
+    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
@@ -244,7 +248,8 @@ const Header: React.FC<HeaderProps> = ({
     const res = await fetch(urlSale, requestInit);
     const data :ISaleShift[] = await res.json();
     const currentUserSales = data.filter((sale) => sale.createdby.name == userData.name)
-    const currentUserStartDate = shifts[0].start;
+    const currentUserStartDate = currentUser.start;
+    //const currentUserStartDate = shifts[0].start;
     const currentUserEndDate = dateNow;
     const salesInShift = currentUserSales.filter( (sale) => {
       return new Date(sale.date).getTime() >= new Date(currentUserStartDate).getTime() && new Date(sale.date).getTime() <= currentUserEndDate.getTime();
