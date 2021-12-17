@@ -2,39 +2,13 @@ import { format } from 'path'
 import React, {useEffect, useState} from 'react'
 import { useSelector } from 'react-redux'
 import { Route, Link, Switch, useRouteMatch, useParams, useLocation, NavLink } from 'react-router-dom'
+import { CSVLink } from "react-csv";
 
 import {
     TableComponent as Table
 } from '../../components/common'
-import { formatDate } from '../../components/utils'
+import { formatDate, formatDateHours } from '../../components/utils'
 import { RootState } from '../../store/store'
-
-
-// -- Siguiendo el codigo de brucce y recreado la estructura de Orders
-interface IOrder {
-  _id: string;
-  createdby: {
-    name: string;
-    _id: string;
-  };
-  createdate: string;
-  receivedby: {
-    name: string;
-    _id: string;
-  };
-  receptiondate: string;
-  estimatedamount: string;
-  finalamount: string;
-  type: string;
-  supplier: {
-    company: string;
-    name: string;
-    _id?: string;
-  };
-  products: IProductOrder[];
-  status: string;
-}
-
 
 const tableRoutes = [
     {
@@ -82,13 +56,42 @@ const tableHeadData = {
     ]
 }
 
+const tableHeadExcel = {
+  'products': [
+      { label: 'Codigo de Barras', key: 'barcode' },
+      { label: 'Nombre', key: 'name' },
+      { label: 'Categoria', key: 'category' },
+      { label: 'Empresa', key: 'company' },
+      { label: 'Stock', key: 'stock' },
+      { label: 'Precio Compra', key: 'pricebuy' },
+      { label: 'Precio Venta', key: 'pricesell' },
+      { label: 'Unidad Medida', key: 'mesureUnit' },
+  ],
+  'sales': [
+      { label: 'Creado por', key: 'createdby' },
+      { label: 'Cliente', key: 'client' },
+      { label: 'Fecha', key: 'date' },
+      { label: 'Total', key: 'subtotal' },
+      { label: 'Metodo de pago', key: 'methodpay' },
+      { label: 'Boleta', key: 'voucher' },
+      { label: 'Estado', key: 'status' },
+  ],
+  'orders': [
+      { label: 'Creado por', key: 'createdby' },
+      { label: 'Fecha de creacion', key: 'createdate' },
+      { label: 'Recibido por', key: 'receivedby' },
+      { label: 'Fecha de recepcion', key: 'receptiondate' },
+      { label: 'Monto Final', key: 'finalamount' },
+      { label: 'Proveedor', key: 'supplier' },
+      { label: 'Estado', key: 'status' },
+  ]
+}
+
 
 // To access the params from the URL used by react router we also need to specify the types of thes params
 interface reportTableParams {
     reportOf: string
 }
-
-
 
 const ReportView: React.FC = () => {
     // Hook for getting the current path
@@ -129,7 +132,7 @@ const ReportView: React.FC = () => {
 }
 
 const ComponentePrueba: React.FC = () => {
-    // -- Setting the state variables to store the table data 
+    // -- Setting the state variables to store the table data
     const [rawTableData, setRawTableData] = useState<TableTypes[]>([])
     const [configuredTableData, setConfiguredTableData] = useState<TableDataTypes[]>([])
 
@@ -143,7 +146,7 @@ const ComponentePrueba: React.FC = () => {
 
     // -- Http request for getting the data to fill the table
     useEffect(() => {
-        async function getTableData() { 
+        async function getTableData() {
             const URL: RequestInfo = `http://localhost:8000/${reportOf}`
             const REQUEST_PARAMS: RequestInit = {
                 method: 'GET',
@@ -155,7 +158,7 @@ const ComponentePrueba: React.FC = () => {
 
             const response = await fetch(URL, REQUEST_PARAMS)
 
-            if(response.ok) { 
+            if(response.ok) {
                 const data = await response.json()
                 setRawTableData(data)
 
@@ -177,20 +180,20 @@ const ComponentePrueba: React.FC = () => {
     function isOrderTable(orderData: TableTypes[]): orderData is IOrder[] {
         return true
     }
-    
+
 
     // -- Functions to order the data, according to current tabla selected
     function processProductData(productsArray: IProduct[]) {
         const productTableData: IProductTableData[] = productsArray.map(
             ({
                 _id,
-                barcode, 
-                name, 
-                category, 
-                stock, 
-                pricebuy, 
-                pricesell, 
-                mesureUnit = '', 
+                barcode,
+                name,
+                category,
+                stock,
+                pricebuy,
+                pricesell,
+                mesureUnit = '',
                 company
             }: IProduct) => {
                 const newProductTableData: IProductTableData = {
@@ -254,7 +257,7 @@ const ComponentePrueba: React.FC = () => {
                 receptiondate,
                 finalamount,
                 supplier,
-                status                
+                status
             }: IOrder) => {
                 const newOrderTableData: IOrderTableData = {
                     _id,
@@ -281,7 +284,7 @@ const ComponentePrueba: React.FC = () => {
         if (rawTableData.length === 0) return;
 
         const TABLES = Object.keys(tableHeadData)
-        
+
         function processData(tableDataObject: TableTypes[]) {
             if(reportOf === TABLES[0] && isProductTable(tableDataObject)){
                 processProductData(tableDataObject)
@@ -296,12 +299,27 @@ const ComponentePrueba: React.FC = () => {
 
         processData(rawTableData)
     }, [rawTableData])
-    
+
 
     return (<>
-        <div className='mb-3'>
-                <Table theadData={tableHeadData[reportOf as 'products' | 'sales' | 'orders']} tbodyData={configuredTableData} pagination={{ enabled: true, fieldsPerPage: 15 }}/>
-        </div>
+      <CSVLink
+        data={configuredTableData}
+        headers={tableHeadExcel[reportOf as 'products' | 'sales' | 'orders']}
+        filename={`${formatDateHours(new Date())}.csv`}
+        className='transition
+        duration-500
+        bg-gradient-to-r from-green-400 to-green-500
+        text-white
+        py-2 px-4
+        focus:outline-none
+        rounded-lg'
+        separator={";"}
+      >
+        Exportar Archivo CSV
+      </CSVLink>
+      <div className='mb-3'>
+              <Table theadData={tableHeadData[reportOf as 'products' | 'sales' | 'orders']} tbodyData={configuredTableData} pagination={{ enabled: true, fieldsPerPage: 15 }}/>
+      </div>
     </>)
 }
 
