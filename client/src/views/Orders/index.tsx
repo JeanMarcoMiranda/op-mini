@@ -14,30 +14,6 @@ import { roundDecimals, toHoverStyle } from '../../components/utils';
 import { formatDate, filterDuplicate } from '../../components/utils';
 import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid';
 
-interface IOrder {
-  _id: string;
-  createdby: {
-    name: string;
-    _id: string;
-  };
-  createdate: string | Date;
-  receivedby: {
-    name: string;
-    _id: string;
-  };
-  receptiondate: string | Date;
-  estimatedamount: string;
-  finalamount: string;
-  type: string;
-  supplier: {
-    company: string;
-    name: string;
-    _id?: string;
-  };
-  products: IProductOrder[];
-  status: string;
-}
-
 const OrderView: React.FC = () => {
   const dispatch = useDispatch()
   const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);

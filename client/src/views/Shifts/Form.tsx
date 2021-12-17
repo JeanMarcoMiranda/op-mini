@@ -67,30 +67,6 @@ interface IProductOrder {
   price: string;
 }
 
-interface IOrder {
-  _id: string;
-  createdby: {
-    name: string;
-    _id: string;
-  };
-  createdate: string;
-  receivedby: {
-    name: string;
-    _id: string;
-  };
-  receptiondate: string;
-  estimatedamount: string;
-  finalamount: string;
-  type: string;
-  supplier: {
-    company: string;
-    name: string;
-    _id?: string;
-  };
-  products: IProductOrder[];
-  status: string;
-}
-
 const ShiftForm: React.FC = () => {
 
   const history = useHistory()

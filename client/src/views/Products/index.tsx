@@ -87,7 +87,7 @@ const ProductsView: React.FC = () => {
           delete: false
         }
       }
-      console.log("productData:", productData);
+      
       let newTableData: IProductTableData[] = productData.map(
         ({
           _id,

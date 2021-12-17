@@ -98,7 +98,7 @@ interface ISaleTableData {
   methodpay: string;
   voucher: string;
   subtotal: string;
-  status: string | JSX.Element;
+  status?: string | JSX.Element;
   active?: JSX.Element;
   actions?: JSX.Element;
 }
@@ -122,15 +122,25 @@ interface IOrderProduct {
 
 interface IOrder {
   _id: string;
-  createdby: string;
-  createdate: string;
-  receivedby: string;
-  receptiondate: string;
+  createdby: {
+    name: string;
+    _id: string;
+    };
+  createdate: string | Date;
+  receivedby: {
+    name: string;
+    _id: string;
+  };
+  receptiondate: string | Date;
   estimatedamount: string;
   finalamount: string;
   type: string;
-  supplier: string;
-  products: IOrderProduct[];
+  supplier: {
+    company: string;
+    name: string;
+    _id?: string;
+  };
+  products: IProductOrder[];
   status: string;
 }
 
@@ -173,7 +183,6 @@ interface IProductOrder {
 }
 
 // Products
-
 interface IProduct {
   _id: string;
   barcode: string;
@@ -554,3 +563,9 @@ interface IWeatherValues {
     humidity: number;
   };
 }
+
+
+
+// -- Table types Union
+type TableTypes = IProduct | IShift | ISale | ISupplier | IOrder
+type TableDataTypes = IProductTableData | IShiftTableData | ISaleTableData | ISupplierTableData | IOrderTableData

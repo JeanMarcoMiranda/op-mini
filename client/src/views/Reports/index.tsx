@@ -1,5 +1,40 @@
-import React from 'react'
+import { format } from 'path'
+import React, {useEffect, useState} from 'react'
+import { useSelector } from 'react-redux'
 import { Route, Link, Switch, useRouteMatch, useParams, useLocation, NavLink } from 'react-router-dom'
+
+import {
+    TableComponent as Table
+} from '../../components/common'
+import { formatDate } from '../../components/utils'
+import { RootState } from '../../store/store'
+
+
+// -- Siguiendo el codigo de brucce y recreado la estructura de Orders
+interface IOrder {
+  _id: string;
+  createdby: {
+    name: string;
+    _id: string;
+  };
+  createdate: string;
+  receivedby: {
+    name: string;
+    _id: string;
+  };
+  receptiondate: string;
+  estimatedamount: string;
+  finalamount: string;
+  type: string;
+  supplier: {
+    company: string;
+    name: string;
+    _id?: string;
+  };
+  products: IProductOrder[];
+  status: string;
+}
+
 
 const tableRoutes = [
     {
@@ -7,22 +42,46 @@ const tableRoutes = [
         reportTo: 'products'
     },
     {
-        title: 'Proveedores',
-        reportTo: 'suppliers'
-    },
-    {
         title: 'Ventas',
         reportTo: 'sales'
-    },
-    {
-        title: 'Turnos',
-        reportTo: 'shifts'
     },
     {
         title: 'Pedidos',
         reportTo: 'orders'
     }
 ]
+// -- Variable to store the head data for every table
+const tableHeadData = {
+    'products': [
+        { text: 'Codigo de Barras', width: 2, name: 'barcode' },
+        { text: 'Nombre', width: 2, name: 'name' },
+        { text: 'Categoria', width: 1, name: 'category' },
+        { text: 'Empresa', width: 1, name: 'company' },
+        { text: 'Stock', width: 1, name: 'stock' },
+        { text: 'Precio Compra', width: 1, name: 'pricebuy' },
+        { text: 'Precio Venta', width: 1, name: 'pricesell' },
+        { text: 'Unidad Medida', width: 1, name: 'mesureUnit' },
+    ],
+    'sales': [
+        { text: 'Creado por', width: 2, name: 'createdby' },
+        { text: 'Cliente', width: 2, name: 'client' },
+        { text: 'Fecha', width: 1, name: 'date' },
+        { text: 'Total', width: 1, name: 'subtotal' },
+        { text: 'Metodo de pago', width: 2, name: 'methodpay' },
+        { text: 'Boleta', width: 1, name: 'voucher' },
+        { text: 'Estado', width: 2, name: 'status' },
+    ],
+    'orders': [
+        { text: 'Creado por', width: 2, name: 'createdby' },
+        { text: 'Fecha de creacion', width: 2, name: 'createdate' },
+        { text: 'Recibido por', width: 1, name: 'receivedby' },
+        { text: 'Fecha de recepcion', width: 2, name: 'receptiondate' },
+        { text: 'Monto Final', width: 1, name: 'finalamount' },
+        { text: 'Proveedor', width: 1, name: 'supplier' },
+        { text: 'Estado', width: 2, name: 'status' },
+    ]
+}
+
 
 // To access the params from the URL used by react router we also need to specify the types of thes params
 interface reportTableParams {
@@ -31,23 +90,22 @@ interface reportTableParams {
 
 
 
-const ReportView: React.FC = () => { 
-
+const ReportView: React.FC = () => {
     // Hook for getting the current path
     const { url, path } = useRouteMatch()
 
-    return(
+    return (
         <div className='container mx-auto'>
             <div className='w-full lg:w-10/12 mx-auto my-8'>
                 <div className='relative flex flex-col min-w-0 break-word w-full mb-6 shadow-lg rounded-lg bg-gray-100 border-0'>
                     <div className='rounded-lg bg-white mb-0 px-6 py-3'>
-                        <div className='grid grid-cols-5 divide-x-2 '>
+                        <div className='grid grid-cols-3 divide-x-2 '>
                             {
                                 tableRoutes.map(route => (
-                                        <NavLink to={`${url}/${route.reportTo}`} activeStyle={{color:'rgb(34 197 94)'}}>
-                                            <h6 className={`mr-2 `}>{route.title}</h6>
-                                        </NavLink>
-                                    ))
+                                    <NavLink to={`${url}/${route.reportTo}`} activeStyle={{ color: 'rgb(34 197 94)' }}>
+                                        <h6 className={`mr-2 `}>{route.title}</h6>
+                                    </NavLink>
+                                ))
                             }
                         </div>
                     </div>
@@ -59,7 +117,7 @@ const ReportView: React.FC = () => {
                         {
                             tableRoutes.map(route => (
                                 <Route path={`${path}/:reportOf`}>
-                                    <ComponentePrueba/>
+                                    <ComponentePrueba />
                                 </Route>
                             ))
                         }
@@ -71,10 +129,179 @@ const ReportView: React.FC = () => {
 }
 
 const ComponentePrueba: React.FC = () => {
-    const {reportOf} = useParams<reportTableParams>()
+    // -- Setting the state variables to store the table data 
+    const [rawTableData, setRawTableData] = useState<TableTypes[]>([])
+    const [configuredTableData, setConfiguredTableData] = useState<TableDataTypes[]>([])
+
+    // -- Hook for get the URL params
+    const { reportOf } = useParams<reportTableParams>()
+
+    // -- Getting the user token and its data from the global values if they are stored
+    const { access_token } = useSelector<RootState, RootState['user']>(
+        (state) => state.user,
+    )
+
+    // -- Http request for getting the data to fill the table
+    useEffect(() => {
+        async function getTableData() { 
+            const URL: RequestInfo = `http://localhost:8000/${reportOf}`
+            const REQUEST_PARAMS: RequestInit = {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    'Content-TuseEffectype': 'application/json'
+                }
+            }
+
+            const response = await fetch(URL, REQUEST_PARAMS)
+
+            if(response.ok) { 
+                const data = await response.json()
+                setRawTableData(data)
+
+            } else {
+                console.log(`Error: Unknown error || Server error | Reports`)
+            }
+        }
+        console.log("buenas")
+        getTableData()
+    }, [reportOf])
+
+    // -- TYPE GUARDS - THIS IS USED FOR "TYPE NARROWING"
+    function isProductTable(productData: TableTypes[]): productData is IProduct[] {
+        return true
+    }
+    function isSaleTable(saleData: TableTypes[]): saleData is ISale[] {
+        return true
+    }
+    function isOrderTable(orderData: TableTypes[]): orderData is IOrder[] {
+        return true
+    }
+    
+
+    // -- Functions to order the data, according to current tabla selected
+    function processProductData(productsArray: IProduct[]) {
+        const productTableData: IProductTableData[] = productsArray.map(
+            ({
+                _id,
+                barcode, 
+                name, 
+                category, 
+                stock, 
+                pricebuy, 
+                pricesell, 
+                mesureUnit = '', 
+                company
+            }: IProduct) => {
+                const newProductTableData: IProductTableData = {
+                    _id,
+                    barcode,
+                    name,
+                    category: category.name,
+                    stock,
+                    pricebuy,
+                    pricesell,
+                    mesureUnit,
+                    company: company.company
+                }
+                return newProductTableData
+            }
+        )
+
+        setConfiguredTableData(productTableData)
+    }
+    function processSaleData(salesArray: ISale[]) {
+        const saleTableData: ISaleTableData[] = salesArray.map(
+            ({
+                _id,
+                createdby,
+                client,
+                date,
+                cash,
+                subtotal,
+                change,
+                methodpay,
+                voucher,
+                status
+            }: ISale) => {
+                const newSaleTableData: ISaleTableData = {
+                    _id,
+                    createdby: createdby.name,
+                    client,
+                    date: formatDate(new Date(date)),
+                    cash: 'S/ ' + cash,
+                    change: 'S/ ' + change,
+                    subtotal: 'S/ ' + subtotal,
+                    methodpay,
+                    voucher,
+                }
+
+                return newSaleTableData
+            }
+        )
+
+        setConfiguredTableData(saleTableData)
+    }
+    function processOrderData(orderArray: IOrder[]) {
+
+        console.log("esta es la tabla de pedidos", orderArray)
+        const orderTableData: IOrderTableData[] = orderArray.map(
+            ({
+                _id,
+                createdby,
+                createdate,
+                receivedby,
+                receptiondate,
+                finalamount,
+                supplier,
+                status                
+            }: IOrder) => {
+                const newOrderTableData: IOrderTableData = {
+                    _id,
+                    createdby: createdby.name,
+                    createdate: formatDate(new Date(createdate)),
+                    receivedby: receivedby.name,
+                    receptiondate: formatDate(new Date(receptiondate)),
+                    finalamount: 'S/ ' + finalamount,
+                    supplier: supplier.name,
+                    status
+                }
+
+                return newOrderTableData
+            }
+        )
+
+        setConfiguredTableData(orderTableData)
+    }
+
+
+
+    // -- Preparing the data we got to be shown in the table
+    useEffect(() => {
+        if (rawTableData.length === 0) return;
+
+        const TABLES = Object.keys(tableHeadData)
+        
+        function processData(tableDataObject: TableTypes[]) {
+            if(reportOf === TABLES[0] && isProductTable(tableDataObject)){
+                processProductData(tableDataObject)
+
+            } else if(reportOf === TABLES[1] && isSaleTable(tableDataObject)) {
+                processSaleData(tableDataObject)
+
+            } else if (reportOf === TABLES[2] && isOrderTable(tableDataObject)){
+                processOrderData(tableDataObject)
+            }
+        }
+
+        processData(rawTableData)
+    }, [rawTableData])
+    
 
     return (<>
-        <h1>{reportOf}</h1> 
+        <div className='mb-3'>
+                <Table theadData={tableHeadData[reportOf as 'products' | 'sales' | 'orders']} tbodyData={configuredTableData} pagination={{ enabled: true, fieldsPerPage: 15 }}/>
+        </div>
     </>)
 }
 
