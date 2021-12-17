@@ -3,7 +3,7 @@ import IconComponent from '../Icon';
 
 interface InputComponentProps {
   type: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   name: string;
   value?: string | number;

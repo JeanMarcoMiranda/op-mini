@@ -7,6 +7,7 @@ interface DatePickerComponentProps {
   startDate: Date;
   endDate: Date;
   handleDateChange: any;
+  disabled?: boolean;
   //handleDateChange: (date: Date | [Date | null, Date | null] | null, event: React.SyntheticEvent<any, Event> | undefined) => void;
 }
 
@@ -15,7 +16,8 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
   selected,
   startDate,
   endDate,
-  handleDateChange
+  handleDateChange,
+  disabled
 }) => {
 
   return (
@@ -34,6 +36,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
               nextMonthButtonLabel=">"
               previousMonthButtonLabel="<"
               dateFormat="dd/MM/yy"
+              disabled={disabled}
             />
           </div>
         </div>
