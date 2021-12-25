@@ -363,7 +363,7 @@ const ComponentePrueba: React.FC = () => {
                   duration-500
                   bg-gradient-to-r from-green-400 to-green-500
                   text-white
-                  py-2 px-4
+                  py-2 px-4 ml-2
                   focus:outline-none
                   rounded-lg'
                   separator={";"}
