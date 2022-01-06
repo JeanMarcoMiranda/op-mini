@@ -69,8 +69,8 @@ const tableHeadExcel = {
       { label: 'Precio Compra', key: 'pricebuy' },
       { label: 'Precio Venta', key: 'pricesell' },
       { label: 'Unidad Medida', key: 'mesureUnit' },
-  ],
-  'sales': [
+    ],
+    'sales': [
       { label: 'Creado por', key: 'createdby' },
       { label: 'Cliente', key: 'client' },
       { label: 'Fecha', key: 'date' },
@@ -78,6 +78,7 @@ const tableHeadExcel = {
       { label: 'Metodo de pago', key: 'methodpay' },
       { label: 'Boleta', key: 'voucher' },
       { label: 'Estado', key: 'status' },
+      { label: 'Total Ventas', key: 'totalsales'}
   ],
   'orders': [
       { label: 'Creado por', key: 'createdby' },
@@ -87,6 +88,7 @@ const tableHeadExcel = {
       { label: 'Monto Final', key: 'finalamount' },
       { label: 'Proveedor', key: 'supplier' },
       { label: 'Estado', key: 'status' },
+      { label: 'Total Pedidos', key: 'totalorders'}
   ]
 }
 
@@ -147,6 +149,7 @@ const ComponentePrueba: React.FC = () => {
 
   const [rawTableData, setRawTableData] = useState<TableTypes[]>([])
   const [configuredTableData, setConfiguredTableData] = useState<TableDataTypes[]>([])
+  const [dataExcelFinal, setDataExcelFinal] = useState<any[]>([])
 
   // -- Hook for get the URL params
   const { reportOf } = useParams<reportTableParams>()
@@ -182,6 +185,44 @@ const ComponentePrueba: React.FC = () => {
     getTableData()
   }, [reportOf])
 
+  useEffect(() => {
+
+    if (configuredTableData.length <= 0) {
+      return
+    }
+
+    const updateExcelData = () => {
+      let total = 0
+      if (reportOf === "sales") {
+        let b = configuredTableData.slice() as ISaleTableData[]
+        for (let i = 0; i < b.length; i++) {
+          if (b[i].status === "Completado" || b[i].status === "Actualizado") {
+            let a = b[i].subtotal.replace('S/ ', '')
+            total = total + Number(a)
+          }
+        }
+        b[0].totalsales = total + ''
+        setDataExcelFinal(b)
+        console.log(b)
+      } else if (reportOf === "orders") {
+        let b = configuredTableData.slice() as IOrderTableData[]
+        for (let i = 0; i < b.length; i++) {
+          if (b[i].status === "Completado") {
+            let a = b[i].finalamount.replace('S/ ', '')
+            total = total + Number(a)
+          }
+        }
+        b[0].totalorders = total + ''
+        setDataExcelFinal(b)
+        console.log(b)
+      }
+    }
+    updateExcelData()
+
+    console.log(configuredTableData)
+
+  }, [configuredTableData])
+
   // -- TYPE GUARDS - THIS IS USED FOR "TYPE NARROWING"
   function isProductTable(productData: TableTypes[]): productData is IProduct[] {
     return true
@@ -214,8 +255,8 @@ const ComponentePrueba: React.FC = () => {
           name,
           category: category.name,
           stock,
-          pricebuy,
-          pricesell,
+          pricebuy: 'S/ ' + pricebuy,
+          pricesell: 'S/ ' + pricesell,
           mesureUnit,
           company: company.company
         }
@@ -249,6 +290,8 @@ const ComponentePrueba: React.FC = () => {
           subtotal: 'S/ ' + subtotal,
           methodpay,
           voucher,
+          status,
+          totalsales: ''
         }
 
         return newSaleTableData
@@ -277,7 +320,8 @@ const ComponentePrueba: React.FC = () => {
           receptiondate: formatDate(new Date(receptiondate)),
           finalamount: 'S/ ' + finalamount,
           supplier: supplier.name,
-          status
+          status,
+          totalorders: '',
         }
 
         return newOrderTableData
@@ -356,7 +400,7 @@ const ComponentePrueba: React.FC = () => {
                   onClick={getFilter}
                 />
                 <CSVLink
-                  data={configuredTableData}
+                  data={dataExcelFinal}
                   headers={tableHeadExcel[reportOf as 'products' | 'sales' | 'orders']}
                   filename={`${formatDateHours(new Date())}-${reportOf}.csv`}
                   className='transition
