@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { RootState } from '../../store/store';
@@ -13,6 +13,9 @@ import {
 import { isNumeric, roundDecimals, toHoverStyle } from '../../components/utils';
 import { SearchIcon, XIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
+import { useReactToPrint } from 'react-to-print';
+
+import { PrinterIcon } from '@heroicons/react/outline';
 
 const iconValue = {
   isActive: true,
@@ -29,31 +32,35 @@ const tableFieldData = [
 ];
 
 const SaleForm: React.FC = () => {
-
-  const dispatch = useDispatch()
-  const history = useHistory()
+  const dispatch = useDispatch();
+  const history = useHistory();
   const { id } = useParams<IParamTypes>();
 
-  const [updateForm, setUpdateForm] = useState(false)
+  const [updateForm, setUpdateForm] = useState(false);
+  //Valor Ticket
+  const [showTicket, setShowTicket] = useState(true);
 
   //Búsqueda de Productos
   const [productData, setProductData] = useState<IProduct[]>([]);
-  const [searchVal, setSearchVal] = useState('')
-  const [searchTableShow, setSearchTableShow] = useState(false)
-  const [searchTableData, setSearchTableData] = useState<IProductTableData[]>([])
-  const [saleData, setSaleData] = useState<ISale>()
+  const [searchVal, setSearchVal] = useState('');
+  const [searchTableShow, setSearchTableShow] = useState(false);
+  const [searchTableData, setSearchTableData] = useState<IProductTableData[]>(
+    [],
+  );
+  const [saleData, setSaleData] = useState<ISale>();
 
   //Lista de Productos de la Venta
-  const [saleProducts, setSaleProducts] = useState<IProductTableData[]>([])
-  const [saleList, setSaleList] = useState<ISaleProduct[]>([])
+  const [saleProducts, setSaleProducts] = useState<IProductTableData[]>([]);
+  const [saleList, setSaleList] = useState<ISaleProduct[]>([]);
 
   //Valores de la Carta de Venta
-  const [clientName, setClientName] = useState<string>('')
-  const [voucherType, setVoucherType] = useState<string>('ticket')
-  const [paymentMethod, setPaymentMethod] = useState<string>('efectivo')
-  const [paymentCash, setPaymentCash] = useState<string>('')
+  const [clientName, setClientName] = useState<string>('');
+  const [voucherType, setVoucherType] = useState<string>('ticket');
+  const [paymentMethod, setPaymentMethod] = useState<string>('efectivo');
+  const [paymentCash, setPaymentCash] = useState<string>('');
 
-  const [transferPaymentMethod, setTransferPaymentMethod] = useState<string>('')
+  const [transferPaymentMethod, setTransferPaymentMethod] =
+    useState<string>('');
 
   //Redux
   const { userData, access_token } = useSelector<RootState, RootState['user']>(
@@ -63,25 +70,27 @@ const SaleForm: React.FC = () => {
     (state) => state.shift,
   );
 
+  let registro: Date = new Date();
+
   useEffect(() => {
-    id ? getSaleProducts(id) : console.log('f')
-  }, [])
+    id ? getSaleProducts(id) : console.log('f');
+  }, []);
 
   useEffect(() => {
     if (searchVal.length > 2) {
       getSearchProduct(searchVal);
     } else {
-      setSearchTableShow(false)
-      setProductData([])
+      setSearchTableShow(false);
+      setProductData([]);
     }
     // eslint-disable-next-line
   }, [searchVal]);
 
   useEffect(() => {
     if (productData.length === 0) {
-      setSearchTableData([])
-      return
-    };
+      setSearchTableData([]);
+      return;
+    }
 
     const prepareTableData = () => {
       let newTableData: IProductTableData[] = productData.map(
@@ -125,24 +134,24 @@ const SaleForm: React.FC = () => {
       },
     };
     const res = await fetch(urlSale, requestInit);
-    const data = await res.json() as ISale;
+    const data = (await res.json()) as ISale;
     if (res.ok) {
-      let a = data.products.slice()
-      console.log(data)
-      setSaleData(data)
-      setUpdateForm(true)
-      setClientName(data.client)
-      setVoucherType(data.voucher)
-      if (data.methodpay.includes("transferencia")) {
-        setPaymentMethod("transferencia")
-        setTransferPaymentMethod(data.methodpay)
+      let a = data.products.slice();
+      console.log(data);
+      setSaleData(data);
+      setUpdateForm(true);
+      setClientName(data.client);
+      setVoucherType(data.voucher);
+      if (data.methodpay.includes('transferencia')) {
+        setPaymentMethod('transferencia');
+        setTransferPaymentMethod(data.methodpay);
       } else {
-        setPaymentMethod(data.methodpay)
+        setPaymentMethod(data.methodpay);
       }
-      setPaymentCash(data.cash)
-      getSaleProductsSaleList(a)
+      setPaymentCash(data.cash);
+      getSaleProductsSaleList(a);
     }
-  }
+  };
 
   const getSale = async () => {
     const urlSale: RequestInfo = `http://localhost:8000/sales/${id}`;
@@ -154,23 +163,23 @@ const SaleForm: React.FC = () => {
       },
     };
     const res = await fetch(urlSale, requestInit);
-    const data = await res.json() as ISale;
+    const data = (await res.json()) as ISale;
     if (res.ok) {
-      return data
+      return data;
     }
-  }
+  };
 
   const getSaleProductsSaleList = async (products: ISaleProduct[]) => {
-    let b = products.slice()
-    const newSaleProducts = []
+    let b = products.slice();
+    const newSaleProducts = [];
     for (let i = 0; i < products.length; i++) {
       const pdata = await getProduct(products[i].product._id);
-      newSaleProducts.push(pdata)
+      newSaleProducts.push(pdata);
     }
 
-    setSaleProducts(newSaleProducts)
-    setSaleList(b)
-  }
+    setSaleProducts(newSaleProducts);
+    setSaleList(b);
+  };
 
   const getSearchProduct = async (search: string) => {
     const urlSearch: RequestInfo = `http://localhost:8000/products/search/${search}`;
@@ -184,29 +193,34 @@ const SaleForm: React.FC = () => {
     const res = await fetch(urlSearch, requestInit);
     const data = await res.json();
     if (res.ok) {
-      setSearchTableShow(true)
-      console.log(data)
+      setSearchTableShow(true);
+      console.log(data);
       setProductData(data);
     } else {
       console.log('Error: Unknow error || Server error');
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, setState: (value: React.SetStateAction<string>) => void) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setState: (value: React.SetStateAction<string>) => void,
+  ) => {
     setState(event.target.value);
   };
 
   const addProductSale = (data: any) => {
-    let dataS = data as IProductTableData
+    let dataS = data as IProductTableData;
 
     if (dataS.stock === '0') {
-      return
+      return;
     }
 
-    let alreadyExist = saleProducts.find(product => product.name === dataS.name)
+    let alreadyExist = saleProducts.find(
+      (product) => product.name === dataS.name,
+    );
     if (alreadyExist) {
-      addQuantity(alreadyExist.name)
-      return
+      addQuantity(alreadyExist.name);
+      return;
     }
 
     let salep: ISaleProduct = {
@@ -216,32 +230,39 @@ const SaleForm: React.FC = () => {
       },
       quantity: '1',
       price: dataS.pricesell,
-    }
+    };
 
-    setSaleList([...saleList, salep])
-    setSaleProducts([...saleProducts, dataS])
-  }
+    setSaleList([...saleList, salep]);
+    setSaleProducts([...saleProducts, dataS]);
+  };
 
   const addQuantity = async (name: string, num?: number) => {
-    let lastsale
-    let newList = [...saleList]
+    let lastsale;
+    let newList = [...saleList];
     if (updateForm) {
-      lastsale = await getSale()
+      lastsale = await getSale();
       if (lastsale) {
         for (let i = 0; i < lastsale?.products.length; i++) {
           if (name === lastsale?.products[i].product.name) {
             for (let i = 0; i < newList.length; i++) {
               const nameP = newList[i].product.name;
               if (nameP === name) {
-                let stockp = (Number(saleProducts[i].stock) + Number(lastsale.products[i].quantity))
-                let newQuantity = num ? num : Number(newList[i].quantity) + 1
+                let stockp =
+                  Number(saleProducts[i].stock) +
+                  Number(lastsale.products[i].quantity);
+                let newQuantity = num ? num : Number(newList[i].quantity) + 1;
                 if (newQuantity <= stockp) {
-                  console.log(newQuantity)
-                  newList[i].quantity = '' + newQuantity
-                  newList[i].price = '' + roundDecimals(Number(saleProducts[i].pricesell) * Number(newList[i].quantity))
-                  break
+                  console.log(newQuantity);
+                  newList[i].quantity = '' + newQuantity;
+                  newList[i].price =
+                    '' +
+                    roundDecimals(
+                      Number(saleProducts[i].pricesell) *
+                        Number(newList[i].quantity),
+                    );
+                  break;
                 } else {
-                  return
+                  return;
                 }
               }
             }
@@ -249,66 +270,75 @@ const SaleForm: React.FC = () => {
             for (let i = 0; i < newList.length; i++) {
               const nameP = newList[i].product.name;
               if (nameP === name) {
-                let stockp = Number(saleProducts[i].stock)
-                let newQuantity = num ? num : Number(newList[i].quantity) + 1
+                let stockp = Number(saleProducts[i].stock);
+                let newQuantity = num ? num : Number(newList[i].quantity) + 1;
                 if (newQuantity <= stockp) {
-                  newList[i].quantity = '' + newQuantity
-                  newList[i].price = '' + roundDecimals(Number(saleProducts[i].pricesell) * Number(newList[i].quantity))
-                  break
+                  newList[i].quantity = '' + newQuantity;
+                  newList[i].price =
+                    '' +
+                    roundDecimals(
+                      Number(saleProducts[i].pricesell) *
+                        Number(newList[i].quantity),
+                    );
+                  break;
                 } else {
-                  return
+                  return;
                 }
               }
             }
-          };
+          }
         }
       }
     } else {
       for (let i = 0; i < newList.length; i++) {
         const nameP = newList[i].product.name;
         if (nameP === name) {
-          let stockp = Number(saleProducts[i].stock)
-          let newQuantity = num ? num : Number(newList[i].quantity) + 1
+          let stockp = Number(saleProducts[i].stock);
+          let newQuantity = num ? num : Number(newList[i].quantity) + 1;
           if (newQuantity <= stockp) {
-            newList[i].quantity = '' + newQuantity
-            newList[i].price = '' + roundDecimals(Number(saleProducts[i].pricesell) * Number(newList[i].quantity))
-            break
+            newList[i].quantity = '' + newQuantity;
+            newList[i].price =
+              '' +
+              roundDecimals(
+                Number(saleProducts[i].pricesell) * Number(newList[i].quantity),
+              );
+            break;
           } else {
-            return
+            return;
           }
         }
       }
     }
-    setSaleList(newList)
-  }
+    setSaleList(newList);
+  };
 
   const deleteProductSale = async (index: number) => {
     if (updateForm) {
-      let a = await getSale()
-      let b: ISale
+      let a = await getSale();
+      let b: ISale;
       if (a) {
-        b = a
+        b = a;
         if (b) {
-          let newstock
+          let newstock;
           for (let i = 0; i < b.products.length; i++) {
             if (b.products[i].product.name === saleProducts[index].name) {
-              newstock = Number(b.products[i].quantity)
-              const oldProduct = await getProduct(saleProducts[index]._id)
-              const urlPro: RequestInfo = 'http://localhost:8000/products'
+              newstock = Number(b.products[i].quantity);
+              const oldProduct = await getProduct(saleProducts[index]._id);
+              const urlPro: RequestInfo = 'http://localhost:8000/products';
               const url: RequestInfo = urlPro + `/${saleProducts[index]._id}`;
               let requestInit: RequestInit = {
                 method: 'PUT',
                 headers: {
                   Authorization: `Bearer ${access_token}`,
-                  "Content-Type": "application/json",
+                  'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                  stock: (Number(oldProduct.stock) + newstock) + '',
+                  stock: Number(oldProduct.stock) + newstock + '',
                 }),
-              }
+              };
               const res = await fetch(url, requestInit);
               if (res.ok) {
-                console.log('Quantity & Price Product updated')
+                console.log('Quantity & Price Product updated');
               } else {
                 console.log('No se pudo we');
               }
@@ -317,92 +347,101 @@ const SaleForm: React.FC = () => {
         }
       }
     }
-    let newList = [...saleList]
-    let newProducts = [...saleProducts]
-    newList.splice(index, 1)
-    newProducts.splice(index, 1)
+    let newList = [...saleList];
+    let newProducts = [...saleProducts];
+    newList.splice(index, 1);
+    newProducts.splice(index, 1);
 
-    setSaleList(newList)
-    setSaleProducts(newProducts)
-  }
+    setSaleList(newList);
+    setSaleProducts(newProducts);
+  };
 
-  const handleChangeQP = (type: string, index: number, { target }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeQP = (
+    type: string,
+    index: number,
+    { target }: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     if (type === 'quantity') {
-      addQuantity(saleList[index].product.name, Number(target.value))
+      addQuantity(saleList[index].product.name, Number(target.value));
     } else if (type === 'pricesell') {
       if (Number(target.value) < 0) {
-        return
+        return;
       }
-      let newProducts = [...saleProducts]
-      newProducts[index].pricesell = target.value
-      addQuantity(saleList[index].product.name, Number(saleList[index].quantity))
-      setSaleProducts(newProducts)
+      let newProducts = [...saleProducts];
+      newProducts[index].pricesell = target.value;
+      addQuantity(
+        saleList[index].product.name,
+        Number(saleList[index].quantity),
+      );
+      setSaleProducts(newProducts);
     }
-  }
+  };
 
   const totalSale = () => {
-    let total = 0
+    let total = 0;
     for (let i = 0; i < saleList.length; i++) {
       const element = saleList[i];
-      total = total + Number(element.price)
+      total = total + Number(element.price);
     }
-    return roundDecimals(total)
-  }
+    return roundDecimals(total);
+  };
 
   const changeSale = () => {
-    let change = roundDecimals(Number(paymentCash) - totalSale())
+    let change = roundDecimals(Number(paymentCash) - totalSale());
     if (change < 0) {
-      return 'Falta ' + (change * -1)
+      return 'Falta ' + change * -1;
     } else {
-      return change
+      return change;
     }
-  }
+  };
 
   const checkSaleBeforeCreate = () => {
     //Situaciones donde dará errores con el backend
-    let check = true
-    let message = "No se puede completar la venta por falta de datos"
+    let check = true;
+    let message = 'No se puede completar la venta por falta de datos';
     if (paymentCash === '' || Number(paymentCash) <= 0) {
-      check = false
-      message = "Falta colocar un precio de pago"
+      check = false;
+      message = 'Falta colocar un precio de pago';
     }
     if (saleList.length < 0) {
-      check = false
-      message = "No hay productos para realizar una venta"
+      check = false;
+      message = 'No hay productos para realizar una venta';
     }
     if (totalSale() === 0) {
-      check = false
-      message = "Literal no se estan vendiendo productos"
+      check = false;
+      message = 'Literal no se estan vendiendo productos';
     }
     if (typeof changeSale() != 'number') {
-      check = false
-      message = "No se esta realizando el pago total"
+      check = false;
+      message = 'No se esta realizando el pago total';
     }
     if (!check) {
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: message,
-        color: 'warning',
-        delay: 5
-      }))
+      dispatch(
+        setToastData({
+          isOpen: true,
+          setisOpen: (prev) => !prev,
+          contentText: message,
+          color: 'warning',
+          delay: 5,
+        }),
+      );
     }
-    return check
-  }
+    return check;
+  };
 
   const createSale = async () => {
     if (!checkSaleBeforeCreate()) {
-      return
+      return;
     }
     if (shiftData?.inShift) {
       //Crear Venta
-      const urlSale = "http://localhost:8000/sales"
-      let dateNow: Date = new Date()
+      const urlSale = 'http://localhost:8000/sales';
+      let dateNow: Date = new Date();
       const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           createdby: userData._id,
@@ -411,72 +450,87 @@ const SaleForm: React.FC = () => {
           cash: paymentCash,
           subtotal: totalSale() + '',
           change: changeSale() + '',
-          methodpay: (paymentMethod === "transferencia") ? transferPaymentMethod : paymentMethod,
+          methodpay:
+            paymentMethod === 'transferencia'
+              ? transferPaymentMethod
+              : paymentMethod,
           voucher: voucherType,
           status: 'Completado',
           products: saleList,
         }),
-      }
-      const res = await fetch(urlSale, requestInit)
+      };
+      const res = await fetch(urlSale, requestInit);
       if (res.ok) {
-        let data = await res.json()
+        let data = await res.json();
         await saleProducts.map((product, index) => {
-          updateProductQuantityPrice(product, index)
-        })
-        addActivity(data._id)
-        dispatch(setToastData({
-          isOpen: true,
-          setisOpen: (prev => !prev),
-          contentText: 'Se ha realizado la venta con exito.',
-          color: 'success',
-          delay: 5
-        }))
-        history.push('/sale')
+          updateProductQuantityPrice(product, index);
+        });
+        addActivity(data._id);
+        dispatch(
+          setToastData({
+            isOpen: true,
+            setisOpen: (prev) => !prev,
+            contentText: 'Se ha realizado la venta con exito.',
+            color: 'success',
+            delay: 5,
+          }),
+        );
+        history.push('/sale');
       } else {
-        dispatch(setToastData({
-          isOpen: true,
-          setisOpen: (prev => !prev),
-          contentText: `Method Create, Error${res.status} : ${res.statusText}`,
-          color: 'warning',
-          delay: 5
-        }))
+        dispatch(
+          setToastData({
+            isOpen: true,
+            setisOpen: (prev) => !prev,
+            contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+            color: 'warning',
+            delay: 5,
+          }),
+        );
       }
     } else {
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: `Necesitas iniciar un turno primero`,
-        color: 'warning',
-        delay: 5
-      }))
+      dispatch(
+        setToastData({
+          isOpen: true,
+          setisOpen: (prev) => !prev,
+          contentText: `Necesitas iniciar un turno primero`,
+          color: 'warning',
+          delay: 5,
+        }),
+      );
     }
-  }
+  };
 
   const updateSale = async () => {
     if (!checkSaleBeforeCreate()) {
-      return
+      return;
     }
-    let lastdata: any = await getSale()
-    let cash = await getCash()
+    let lastdata: any = await getSale();
+    let cash = await getCash();
 
-    if (roundDecimals(Number(cash.cash) - (Number(lastdata.subtotal) - totalSale())) < 0) {
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: 'No hay suficiente cantidad en caja, contacte un admin',
-        color: 'warning',
-        delay: 5
-      }))
-      return
+    if (
+      roundDecimals(
+        Number(cash.cash) - (Number(lastdata.subtotal) - totalSale()),
+      ) < 0
+    ) {
+      dispatch(
+        setToastData({
+          isOpen: true,
+          setisOpen: (prev) => !prev,
+          contentText: 'No hay suficiente cantidad en caja, contacte un admin',
+          color: 'warning',
+          delay: 5,
+        }),
+      );
+      return;
     }
 
-    const urlSale = "http://localhost:8000/sales/" + id
-    let dateNow: Date = new Date()
+    const urlSale = 'http://localhost:8000/sales/' + id;
+    let dateNow: Date = new Date();
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         createdby: userData._id,
@@ -485,82 +539,95 @@ const SaleForm: React.FC = () => {
         cash: paymentCash,
         subtotal: totalSale() + '',
         change: changeSale() + '',
-        methodpay: (paymentMethod === "transferencia") ? transferPaymentMethod : paymentMethod,
+        methodpay:
+          paymentMethod === 'transferencia'
+            ? transferPaymentMethod
+            : paymentMethod,
         voucher: voucherType,
         status: 'Actualizado',
         products: saleList,
       }),
-    }
-    let a = await getSale()
-    let b: ISale
+    };
+    let a = await getSale();
+    let b: ISale;
     if (a) {
-      b = a
+      b = a;
     }
-    const res = await fetch(urlSale, requestInit)
+    const res = await fetch(urlSale, requestInit);
     if (res.ok) {
       await saleProducts.map((product, index) => {
-        updateProductQuantityPrice(product, index, b)
-      })
-      addActivityUp(lastdata)
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: 'Se ha realizado la actualizacion con exito.',
-        color: 'success',
-        delay: 5
-      }))
-      history.push('/sale')
+        updateProductQuantityPrice(product, index, b);
+      });
+      addActivityUp(lastdata);
+      dispatch(
+        setToastData({
+          isOpen: true,
+          setisOpen: (prev) => !prev,
+          contentText: 'Se ha realizado la actualizacion con exito.',
+          color: 'success',
+          delay: 5,
+        }),
+      );
+      history.push('/sale');
     } else {
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
-        color: 'warning',
-        delay: 5
-      }))
+      dispatch(
+        setToastData({
+          isOpen: true,
+          setisOpen: (prev) => !prev,
+          contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+          color: 'warning',
+          delay: 5,
+        }),
+      );
     }
-  }
+  };
 
-  const updateProductQuantityPrice = async (product: IProductTableData, index: number, updlast?: ISale) => {
-    let newstock
+  const updateProductQuantityPrice = async (
+    product: IProductTableData,
+    index: number,
+    updlast?: ISale,
+  ) => {
+    let newstock;
     if (updateForm && updlast) {
-      newstock = Number(saleList[index].quantity)
+      newstock = Number(saleList[index].quantity);
       for (let i = 0; i < updlast.products.length; i++) {
         if (updlast.products[i].product.name === product.name) {
-          newstock = Number(saleList[index].quantity) - Number(updlast.products[index].quantity)
-          console.log('newstock1', saleList[index].quantity)
-          console.log('wnewstock1', updlast.products[index].quantity)
+          newstock =
+            Number(saleList[index].quantity) -
+            Number(updlast.products[index].quantity);
+          console.log('newstock1', saleList[index].quantity);
+          console.log('wnewstock1', updlast.products[index].quantity);
         }
       }
     } else {
-      newstock = Number(saleList[index].quantity)
+      newstock = Number(saleList[index].quantity);
     }
-    const oldProduct = await getProduct(product._id)
+    const oldProduct = await getProduct(product._id);
 
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = 'http://localhost:8000/products';
     const url: RequestInfo = urlPro + `/${product._id}`;
     let requestInit: RequestInit = {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         lastpricesell: oldProduct.pricesell,
         pricesell: product.pricesell,
-        stock: (Number(oldProduct.stock) - newstock) + '',
+        stock: Number(oldProduct.stock) - newstock + '',
       }),
-    }
+    };
     const res = await fetch(url, requestInit);
     if (res.ok) {
-      console.log('Quantity & Price Product updated')
+      console.log('Quantity & Price Product updated');
     } else {
       console.log('No se pudo we');
     }
-  }
+  };
 
   const getProduct = async (pId: string) => {
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = 'http://localhost:8000/products';
     const urlReq: RequestInfo = urlPro + `/${pId}`;
     const requestInit: RequestInit = {
       method: 'GET',
@@ -571,20 +638,22 @@ const SaleForm: React.FC = () => {
     };
     const res = await fetch(urlReq, requestInit);
     const data = await res.json();
-    return data
-  }
+    return data;
+  };
 
   const addActivityUp = async (lastdata: any) => {
-    let cash = await getCash()
-    let curramount = roundDecimals(Number(cash.cash) - (Number(lastdata.subtotal) - totalSale()))
-    const urlSale = "http://localhost:8000/activities"
-    let dateNow: Date = new Date()
-    setCash(curramount, cash._id)
+    let cash = await getCash();
+    let curramount = roundDecimals(
+      Number(cash.cash) - (Number(lastdata.subtotal) - totalSale()),
+    );
+    const urlSale = 'http://localhost:8000/activities';
+    let dateNow: Date = new Date();
+    setCash(curramount, cash._id);
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         date: dateNow,
@@ -595,26 +664,26 @@ const SaleForm: React.FC = () => {
         status: 'Actualizado',
         activityid: lastdata._id,
       }),
-    }
+    };
     const res = await fetch(urlSale, requestInit);
     if (res.ok) {
-      console.log('Activity created')
+      console.log('Activity created');
     } else {
       console.log('No se pudo we');
     }
-  }
+  };
 
   const addActivity = async (id: string) => {
-    let cash = await getCash()
-    let curramount = roundDecimals(Number(cash.cash) + totalSale())
-    const urlSale = "http://localhost:8000/activities"
-    let dateNow: Date = new Date()
-    setCash(curramount, cash._id)
+    let cash = await getCash();
+    let curramount = roundDecimals(Number(cash.cash) + totalSale());
+    const urlSale = 'http://localhost:8000/activities';
+    let dateNow: Date = new Date();
+    setCash(curramount, cash._id);
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         date: dateNow,
@@ -625,17 +694,17 @@ const SaleForm: React.FC = () => {
         status: 'Completado',
         activityid: id,
       }),
-    }
+    };
     const res = await fetch(urlSale, requestInit);
     if (res.ok) {
-      console.log('Activity created')
+      console.log('Activity created');
     } else {
       console.log('No se pudo we');
     }
-  }
+  };
 
-  const setCash = async (putCash:number, id: string) => {
-    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+  const setCash = async (putCash: number, id: string) => {
+    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`;
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -644,24 +713,26 @@ const SaleForm: React.FC = () => {
       },
       body: JSON.stringify({
         cash: putCash + '',
-      })
+      }),
     };
     const res = await fetch(urlPro, requestInit);
     if (res.ok) {
-      console.log('Cash updated')
-    }else {
-      dispatch(setToastData({
-        isOpen: true,
-        setisOpen: (prev => !prev),
-        contentText: `Hubo un error al actualizar la caja`,
-        color: 'warning',
-        delay: 5
-      }))
+      console.log('Cash updated');
+    } else {
+      dispatch(
+        setToastData({
+          isOpen: true,
+          setisOpen: (prev) => !prev,
+          contentText: `Hubo un error al actualizar la caja`,
+          color: 'warning',
+          delay: 5,
+        }),
+      );
     }
-  }
+  };
 
   const getCash = async () => {
-    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const urlPro: RequestInfo = 'http://localhost:8000/cash';
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -671,7 +742,139 @@ const SaleForm: React.FC = () => {
     };
     const res = await fetch(urlPro, requestInit);
     const data = await res.json();
-    return data[0]
+    return data[0];
+  };
+
+  const changeShow = () => {
+    if (showTicket) {
+      setShowTicket(false);
+    } else {
+      setShowTicket(true);
+    }
+  };
+
+  const componentRef = React.useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  class ComponentToPrint extends React.Component {
+    _getTime = (time: any) => {
+      var dateTime = new Date().toLocaleString();
+      return dateTime;
+    };
+
+    render() {
+      return (
+        <div>
+          <header>
+            <h3 style={{ textAlign: 'center' }}>FRESCO</h3>
+          </header>
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            Tienda de Abarrotes Fresco <br />
+            Av. Amauta 1020 Urb. Pedro P.Diaz
+            <br />
+            Ca. Nicolas de Pierola <br />
+            Arequipa - Arequipa - Paucarpata
+            <br />
+            TEL: 972 540 726 <br />
+            RUC: 10439852505 <br />
+            {voucherType.charAt(0).toUpperCase() + voucherType.slice(1)} de
+            Venta Electronica
+          </div>
+          <br />
+          <div
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <table
+              style={{
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <tbody>
+                <tr>
+                  <td>CAJERO</td>
+                  <td>{userData.name.toUpperCase()}</td>
+                </tr>
+                <tr>
+                  <td>DNI</td>
+                  <td>{userData.documentNumber}</td>
+                </tr>
+                <tr>
+                  <td>NOMBRE</td>
+                  <td>{clientName ? clientName : 'CLIENTE VARIOS'}</td>
+                </tr>
+                <tr>
+                  <td>FECHA DE EMISION</td>
+                  <td>{this._getTime(registro)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br />
+
+          <div>
+            <table style={{ width: '100%' }}>
+              <tbody>
+                <tr style={{ textAlign: 'left' }}>
+                  <th>DESCR.</th>
+                  <th>CANT</th>
+                  <th>P.UNIT</th>
+                  <th>P.TOTAL</th>
+                </tr>
+                {saleList.map((p, index) => (
+                  <tr key={index}>
+                    <td>{p.product.name}</td>
+                    <td>{p.quantity}</td>
+                    <td>S/.{saleProducts[index].pricesell}</td>
+                    <td>S/.{p.price}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <br />
+          <div>
+            <table style={{ width: '100%' }}>
+              <tbody>
+                <tr>
+                  <td>TOTAL:</td>
+                  <td>S/.{totalSale()}</td>
+                </tr>
+                {/*<tr>
+                  <td>IGV:</td>
+                  <td>S/.{igv}</td>
+                </tr>*/}
+                <tr>
+                  <td>{paymentMethod.toUpperCase()}:</td>
+                  <td>
+                    S/.
+                    {paymentMethod === 'efectivo' ? parseFloat(
+                      `${paymentCash}` ? `${paymentCash}` : '0.00',
+                    ).toFixed(2) :
+                    totalSale()}
+                  </td>
+                </tr>
+                <tr>
+                  <td>CAMBIO:</td>
+                  <td>S/.{paymentMethod === 'efectivo' ? changeSale() : '0'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br />
+          <div style={{ textAlign: 'center' }}>
+            Gracias por comprar en Fresco
+          </div>
+        </div>
+      );
+    }
   }
 
   return (
@@ -688,89 +891,131 @@ const SaleForm: React.FC = () => {
                   label="Regresar"
                   textColor="white"
                   bgColor="bg-gradient-to-r from-green-400 to-green-500"
-                  onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                  onHoverStyles={toHoverStyle(
+                    'bg-gradient-to-r from-green-500 to-green-600',
+                  )}
                   onClick={() => history.goBack()}
                 />
               </div>
             </div>
 
             <div className="flex">
-              <div className="col-span-2 py-3 px-6 flex-1">
-                <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
-                  Productos de la Venta
-                </h6>
-                {saleList.length > 0 ?
-                  saleList.map((prod, index) => (
-                    <div className="flex items-center" key={index}>
-                      {saleData?.status != 'Anulado' &&
-                        (<div className="flex-initial">
-                          <Icon
-                            width={8}
-                            color="red"
-                            Icon={XIcon}
-                            hover
-                            onClick={() => { deleteProductSale(index) }}
-                          />
-                        </div>)
-                      }
-                      <div className="flex-auto px-3">
-                        <Input
-                          type="text"
-                          label="Producto"
-                          name={prod.product.name}
-                          value={saleList[index].product.name}
-                          disabled={true}
-                        />
-                      </div>
-                      <div className="flex-auto px-3">
-                        <Input
-                          type="number"
-                          label="Cantidad"
-                          name={prod.quantity}
-                          value={saleList[index].quantity}
-                          onChange={e => { handleChangeQP('quantity', index, e) }}
-                          focus
-                          disabled={saleData?.status === 'Anulado' ? true : false}
-                        />
-                      </div>
-                      <div className="flex-auto px-3">
-                        <Input
-                          type="number"
-                          label="Precio Individual"
-                          name={prod.price}
-                          value={saleProducts[index].pricesell}
-                          disabled={true}
-                        />
-                        {/* onChange={e => {handleChangeQP('pricesell', index, e)}}
-                          focus */}
-                      </div>
-                      <div className="flex-auto px-3">
-                        <Input
-                          type="text"
-                          label="Total"
-                          name={prod.product.name}
-                          value={roundDecimals(Number(saleList[index].price))}
-                          disabled={true}
-                        />
-                      </div>
+              {showTicket ? (
+                <>
+                  <div className="col-span-2 py-3 px-6 flex-1">
+                    <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                      Productos de la Venta
+                    </h6>
+                    {saleList.length > 0
+                      ? saleList.map((prod, index) => (
+                          <div className="flex items-center" key={index}>
+                            {saleData?.status != 'Anulado' && (
+                              <div className="flex-initial">
+                                <Icon
+                                  width={8}
+                                  color="red"
+                                  Icon={XIcon}
+                                  hover
+                                  onClick={() => {
+                                    deleteProductSale(index);
+                                  }}
+                                />
+                              </div>
+                            )}
+                            <div className="flex-auto px-3">
+                              <Input
+                                type="text"
+                                label="Producto"
+                                name={prod.product.name}
+                                value={saleList[index].product.name}
+                                disabled={true}
+                              />
+                            </div>
+                            <div className="flex-auto px-3">
+                              <Input
+                                type="number"
+                                label="Cantidad"
+                                name={prod.quantity}
+                                value={saleList[index].quantity}
+                                onChange={(e) => {
+                                  handleChangeQP('quantity', index, e);
+                                }}
+                                focus
+                                disabled={
+                                  saleData?.status === 'Anulado' ? true : false
+                                }
+                              />
+                            </div>
+                            <div className="flex-auto px-3">
+                              <Input
+                                type="number"
+                                label="Precio Individual"
+                                name={prod.price}
+                                value={saleProducts[index].pricesell}
+                                disabled={true}
+                              />
+                              {/* onChange={e => {handleChangeQP('pricesell', index, e)}}
+                              focus */}
+                            </div>
+                            <div className="flex-auto px-3">
+                              <Input
+                                type="text"
+                                label="Total"
+                                name={prod.product.name}
+                                value={roundDecimals(
+                                  Number(saleList[index].price),
+                                )}
+                                disabled={true}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      : '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'}
+                    <div className="flex">
+                      <h6 className="text-left text-black-400 text-xl mt-3 mb-6 mx-12 font-bold uppercase flex-1">
+                        Total: {totalSale()}
+                      </h6>
                     </div>
-                  )) : '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
-                }
-                <div className="flex">
-                  <h6 className="text-left text-black-400 text-xl mt-3 mb-6 mx-12 font-bold uppercase flex-1">
-                    Total: {totalSale()}
-                  </h6>
+                  </div>
+                </>
+              ) : (
+                <div className="col-span-2 py-3 px-6 flex-1">
+                  <div className="flex justify-center">
+                    <div className="pr-2">
+                      <Button
+                        label="Volver a Compra"
+                        textColor="white"
+                        bgColor="my-2 bg-gradient-to-r from-blue-400 to-blue-500"
+                        onHoverStyles={toHoverStyle(
+                          'bg-gradient-to-r from-blue-500 to-blue-600',
+                        )}
+                        onClick={changeShow}
+                      />
+                    </div>
+                    <div className="pl-2">
+                      <Button
+                        label="Imprimir"
+                        textColor="white"
+                        bgColor="my-2 bg-gradient-to-r from-blue-400 to-blue-500"
+                        onHoverStyles={toHoverStyle(
+                          'bg-gradient-to-r from-blue-500 to-blue-600',
+                        )}
+                        onClick={handlePrint}
+                      />
+                    </div>
+                  </div>
+                  <div className="p-auto m-auto w-1/2">
+                    <ComponentToPrint ref={componentRef} />
+                  </div>
                 </div>
-
-              </div>
-
+              )}
               <div className="col-span-2 pt-3 pb-3 px-6 bg-white flex-initial w-96">
                 <Input
                   type="text"
                   label="Nombre de Cliente"
-                  name={"cliente"}
+                  name={'cliente'}
                   value={clientName}
-                  onChange={e => handleChange(e, setClientName)}
+                  onChange={(e) => handleChange(e, setClientName)}
                   disabled={updateForm ? true : false}
                 />
 
@@ -786,32 +1031,29 @@ const SaleForm: React.FC = () => {
                     className="flex"
                     disabled={saleData?.status === 'Anulado' ? true : false}
                   >
-                    <RadioGroup.Option value="ticket"
+                    <RadioGroup.Option
+                      value="ticket"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Ticket</span>
-                      )}
+                      {({ checked }) => <span className="">Ticket</span>}
                     </RadioGroup.Option>
-                    <RadioGroup.Option value="boleta"
+                    <RadioGroup.Option
+                      value="boleta"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Boleta</span>
-                      )}
+                      {({ checked }) => <span className="">Boleta</span>}
                     </RadioGroup.Option>
-                    <RadioGroup.Option value="factura"
+                    <RadioGroup.Option
+                      value="factura"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Factura</span>
-                      )}
+                      {({ checked }) => <span className="">Factura</span>}
                     </RadioGroup.Option>
                   </RadioGroup>
                 </div>
@@ -828,32 +1070,29 @@ const SaleForm: React.FC = () => {
                     className="flex mb-3"
                     disabled={saleData?.status === 'Anulado' ? true : false}
                   >
-                    <RadioGroup.Option value="efectivo"
+                    <RadioGroup.Option
+                      value="efectivo"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Efectivo</span>
-                      )}
+                      {({ checked }) => <span className="">Efectivo</span>}
                     </RadioGroup.Option>
-                    <RadioGroup.Option value="tarjeta"
+                    <RadioGroup.Option
+                      value="tarjeta"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Tarjeta</span>
-                      )}
+                      {({ checked }) => <span className="">Tarjeta</span>}
                     </RadioGroup.Option>
-                    <RadioGroup.Option value="yape"
+                    <RadioGroup.Option
+                      value="yape"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Yape</span>
-                      )}
+                      {({ checked }) => <span className="">Yape</span>}
                     </RadioGroup.Option>
                   </RadioGroup>
                   <RadioGroup
@@ -862,49 +1101,45 @@ const SaleForm: React.FC = () => {
                     className="flex mb-3"
                     disabled={saleData?.status === 'Anulado' ? true : false}
                   >
-                    <RadioGroup.Option value="plin"
+                    <RadioGroup.Option
+                      value="plin"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Plin</span>
-                      )}
+                      {({ checked }) => <span className="">Plin</span>}
                     </RadioGroup.Option>
-                    <RadioGroup.Option value="transferencia"
+                    <RadioGroup.Option
+                      value="transferencia"
                       className={({ active, checked }) => `
                       ${checked ? 'bg-blue-500 text-white' : 'bg-white'}
                       flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                     >
-                      {({ checked }) => (
-                        <span className="">Transferencia</span>
-                      )}
+                      {({ checked }) => <span className="">Transferencia</span>}
                     </RadioGroup.Option>
                   </RadioGroup>
-                  {paymentMethod.includes("transferencia") && (
+                  {paymentMethod.includes('transferencia') && (
                     <RadioGroup
                       value={transferPaymentMethod}
                       onChange={setTransferPaymentMethod}
                       className="flex"
                       disabled={saleData?.status === 'Anulado' ? true : false}
                     >
-                      <RadioGroup.Option value="transferencia bcp"
+                      <RadioGroup.Option
+                        value="transferencia bcp"
                         className={({ active, checked }) => `
                         ${checked ? 'bg-green-500 text-white' : 'bg-white'}
                         flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                       >
-                        {({ checked }) => (
-                          <span className="">BCP</span>
-                        )}
+                        {({ checked }) => <span className="">BCP</span>}
                       </RadioGroup.Option>
-                      <RadioGroup.Option value="transferencia interbank"
+                      <RadioGroup.Option
+                        value="transferencia interbank"
                         className={({ active, checked }) => `
                         ${checked ? 'bg-green-500 text-white' : 'bg-white'}
                         flex-auto relative rounded-lg shadow-md mx-3 py-1 cursor-pointer`}
                       >
-                        {({ checked }) => (
-                          <span className="">Interbank</span>
-                        )}
+                        {({ checked }) => <span className="">Interbank</span>}
                       </RadioGroup.Option>
                     </RadioGroup>
                   )}
@@ -915,27 +1150,43 @@ const SaleForm: React.FC = () => {
                 <Input
                   type="number"
                   label="Pago en Efectivo"
-                  name={"cash"}
+                  name={'cash'}
                   value={paymentCash}
-                  onChange={e => handleChange(e,setPaymentCash)}
+                  onChange={(e) => handleChange(e, setPaymentCash)}
                   focus
                   disabled={saleData?.status === 'Anulado' ? true : false}
                 />
 
-                <h6 className="text-left text-red-500 text-xl mt-3 font-bold uppercase">
+                <h6 className="text-left text-red-500 text-xl mt-3 mb-3 font-bold uppercase">
                   Cambio: {changeSale()}
                 </h6>
-                {saleData?.status != 'Anulado' &&
-                  (
+                {saleData?.status != 'Anulado' && (
+                  <>
+                    <div className="flex justify-center	">
+                      <button
+                        type="button"
+                        onClick={changeShow}
+                        className="flex p-5 py-2.5 text-white bg-blue-500 rounded-md hover:bg-blue-600  focus:outline-none"
+                      >
+                        <PrinterIcon className="h-6 w-6" />
+                        <span className="flex pl-2 mx-1">
+                          Preparar comprobante de pago
+                        </span>
+                      </button>
+                    </div>
                     <Button
-                      label={updateForm ? "Actualizar Venta" : "Finalizar Venta"}
+                      label={
+                        updateForm ? 'Actualizar Venta' : 'Finalizar Venta'
+                      }
                       textColor="white"
                       bgColor="my-2 bg-gradient-to-r from-green-400 to-green-500"
-                      onHoverStyles={toHoverStyle('bg-gradient-to-r from-green-500 to-green-600')}
+                      onHoverStyles={toHoverStyle(
+                        'bg-gradient-to-r from-green-500 to-green-600',
+                      )}
                       onClick={updateForm ? updateSale : createSale}
                     />
-                  )
-                }
+                  </>
+                )}
               </div>
             </div>
 
@@ -953,7 +1204,7 @@ const SaleForm: React.FC = () => {
                         label=""
                         name="search"
                         value={searchVal}
-                        onChange={e => handleChange(e, setSearchVal)}
+                        onChange={(e) => handleChange(e, setSearchVal)}
                         placeholder="Buscar producto..."
                         icon={iconValue}
                       />
@@ -961,7 +1212,7 @@ const SaleForm: React.FC = () => {
                   </div>
                 </div>
 
-                {searchTableShow &&
+                {searchTableShow && (
                   <div className="mb-3">
                     <Table
                       theadData={tableFieldData}
@@ -969,7 +1220,7 @@ const SaleForm: React.FC = () => {
                       onClick={addProductSale}
                     />
                   </div>
-                }
+                )}
               </div>
             )}
           </div>
@@ -977,6 +1228,6 @@ const SaleForm: React.FC = () => {
       </div>
     </>
   );
-}
+};
 
-export default SaleForm
+export default SaleForm;
