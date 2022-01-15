@@ -101,6 +101,7 @@ interface ISaleTableData {
   status?: string | JSX.Element;
   active?: JSX.Element;
   actions?: JSX.Element;
+  totalsales?:string;
 }
 
 interface IUserSale {
@@ -156,6 +157,7 @@ interface IOrderTableData {
   status: string;
   active?: JSX.Element;
   actions?: JSX.Element;
+  totalorders?: string;
 }
 
 interface IFormOrder {
