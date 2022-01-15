@@ -175,11 +175,11 @@ const UserForm: React.FC = () => {
     };
     const res = await fetch(urlReq, requestInit);
     console.log(res);
-    const dataRes: IUserResponse = await res.json();
     if (res.ok) {
+      const dataRes: IUserResponse = await res.json();
       //console.log('User Updated', dataRes);
       //probar que esto puede fallar
-      dispatch(setUserData(dataRes))
+      //dispatch(setUserData(dataRes))
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),

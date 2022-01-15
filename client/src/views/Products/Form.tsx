@@ -21,8 +21,8 @@ const activeOptions: ISelectOption[] = [
 ];
 
 const mesureUnitOptions: ISelectOption[] = [
+  { label: 'Unidad', value: "unidad" },
   { label: 'Kg', value: "kg" },
-  { label: 'Unidad', value: "unidad" }
 ]
 
 
@@ -366,7 +366,7 @@ const ProductForm: React.FC = () => {
                           value={value}
                           onChange={onChange}
                           min="0"
-                          step="1"
+                          step={selectedMesureUnit.label === 'Unidad' ? '1' : '.01'}
                           focus
                         />
                       )}

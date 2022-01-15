@@ -58,7 +58,7 @@ const navRoutes: RouteSideBar[] = [
   {
     label: 'Reportes',
     Icon: DocumentReportIcon,
-    path: '/reportes',
+    path: '/reportes/products',
     roles: ['Administrador', 'Empleado']
   }
 ]

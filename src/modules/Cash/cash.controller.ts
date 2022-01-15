@@ -6,14 +6,17 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { CashService } from './cash.service';
 import { CreateCashDto, UpdateCashDto } from './dto/cash.dto';
 import { Cash } from './entities/cash.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Cash')
+@UseGuards(JwtAuthGuard)
 @Controller('cash')
 export class CashController {
   constructor(private readonly cashService: CashService) {}

@@ -337,6 +337,7 @@ const OrderForm: React.FC = () => {
                       <div className="flex-auto px-3">
                         <Input
                           type="number"
+                          step={prod.mesureUnit === 'Unidad' ? '1' : '.01'}
                           label="Cantidad"
                           name={prod.name}
                           value={orderListObj[index].quantity}

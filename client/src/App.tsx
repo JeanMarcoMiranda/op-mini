@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from './store/store';
 import { appRoutes, navRoutes } from './routes';
 import { Header, SideBar } from './components/layout';
 import './App.css';
 import AuthRoute from './routes/AuthRoute';
+import { setUserData, setToken, setAuthUser } from './store/action/actions';
 
 import {
   ModalComponent as Modal,
@@ -14,7 +15,28 @@ import {
   ToastComponent as Toast
 } from './components/common';
 
+const initialUserRole: IRole = {
+  _id: '',
+  name: '',
+  isActive: false,
+  description: '',
+};
+
+const initialUserState: IUserData = {
+  _id: '',
+  name: '',
+  email: '',
+  documentType: '',
+  documentNumber: '',
+  isActive: false,
+  role: initialUserRole,
+};
+
 const App = () => {
+
+  const { access_token, userData } = useSelector<RootState, RootState['user']>(
+    (state) => state.user,
+  );
 
   const [sideBarOpen, setSideBarOpen] = useState(false);
   // const [headerVisibility, setHeaderVisibility] = useState(false);
@@ -31,6 +53,33 @@ const App = () => {
   const { notificationData } = useSelector<RootState, RootState['notification']>(
     (state) => state.notification,
   );
+
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  useEffect(() => {
+    const getProductData = async () => {
+      const url = "http://localhost:8000/cash"
+      const requestInit: RequestInit = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = await fetch(url, requestInit);
+      if (res.status === 404){
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+
+        dispatch(setUserData(initialUserState))
+        dispatch(setAuthUser(false))
+        dispatch(setToken(''))
+        history.push('/login')
+      }
+    };
+    getProductData()
+  }, [])
 
   return (
     <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-yellow-100 App">

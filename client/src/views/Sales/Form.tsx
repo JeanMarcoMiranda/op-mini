@@ -729,6 +729,7 @@ const SaleForm: React.FC = () => {
                           name={prod.quantity}
                           value={saleList[index].quantity}
                           onChange={e => { handleChangeQP('quantity', index, e) }}
+                          step='.01'
                           focus
                           disabled={saleData?.status === 'Anulado' ? true : false}
                         />
