@@ -4,7 +4,6 @@ import { RootState } from '../../store/store';
 
 import {
   TableComponent as Table,
-  ButtonComponent as Button,
   LoadingPageComponent as Load,
 } from '../../components/common';
 import { formatDateHours, renderIconActions } from '../../components/utils';

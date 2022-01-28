@@ -70,7 +70,6 @@ const Home: React.FC = () => {
   const timeValue = useDateTime()
   const [orderTodayData, setOrderTodayData] = useState<IOrder[]>([])
   const [show, setShow] = useState(false)
-  const [orderModalOpen, setOrderModalOpen] = useState<number>(0)
   const [cashRegister, setCashRegister] = useState('0')
 
   useEffect(() => {
@@ -128,9 +127,6 @@ const Home: React.FC = () => {
   const completeOrder = (index: number) => {
     if (shiftData?.inShift) {
 
-      setOrderModalOpen(index)
-      console.log(index)
-
       dispatch(setModalData({
         isOpen: true,
         setisOpen: (prev => !prev),
@@ -155,7 +151,7 @@ const Home: React.FC = () => {
 
   const approveOrder = async (index: number) => {
     //if (shiftData?.inShift) {
-    const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
+    const url: RequestInfo = `http://localhost:8000/orders/${orderTodayData[index]._id}`;
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -211,7 +207,7 @@ const Home: React.FC = () => {
         return
       }
 
-      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderTodayData[index]._id}`;
+      const url: RequestInfo = `http://localhost:8000/orders/${orderTodayData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -232,7 +228,7 @@ const Home: React.FC = () => {
       const res = await fetch(url, requestInit);
       if (res.ok) {
         let data = await res.json()
-        await orderTodayData[index].products.map(product => {
+        await orderTodayData[index].products.forEach(product => {
           updateProductQuantity(product)
         })
         dispatch(setToastData({

@@ -263,7 +263,7 @@ const OrderView: React.FC = () => {
         return
       }
 
-      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
+      const url: RequestInfo = `http://localhost:8000/orders/${orderData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -283,7 +283,7 @@ const OrderView: React.FC = () => {
       const res = await fetch(url, requestInit);
       if (res.ok) {
         let data = await res.json()
-        await orderData[index].products.map(product => {
+        await orderData[index].products.forEach(product => {
           updateProductQuantity(product, 'completar')
         })
         dispatch(setToastData({
@@ -445,10 +445,6 @@ const OrderView: React.FC = () => {
     return data
   }
 
-  const orderUpdate = (index: number) => {
-    console.log("Update")
-  }
-
   const orderCancel = (index: number) => {
     dispatch(setModalData({
       isOpen: true,
@@ -494,7 +490,7 @@ const OrderView: React.FC = () => {
 
   const cancelOrder = async (index: number) => {
     if (shiftData?.inShift) {
-      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
+      const url: RequestInfo = `http://localhost:8000/orders/${orderData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -511,7 +507,7 @@ const OrderView: React.FC = () => {
       const res = await fetch(url, requestInit);
       if (res.ok) {
         let data = await res.json()
-        await orderData[index].products.map(product => {
+        await orderData[index].products.forEach(product => {
           updateProductQuantity(product, 'cancelar')
         })
         addActivityCa(data)
@@ -598,7 +594,7 @@ const OrderView: React.FC = () => {
 
   const approveOrder = async (index: number) => {
     if (shiftData?.inShift) {
-      const url: RequestInfo = 'http://localhost:8000/orders' + `/${orderData[index]._id}`;
+      const url: RequestInfo = `http://localhost:8000/orders/${orderData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {

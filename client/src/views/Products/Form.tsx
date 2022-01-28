@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { setToastData } from '../../store/action/actions';
@@ -96,9 +96,9 @@ const ProductForm: React.FC = () => {
 
     const { name, barcode, stock, pricebuy, pricesell, description, active, category, company, lastpricebuy, lastpricesell, mesureUnit }: IProductResponse = await response.json();
     const activeOption = active ? activeOptions[0] : activeOptions[1];
-    const categoryOption = categoryOptions.find(cat => cat.value === category)
-    const supplierOption = supplierOptions.find(supplier => supplier.label === company)
-    const mesureUnitOption = mesureUnit === "Unidad" ? mesureUnitOptions[1] : mesureUnitOptions[0]
+    const categoryOption = categoryOptions.find(cat => cat.value === category._id)
+    const supplierOption = supplierOptions.find(supplier => supplier.value === company._id)
+    const mesureUnitOption = mesureUnit === "unidad" ? mesureUnitOptions[0] : mesureUnitOptions[1]
     const dateNow = new Date()
     if (response.ok) {
       lastpricebuy && setLastPrice(lastpricebuy)
@@ -186,7 +186,7 @@ const ProductForm: React.FC = () => {
   const prepareSupplOptions = (data: ISupplier[]) => {
     const supplierOptions: ISelectOption[] = []
 
-    data.map(supplier => {
+    data.forEach(supplier => {
       const newObject: ISelectOption = {
         label: supplier.company,
         value: supplier._id

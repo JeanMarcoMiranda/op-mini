@@ -211,8 +211,8 @@ interface IProductResponse {
   date: string;
   description: string;
   active: boolean;
-  category: string;
-  company: string;
+  category: ICategory;
+  company: ICompany;
   lastpricebuy?: string;
   lastpricesell?: string;
 }

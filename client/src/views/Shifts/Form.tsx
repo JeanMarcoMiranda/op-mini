@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  CardOrderComponent as Card,
   ButtonComponent as Button,
   InputComponent as Input,
   LoadingPageComponent as Load,
-  LoadingSectionComponent as LoadSection,
   ChipComponent as Chip,
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { filterDuplicate, formatDate, formatDateHours, renderIconActions, toHoverStyle } from '../../components/utils';
+import { formatDate, formatDateHours, renderIconActions, toHoverStyle } from '../../components/utils';
 import { setToastData } from '../../store/action/actions';
 
 const initialValues: IShift = {
@@ -57,16 +55,6 @@ const urlShift: RequestInfo = "http://localhost:8000/shifts";
 const urlSale: RequestInfo = 'http://localhost:8000/sales';
 const urlOrder: RequestInfo = 'http://localhost:8000/orders';
 
-interface IProductOrder {
-  note: string;
-  product: {
-    name: string;
-    _id: string;
-  };
-  quantity: string;
-  price: string;
-}
-
 const ShiftForm: React.FC = () => {
 
   const history = useHistory()
@@ -93,6 +81,7 @@ const ShiftForm: React.FC = () => {
     } else {
       console.log('Solo es para ver')
     }
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {

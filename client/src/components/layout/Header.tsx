@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { MenuIcon } from '@heroicons/react/solid';
 import { Link } from 'react-router-dom';
-import { setToastData, setShiftData, setModalData } from '../../store/action/actions';
+import { setToastData, setShiftData } from '../../store/action/actions';
 
 import {
   ButtonComponent as Button,
@@ -85,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({
     //console.log('Turnos', shifts);
     //console.log(shiftData);
     const cash = await getCash();
-    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
+    const currentUser = shifts.filter((shift) => shift.user.name === userData.name && shift.end === '')[0]
 
     console.log('currentUser', currentUser);
     if (shifts[0]) {
@@ -203,14 +203,14 @@ const Header: React.FC<HeaderProps> = ({
     const orders = await getOrder();
     const sales = await getSales();
     const cash = await getCash();
-    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
+    const currentUser = shifts.filter((shift) => shift.user.name === userData.name && shift.end === '')[0]
     updateShift(currentUser._id, orders ,sales, cash.cash, expectedAmount)
     //updateShift(shifts[0]._id, orders ,sales, cash.cash, expectedAmount)
   }
 
   const getOrder = async() => {
     //console.log('Order Get');
-    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
+    const currentUser = shifts.filter((shift) => shift.user.name === userData.name && shift.end === '')[0]
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
@@ -223,7 +223,7 @@ const Header: React.FC<HeaderProps> = ({
     const data: IOrderShift[] = await res.json();
 
     //const currentUserOrders = data.filter((order) => order.createdby.name == userData.name || order.receivedby.name == userData.name)
-    const currentUserOrders = data.filter((order) => order.createdby.name == userData.name)
+    const currentUserOrders = data.filter((order) => order.createdby.name === userData.name)
     const currentUserStartDate = currentUser.start;
     //const currentUserStartDate = shifts[0].start;
     const currentUserEndDate = dateNow;
@@ -236,7 +236,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const getSales = async() => {
     //console.log('Sales Get');
-    const currentUser = shifts.filter((shift) => shift.user.name == userData.name && shift.end === '')[0]
+    const currentUser = shifts.filter((shift) => shift.user.name === userData.name && shift.end === '')[0]
     const dateNow = new Date();
     const requestInit: RequestInit = {
       method: 'GET',
@@ -247,7 +247,7 @@ const Header: React.FC<HeaderProps> = ({
     };
     const res = await fetch(urlSale, requestInit);
     const data :ISaleShift[] = await res.json();
-    const currentUserSales = data.filter((sale) => sale.createdby.name == userData.name)
+    const currentUserSales = data.filter((sale) => sale.createdby.name === userData.name)
     const currentUserStartDate = currentUser.start;
     //const currentUserStartDate = shifts[0].start;
     const currentUserEndDate = dateNow;

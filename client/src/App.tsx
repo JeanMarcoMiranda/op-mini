@@ -34,7 +34,7 @@ const initialUserState: IUserData = {
 
 const App = () => {
 
-  const { access_token, userData } = useSelector<RootState, RootState['user']>(
+  const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
 
@@ -68,7 +68,8 @@ const App = () => {
         },
       };
       const res = await fetch(url, requestInit);
-      if (res.status === 404){
+      if (res.status === 401){
+        console.log('nobuenasbuenas')
         localStorage.removeItem('user')
         localStorage.removeItem('token')
 
@@ -78,7 +79,10 @@ const App = () => {
         history.push('/login')
       }
     };
-    getProductData()
+    if (isAuthUser) {
+      getProductData()
+    }
+    // eslint-disable-next-line
   }, [])
 
   return (

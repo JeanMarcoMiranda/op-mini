@@ -1,14 +1,12 @@
-import { format } from 'path'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Route, Link, Switch, useRouteMatch, useParams, useLocation, NavLink } from 'react-router-dom'
+import { Route, Switch, useRouteMatch, useParams, NavLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 
 import {
   TableComponent as Table,
   DatePickerComponent as DatePicker,
   ButtonComponent as Button,
-  InputComponent as Input
 } from '../../components/common'
 import { formatDate, formatDateHours, toHoverStyle } from '../../components/utils'
 import { RootState } from '../../store/store'
@@ -183,6 +181,7 @@ const ComponentePrueba: React.FC = () => {
       }
     }
     getTableData()
+    // eslint-disable-next-line
   }, [reportOf])
 
   useEffect(() => {
@@ -220,7 +219,7 @@ const ComponentePrueba: React.FC = () => {
     updateExcelData()
 
     console.log(configuredTableData)
-
+  // eslint-disable-next-line
   }, [configuredTableData])
 
   // -- TYPE GUARDS - THIS IS USED FOR "TYPE NARROWING"
@@ -350,6 +349,7 @@ const ComponentePrueba: React.FC = () => {
     }
 
     processData(rawTableData)
+    // eslint-disable-next-line
   }, [rawTableData])
 
   const getFilter = () => {

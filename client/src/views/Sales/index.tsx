@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
+import { setToastData } from '../../store/action/actions';
 
 import {
   TableComponent as Table,
@@ -10,7 +10,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { formatDate, renderActiveChip, renderIconActions, roundDecimals, toHoverStyle } from '../../components/utils';
+import { formatDate, renderIconActions, roundDecimals, toHoverStyle } from '../../components/utils';
 
 import {
   SearchIcon,

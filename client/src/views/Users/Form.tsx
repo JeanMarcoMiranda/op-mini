@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useHistory, useLocation } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserData } from '../../store/action/actions';
 import { setToastData } from '../../store/action/actions';
 
 import {
@@ -176,10 +175,6 @@ const UserForm: React.FC = () => {
     const res = await fetch(urlReq, requestInit);
     console.log(res);
     if (res.ok) {
-      const dataRes: IUserResponse = await res.json();
-      //console.log('User Updated', dataRes);
-      //probar que esto puede fallar
-      //dispatch(setUserData(dataRes))
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),

@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { setModalData, setNotificationData, setToastData } from '../../store/action/actions';
+import { useSelector } from 'react-redux';
 
 import {
   TableComponent as Table,
-  ButtonComponent as Button,
   ChipComponent as Chip,
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { formatDate, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+import { formatDate } from '../../components/utils';
 
 import {
   ChevronDownIcon,
@@ -33,12 +30,11 @@ const tableFieldData = [
 
 const ActivityView = () => {
 
-  const dispatch = useDispatch()
   const [ saleData, setSaleData ] = useState<IActivity[]>([]);
   const [ tableData, setTableData ] = useState<IActivityTableData[]>([]);
   const [ searchValue, setSearchValue] = useState<string>('')
   const [filterActivity, setFilterActivity] = useState('All')
-  const { access_token, userData } = useSelector<RootState, RootState['user']>(
+  const { access_token } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
 
@@ -60,13 +56,13 @@ const ActivityView = () => {
 
   useEffect(() => {
     orderByActivity(filterActivity)
+    // eslint-disable-next-line
   }, [filterActivity])
 
   useEffect(() => {
     if (saleData.length === 0) return;
 
     const prepareTableData = () => {
-      let showActions: any
 
       let newTableData: IActivityTableData[] = saleData.map(
         ({

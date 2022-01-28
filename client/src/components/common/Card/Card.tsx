@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AcademicCapIcon } from '@heroicons/react/outline'
 
 interface CardComponentProps {
   title?: string;

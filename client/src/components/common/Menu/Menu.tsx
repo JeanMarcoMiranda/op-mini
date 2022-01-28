@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ChevronDownIcon,
@@ -12,7 +12,7 @@ import {
   LogoutIcon as OutlineLogoutIcon
 } from '@heroicons/react/outline'
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserData, setToken, setAuthUser, setShiftData, setToastData } from '../../../store/action/actions';
+import { setUserData, setToken, setAuthUser, setToastData } from '../../../store/action/actions';
 import { RootState } from '../../../store/store';
 import { Link, useHistory } from 'react-router-dom';
 

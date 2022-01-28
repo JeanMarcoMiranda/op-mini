@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import { setToastData } from '../../store/action/actions';
 import {
@@ -8,9 +8,8 @@ import {
   InputComponent as Input,
   TableComponent as Table,
   IconComponent as Icon,
-  DatePickerComponent as DatePicker,
 } from '../../components/common';
-import { isNumeric, roundDecimals, toHoverStyle } from '../../components/utils';
+import { roundDecimals, toHoverStyle } from '../../components/utils';
 import { SearchIcon, XIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
 import { useReactToPrint } from 'react-to-print';
@@ -74,6 +73,7 @@ const SaleForm: React.FC = () => {
 
   useEffect(() => {
     id ? getSaleProducts(id) : console.log('f');
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -462,9 +462,9 @@ const SaleForm: React.FC = () => {
       const res = await fetch(urlSale, requestInit);
       if (res.ok) {
         let data = await res.json();
-        await saleProducts.map((product, index) => {
-          updateProductQuantityPrice(product, index);
-        });
+        await saleProducts.map((product, index) => (
+          updateProductQuantityPrice(product, index)
+        ));
         addActivity(data._id);
         dispatch(
           setToastData({
@@ -555,9 +555,9 @@ const SaleForm: React.FC = () => {
     }
     const res = await fetch(urlSale, requestInit);
     if (res.ok) {
-      await saleProducts.map((product, index) => {
-        updateProductQuantityPrice(product, index, b);
-      });
+      await saleProducts.map((product, index) => (
+        updateProductQuantityPrice(product, index, b)
+      ));
       addActivityUp(lastdata);
       dispatch(
         setToastData({
@@ -909,7 +909,7 @@ const SaleForm: React.FC = () => {
                     {saleList.length > 0
                       ? saleList.map((prod, index) => (
                           <div className="flex items-center" key={index}>
-                            {saleData?.status != 'Anulado' && (
+                            {saleData?.status !== 'Anulado' && (
                               <div className="flex-initial">
                                 <Icon
                                   width={8}
@@ -1160,7 +1160,7 @@ const SaleForm: React.FC = () => {
                 <h6 className="text-left text-red-500 text-xl mt-3 mb-3 font-bold uppercase">
                   Cambio: {changeSale()}
                 </h6>
-                {saleData?.status != 'Anulado' && (
+                {saleData?.status !== 'Anulado' && (
                   <>
                     <div className="flex justify-center	">
                       <button
@@ -1190,7 +1190,7 @@ const SaleForm: React.FC = () => {
               </div>
             </div>
 
-            {saleData?.status != 'Anulado' && (
+            {saleData?.status !== 'Anulado' && (
               <div className="col-span-2 py-3 px-6">
                 <h6 className="text-left text-gray-400 text-sm mt-3 mb-6 font-bold uppercase">
                   Seleccionar Productos

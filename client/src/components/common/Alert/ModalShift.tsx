@@ -150,10 +150,10 @@ const ModalShiftComponent: React.FC<IModalShiftProps> = ({
                     onClick={
                       shiftComplete ?
                       () => {
-                        {
+
                           if(onClickShiftCompl) onClickShiftCompl(shiftCompl!)
                           //if(setisOpen) setisOpen(prev => !prev)
-                        }
+
                         //{if(setisOpen) setisOpen(prev => !prev)}
                         setShiftCompl('')
                       }
