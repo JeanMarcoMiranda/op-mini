@@ -59,7 +59,7 @@ const App = () => {
 
   useEffect(() => {
     const getProductData = async () => {
-      const url = "http://localhost:8000/cash"
+      const url = "http://localhost:8000/cash";
       const requestInit: RequestInit = {
         method: 'GET',
         headers: {

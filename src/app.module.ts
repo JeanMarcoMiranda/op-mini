@@ -22,7 +22,7 @@ const myModules = [
   ConfigModule.forRoot({
     envFilePath: enviroments[process.env.NODE_ENV] || '.env',
     load: [config],
-    isGlobal: true
+    isGlobal: true,
   }),
   DatabaseModule,
   UsersModule,

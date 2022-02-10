@@ -1,0 +1,62 @@
+service: nest-serverless-framework-opmini
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
+package:
+  individually: true
+  exclude:
+    - client/**
+  include:
+    - node_modules/**
+
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+  serverlessPluginTypescript:
+    tsConfigFileLocation: './tsconfig.build.json'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20200924'
+  environment:
+    MONGO_INITDB_ROOT_USERNAME: ${env:MONGO_INITDB_ROOT_USERNAME}
+    MONGO_INITDB_ROOT_PASSWORD: ${env:MONGO_INITDB_ROOT_PASSWORD}
+    MONGO_DB: ${env:MONGO_DB}
+    MONGO_PORT: ${env:MONGO_PORT}
+    MONGO_HOST: ${env:MONGO_HOST}
+    MONGO_CONNECTION: ${env:MONGO_CONNECTION}
+    #PORT: ${env:PORT}
+    JWT_SECRET: ${env:JWT_SECRET}
+
+functions:
+  main:
+    handler: dist/serverless.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+          cors:
+            origin: '*' # <-- Specify allowed origin
+            headers: # <-- Specify allowed headers
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+      - http:
+          method: ANY
+          path: '{proxy+}'
+          cors:
+            origin: '*' # <-- Specify allowed origin
+            headers: # <-- Specify allowed headers
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
