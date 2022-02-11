@@ -12,7 +12,7 @@ import {
   TextAreaComponent as TextArea,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { toHoverStyle } from '../../components/utils';
+import { configUrl, toHoverStyle } from '../../components/utils';
 
 // SETTING OPTIONS FOR STATIC FIELDS
 const activeOptions: ISelectOption[] = [
@@ -27,9 +27,9 @@ const mesureUnitOptions: ISelectOption[] = [
 
 
 // API URLS
-const urlPro: RequestInfo = 'http://localhost:8000/products'
-const urlCat: RequestInfo = 'http://localhost:8000/categories'
-const urlSuppl: RequestInfo = 'http://localhost:8000/suppliers'
+const urlPro: RequestInfo = `${configUrl}/products`
+const urlCat: RequestInfo = `${configUrl}/categories`
+const urlSuppl: RequestInfo = `${configUrl}/suppliers`
 
 
 const ProductForm: React.FC = () => {

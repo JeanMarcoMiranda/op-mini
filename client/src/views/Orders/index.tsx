@@ -10,7 +10,7 @@ import {
   LoadingSectionComponent as LoadSection,
   DatePickerComponent as DatePicker,
 } from '../../components/common';
-import { roundDecimals, toHoverStyle } from '../../components/utils';
+import { configUrl, roundDecimals, toHoverStyle } from '../../components/utils';
 import { formatDate, filterDuplicate } from '../../components/utils';
 import { ChevronDownIcon, SearchIcon } from '@heroicons/react/solid';
 
@@ -35,7 +35,7 @@ const OrderView: React.FC = () => {
     (state) => state.shift,
   );
 
-  const url: RequestInfo = 'http://localhost:8000/orders';
+  const url: RequestInfo = `${configUrl}/orders`;
 
   useEffect(() => {
     if (searchVal.length >= 3) {
@@ -263,7 +263,7 @@ const OrderView: React.FC = () => {
         return
       }
 
-      const url: RequestInfo = `http://localhost:8000/orders/${orderData[index]._id}`;
+      const url: RequestInfo = `${configUrl}/orders/${orderData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -320,7 +320,7 @@ const OrderView: React.FC = () => {
   const addActivity = async (id: string, orderAmount: string) => {
     let cash = await getCash()
     let curramount = roundDecimals(Number(cash.cash) - Number(orderAmount))
-    const urlSale = "http://localhost:8000/activities"
+    const urlSale = `${configUrl}/activities`
     let dateNow: Date = new Date()
     setCash(curramount, cash._id)
     const requestInit: RequestInit = {
@@ -348,7 +348,7 @@ const OrderView: React.FC = () => {
   }
 
   const setCash = async (putCash:number, id: string) => {
-    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+    const urlPro: RequestInfo = `${configUrl}/cash/${id}`
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -374,7 +374,7 @@ const OrderView: React.FC = () => {
   }
 
   const getCash = async () => {
-    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const urlPro: RequestInfo = `${configUrl}/cash`
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -390,7 +390,7 @@ const OrderView: React.FC = () => {
   const updateProductQuantity = async (product: IProductOrder, action: string) => {
     const quantityProd = await getQProd(product.product._id)
 
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = `${configUrl}/products`
     const url: RequestInfo = urlPro + `/${product.product._id}`;
     let requestInit: RequestInit = {}
     if (action === "completar") {
@@ -431,7 +431,7 @@ const OrderView: React.FC = () => {
   }
 
   const getQProd = async (pId: string) => {
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = `${configUrl}/products`
     const urlReq: RequestInfo = urlPro + `/${pId}`;
     const requestInit: RequestInit = {
       method: 'GET',
@@ -461,7 +461,7 @@ const OrderView: React.FC = () => {
   const addActivityCa = async (data: any) => {
     let cash = await getCash()
     let curramount = roundDecimals(Number(cash.cash) + Number(data.finalamount))
-    const urlSale = "http://localhost:8000/activities"
+    const urlSale = `${configUrl}/activities`
     let dateNow: Date = new Date()
     setCash(curramount, cash._id)
     const requestInit: RequestInit = {
@@ -490,7 +490,7 @@ const OrderView: React.FC = () => {
 
   const cancelOrder = async (index: number) => {
     if (shiftData?.inShift) {
-      const url: RequestInfo = `http://localhost:8000/orders/${orderData[index]._id}`;
+      const url: RequestInfo = `${configUrl}/orders/${orderData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -594,7 +594,7 @@ const OrderView: React.FC = () => {
 
   const approveOrder = async (index: number) => {
     if (shiftData?.inShift) {
-      const url: RequestInfo = `http://localhost:8000/orders/${orderData[index]._id}`;
+      const url: RequestInfo = `${configUrl}/orders/${orderData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {

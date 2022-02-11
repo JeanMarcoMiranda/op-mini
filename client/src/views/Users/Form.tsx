@@ -10,7 +10,7 @@ import {
   LoadingPageComponent as Load,
   SelectComponent as Select,
 } from '../../components/common';
-import { toHoverStyle } from '../../components/utils';
+import { configUrl, toHoverStyle } from '../../components/utils';
 import { RootState } from '../../store/store';
 
 const activeOptions: ISelectOption[] = [
@@ -18,8 +18,8 @@ const activeOptions: ISelectOption[] = [
   { label: 'Inactivo', value: false },
 ];
 
-const urlUser: RequestInfo = 'http://localhost:8000/users';
-const urlRol: RequestInfo = 'http://localhost:8000/roles';
+const urlUser: RequestInfo = `${configUrl}/users`;
+const urlRol: RequestInfo = `${configUrl}/roles`;
 
 const UserForm: React.FC = () => {
 

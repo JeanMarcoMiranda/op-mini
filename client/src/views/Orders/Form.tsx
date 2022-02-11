@@ -10,7 +10,7 @@ import {
   IconComponent as Icon,
   DatePickerComponent as DatePicker,
 } from '../../components/common';
-import { isNumeric, roundDecimals, toHoverStyle } from '../../components/utils';
+import { configUrl, isNumeric, roundDecimals, toHoverStyle } from '../../components/utils';
 import { SearchIcon, XIcon } from '@heroicons/react/solid';
 
 const initialValues: IFormOrder = {
@@ -99,7 +99,7 @@ const OrderForm: React.FC = () => {
   }, [orderListObj])
 
   const getSupplierData = async (idSupp: string) => {
-    const url: RequestInfo = `http://localhost:8000/suppliers/${idSupp}`;
+    const url: RequestInfo = `${configUrl}/suppliers/${idSupp}`;
     const response = await fetch(url);
     const supplierResponse: ISupplier = await response.json();
     if (response.ok) {
@@ -117,7 +117,7 @@ const OrderForm: React.FC = () => {
   }
 
   const getProductsCompany = async (supplierResponse: ISupplier) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/products/company/${supplierResponse?._id}`;
+    const urlSearch: RequestInfo = `${configUrl}/products/company/${supplierResponse?._id}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -177,7 +177,7 @@ const OrderForm: React.FC = () => {
 
   const createOrder = async (data: IOrderProduct[]) => {
     if (shiftData?.inShift) {
-      const urlPro = "http://localhost:8000/orders"
+      const urlPro = `${configUrl}/orders`
       let dateNow: Date = new Date()
       const requestInit: RequestInit = {
         method: 'POST',

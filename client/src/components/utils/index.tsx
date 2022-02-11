@@ -1,3 +1,4 @@
+import { configUrl } from "./configUrl";
 import fillDecimals from "./fillDecimals";
 import filterDuplicate from "./filterDuplicate";
 import formatDate from "./formatDate";
@@ -11,6 +12,7 @@ import toHoverStyle from "./toHoverStyles";
 import truncate from "./truncate";
 
 export {
+  configUrl,
   toHoverStyle,
   formatDate,
   generateString,

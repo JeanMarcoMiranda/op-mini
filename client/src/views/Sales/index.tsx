@@ -10,7 +10,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { formatDate, renderIconActions, roundDecimals, toHoverStyle } from '../../components/utils';
+import { configUrl, formatDate, renderIconActions, roundDecimals, toHoverStyle } from '../../components/utils';
 
 import {
   SearchIcon,
@@ -41,7 +41,7 @@ const SaleView: React.FC = () => {
     (state) => state.user,
   );
 
-  const url: RequestInfo = 'http://localhost:8000/sales';
+  const url: RequestInfo = `${configUrl}/sales`;
 
   useEffect(() => {
     if (searchValue.length > 2) {
@@ -137,7 +137,7 @@ const SaleView: React.FC = () => {
   }
 
   const getSearchSale = async (searchVal: string) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/sales/search/${searchVal}`;
+    const urlSearch: RequestInfo = `${configUrl}/sales/search/${searchVal}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -187,7 +187,7 @@ const SaleView: React.FC = () => {
 
   const cancelSale = async (id: string) => {
 
-    const urlSale: RequestInfo = `http://localhost:8000/sales/${id}`;
+    const urlSale: RequestInfo = `${configUrl}/sales/${id}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -250,7 +250,7 @@ const SaleView: React.FC = () => {
   const addActivity = async (data: any) => {
     let cash = await getCash()
     let curramount = roundDecimals(Number(cash.cash) - Number(data.subtotal))
-    const urlSale = "http://localhost:8000/activities"
+    const urlSale = `${configUrl}/activities`
     let dateNow: Date = new Date()
     setCash(curramount, cash._id)
     const requestInit: RequestInit = {
@@ -278,7 +278,7 @@ const SaleView: React.FC = () => {
   }
 
   const setCash = async (putCash:number, id: string) => {
-    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+    const urlPro: RequestInfo = `${configUrl}/cash/${id}`
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -304,7 +304,7 @@ const SaleView: React.FC = () => {
   }
 
   const getCash = async () => {
-    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const urlPro: RequestInfo = `${configUrl}/cash`
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -319,7 +319,7 @@ const SaleView: React.FC = () => {
 
   const updateProductSale = async (id: string, quantity: string) => {
     const oldProduct = await getProduct(id)
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = `${configUrl}/products`
     const url: RequestInfo = urlPro + `/${id}`;
     let requestInit: RequestInit = {
       method: 'PUT',
@@ -340,7 +340,7 @@ const SaleView: React.FC = () => {
   }
 
   const getProduct = async (pId: string) => {
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = `${configUrl}/products`
     const urlReq: RequestInfo = urlPro + `/${pId}`;
     const requestInit: RequestInit = {
       method: 'GET',

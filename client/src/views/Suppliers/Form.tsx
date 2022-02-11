@@ -10,7 +10,7 @@ import {
   LoadingPageComponent as Load,
   SelectComponent as Select,
 } from '../../components/common';
-import { toHoverStyle } from '../../components/utils';
+import { configUrl, toHoverStyle } from '../../components/utils';
 import { RootState } from '../../store/store';
 
 const activeOptions: ISelectOption[] = [
@@ -49,7 +49,7 @@ const SupplierForm: React.FC = () => {
   }, []);
 
   const getSupplier = async () => {
-    const url: RequestInfo = `http://localhost:8000/suppliers/${id}`;
+    const url: RequestInfo = `${configUrl}/suppliers/${id}`;
     const response = await fetch(url);
     const { name, phone, company, doctype, docnum, visitday, active }: ISupplier = await response.json();
     const activeOption = active ? activeOptions[0] : activeOptions[1];
@@ -88,7 +88,7 @@ const SupplierForm: React.FC = () => {
   }
 
   const updateSupplier = async (data: IFormSupplier) => {
-    const url: RequestInfo = `http://localhost:8000/suppliers/${id}`;
+    const url: RequestInfo = `${configUrl}/suppliers/${id}`;
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -125,7 +125,7 @@ const SupplierForm: React.FC = () => {
   }
 
   const createSupplier = async (data: IFormSupplier) => {
-    const url: RequestInfo = `http://localhost:8000/suppliers`;
+    const url: RequestInfo = `${configUrl}/suppliers`;
     const requestInit: RequestInit = {
       method: 'POST',
       headers: {

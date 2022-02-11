@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { InputComponent, ButtonComponent } from '../../components/common';
 import { setToken, setUserData, setAuthUser } from '../../store/action/actions';
 
-import { toHoverStyle } from '../../components/utils';
+import { configUrl, toHoverStyle } from '../../components/utils';
 import { useHistory } from 'react-router-dom';
 
 const LoginView: React.FC = () => {
@@ -30,17 +30,27 @@ const LoginView: React.FC = () => {
 
   const loginUser: SubmitHandler<TFormValues<LoginFormValues>> = async (values) => {
     // Request configuration
-    const LOGIN_URL: RequestInfo = 'http://localhost:8000/auth/login';
+    const LOGIN_URL: RequestInfo = `${configUrl}/auth/login`;
+
     const LOGIN_REQUEST_PARAMS: RequestInit = {
       method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
       },
       body: JSON.stringify(values.values),
     };
-
+    /*
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Headers":	"Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Headers":	"Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Authorization, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    */
     // Setting up our request
     const response = await fetch(LOGIN_URL, LOGIN_REQUEST_PARAMS);
     // Accessing the response data
@@ -83,10 +93,7 @@ const LoginView: React.FC = () => {
         >
           <h1 className="text-4xl mt-16 mb-8 opacity-75 text-left">Login</h1>
           <p className="text-xs mt-4 mb-20 opacity-50 text-left">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo eos ex
-            nesciunt ad maxime, harum nulla et veniam quisquam quasi corporis
-            quaerat enim voluptate debitis possimus voluptatum sit assumenda
-            quo.
+            Aléjate de las personas que busquen menospreciar tu ambiciones. Las personas pequeñas hacen eso, mientras los grandes te hacen creer que tú también puedes ser grande - Mark Twain
           </p>
           <Controller
             control={control}

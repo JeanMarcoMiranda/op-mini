@@ -12,7 +12,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+import { configUrl, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 interface IModalUInfo {
   name?: string,
@@ -53,7 +53,7 @@ const SupplierView: React.FC = () => {
     (state) => state.user,
   );
 
-  const url = 'http://localhost:8000/suppliers';
+  const url = `${configUrl}/suppliers`;
 
   useEffect(() => {
     getSupplierData()
@@ -202,7 +202,7 @@ const SupplierView: React.FC = () => {
   };
 
   const getSearchSupplier = async (search: string) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/suppliers/search/${search}`;
+    const urlSearch: RequestInfo = `${configUrl}/suppliers/search/${search}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {

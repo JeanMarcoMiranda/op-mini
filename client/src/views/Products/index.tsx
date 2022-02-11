@@ -14,7 +14,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+import { configUrl, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 interface IModalUInfo {
   name?: string,
@@ -56,7 +56,7 @@ const ProductsView: React.FC = () => {
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
-  const url: RequestInfo = 'http://localhost:8000/products';
+  const url: RequestInfo = `${configUrl}/products`;
 
   useEffect(() => {
     if (searchVal.length > 2) {
@@ -87,7 +87,7 @@ const ProductsView: React.FC = () => {
           delete: false
         }
       }
-      
+
       let newTableData: IProductTableData[] = productData.map(
         ({
           _id,
@@ -155,7 +155,7 @@ const ProductsView: React.FC = () => {
  };
 
   const getSearchProduct = async (search: string) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/products/search/${search}`;
+    const urlSearch: RequestInfo = `${configUrl}/products/search/${search}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {

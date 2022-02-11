@@ -7,7 +7,7 @@ import {
   InputComponent as Input,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { formatDate } from '../../components/utils';
+import { configUrl, formatDate } from '../../components/utils';
 
 import {
   ChevronDownIcon,
@@ -38,7 +38,7 @@ const ActivityView = () => {
     (state) => state.user,
   );
 
-  const url: RequestInfo = 'http://localhost:8000/activities';
+  const url: RequestInfo = `${configUrl}/activities`;
 
   useEffect(() => {
     if (searchValue.length > 2) {
@@ -96,7 +96,7 @@ const ActivityView = () => {
   }, [saleData]);
 
   const getSearchActivity = async (search: string) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/activities/search/${search}`;
+    const urlSearch: RequestInfo = `${configUrl}/activities/search/${search}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -151,7 +151,7 @@ const ActivityView = () => {
   }
 
   const getSearchAct = async (search: string) => {
-    const urlSearch: RequestInfo = `http://localhost:8000/activities/search/${search}`;
+    const urlSearch: RequestInfo = `${configUrl}/activities/search/${search}`;
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {

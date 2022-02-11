@@ -8,7 +8,7 @@ import {
 	LoadingPageComponent as Loading,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+import { configUrl, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 const tableFieldData = [
   { text: 'Nombre', width: 2, name: 'name' },
@@ -16,7 +16,7 @@ const tableFieldData = [
   { text: 'Acciones', width: 1, name: 'actions' },
 ];
 
-const url: RequestInfo = 'http://localhost:8000/categories'
+const url: RequestInfo = `${configUrl}/categories`
 
 const CategoryView: React.FC = () => {
 	const [tableData, setTableData] = useState<ICategoryData[]>([])

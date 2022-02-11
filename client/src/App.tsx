@@ -14,6 +14,7 @@ import {
   NotificationComponent as Notification,
   ToastComponent as Toast
 } from './components/common';
+import { configUrl } from './components/utils';
 
 const initialUserRole: IRole = {
   _id: '',
@@ -59,7 +60,7 @@ const App = () => {
 
   useEffect(() => {
     const getProductData = async () => {
-      const url = "http://localhost:8000/cash"
+      const url = `${configUrl}/cash`;
       const requestInit: RequestInit = {
         method: 'GET',
         headers: {

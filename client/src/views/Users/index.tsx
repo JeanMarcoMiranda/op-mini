@@ -9,7 +9,7 @@ import {
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
+import { configUrl, renderActiveChip, renderIconActions, toHoverStyle } from '../../components/utils';
 
 interface IModalUInfo {
   name?: string,
@@ -41,7 +41,7 @@ const UserView: React.FC = () => {
     (state) => state.user,
   );
 
-  const url: RequestInfo = 'http://localhost:8000/users';
+  const url: RequestInfo = `${configUrl}/users`;
 
   useEffect(() => {
     getUserData();

@@ -8,7 +8,7 @@ import {
   DatePickerComponent as DatePicker,
   ButtonComponent as Button,
 } from '../../components/common'
-import { formatDate, formatDateHours, toHoverStyle } from '../../components/utils'
+import { configUrl, formatDate, formatDateHours, toHoverStyle } from '../../components/utils'
 import { RootState } from '../../store/store'
 
 const tableRoutes = [
@@ -161,7 +161,7 @@ const ComponentePrueba: React.FC = () => {
   useEffect(() => {
     setIsFilter(false)
     async function getTableData() {
-      const URL: RequestInfo = `http://localhost:8000/${reportOf}`
+      const URL: RequestInfo = `${configUrl}/${reportOf}`
       const REQUEST_PARAMS: RequestInit = {
         method: 'GET',
         headers: {

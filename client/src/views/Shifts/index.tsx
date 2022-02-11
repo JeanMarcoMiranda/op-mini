@@ -6,7 +6,7 @@ import {
   TableComponent as Table,
   LoadingPageComponent as Load,
 } from '../../components/common';
-import { formatDateHours, renderIconActions } from '../../components/utils';
+import { configUrl, formatDateHours, renderIconActions } from '../../components/utils';
 import { setModalData, setToastData } from '../../store/action/actions';
 
 const tableFieldData = [
@@ -27,7 +27,7 @@ const ShiftView: React.FC = () => {
   const { access_token, userData } = useSelector<RootState, RootState['user']>(
     (state) => state.user,
   );
-  const url: RequestInfo = "http://localhost:8000/shifts"
+  const url: RequestInfo = `${configUrl}/shifts`
 
   useEffect(() => {
     getShiftData();

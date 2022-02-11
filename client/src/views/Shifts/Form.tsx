@@ -10,7 +10,7 @@ import {
   TableComponent as Table,
 } from '../../components/common';
 import { RootState } from '../../store/store';
-import { formatDate, formatDateHours, renderIconActions, toHoverStyle } from '../../components/utils';
+import { configUrl, formatDate, formatDateHours, renderIconActions, toHoverStyle } from '../../components/utils';
 import { setToastData } from '../../store/action/actions';
 
 const initialValues: IShift = {
@@ -51,9 +51,9 @@ const tableFieldDataSales = [
   { text: 'Acciones', width: 2, name: 'actions' },
 ];
 
-const urlShift: RequestInfo = "http://localhost:8000/shifts";
-const urlSale: RequestInfo = 'http://localhost:8000/sales';
-const urlOrder: RequestInfo = 'http://localhost:8000/orders';
+const urlShift: RequestInfo = `${configUrl}/shifts`;
+const urlSale: RequestInfo = `${configUrl}/sales`;
+const urlOrder: RequestInfo = `${configUrl}/orders`;
 
 const ShiftForm: React.FC = () => {
 

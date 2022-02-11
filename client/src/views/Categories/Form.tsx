@@ -10,14 +10,14 @@ import {
   SelectComponent as Select,
 } from '../../components/common'
 import { RootState } from '../../store/store';
-import { toHoverStyle } from '../../components/utils';
+import { configUrl, toHoverStyle } from '../../components/utils';
 
 const activeOptions: ISelectOption[] = [
   { label: 'Activo', value: true },
   { label: 'Inactivo', value: false },
 ];
 
-const urlCat: RequestInfo = 'http://localhost:8000/categories'
+const urlCat: RequestInfo = `${configUrl}/categories`
 
 const CategoryForm: React.FC = () => {
   const [show, setShow] = useState(false)

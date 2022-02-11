@@ -11,7 +11,7 @@ import { useDateTime } from '../../components/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setModalData, setToastData } from '../../store/action/actions';
-import { formatDate, roundDecimals, toHoverStyle } from '../../components/utils';
+import { configUrl, formatDate, roundDecimals, toHoverStyle } from '../../components/utils';
 
 const buttonProps: ButtonProps = {
   label: 'Vistar',
@@ -107,7 +107,7 @@ const Home: React.FC = () => {
         'Content-Type': 'application/json',
       },
     };
-    const urlOrder: RequestInfo = 'http://localhost:8000/orders';
+    const urlOrder: RequestInfo = `${configUrl}/orders`;
 
     const res = await fetch(urlOrder, requestInit);
     const data: IOrder[] = await res.json();
@@ -151,7 +151,7 @@ const Home: React.FC = () => {
 
   const approveOrder = async (index: number) => {
     //if (shiftData?.inShift) {
-    const url: RequestInfo = `http://localhost:8000/orders/${orderTodayData[index]._id}`;
+    const url: RequestInfo = `${configUrl}/orders/${orderTodayData[index]._id}`;
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
@@ -207,7 +207,7 @@ const Home: React.FC = () => {
         return
       }
 
-      const url: RequestInfo = `http://localhost:8000/orders/${orderTodayData[index]._id}`;
+      const url: RequestInfo = `${configUrl}/orders/${orderTodayData[index]._id}`;
       const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
@@ -265,7 +265,7 @@ const Home: React.FC = () => {
   const addActivity = async (id: string, orderAmount: string) => {
     let cash = await getCash()
     let curramount = roundDecimals(Number(cash.cash) - Number(orderAmount))
-    const urlSale = "http://localhost:8000/activities"
+    const urlSale = `${configUrl}/activities`
     let dateNow: Date = new Date()
     setCash(curramount, cash._id)
     const requestInit: RequestInit = {
@@ -293,7 +293,7 @@ const Home: React.FC = () => {
   }
 
   const addActivityRe = async (name: string, orderAmount: string, curramount: number) => {
-    const urlSale = "http://localhost:8000/activities"
+    const urlSale = `${configUrl}/activities`
     let dateNow: Date = new Date()
     const requestInit: RequestInit = {
       method: 'POST',
@@ -322,7 +322,7 @@ const Home: React.FC = () => {
   const updateProductQuantity = async (product: Product) => {
     const quantityProd = await getQProd(product.product._id)
 
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = `${configUrl}/products`
     const url: RequestInfo = urlPro + `/${product.product._id}`;
     console.log((Number(product.quantity) + Number(quantityProd)))
     const requestInit: RequestInit = {
@@ -344,7 +344,7 @@ const Home: React.FC = () => {
   }
 
   const getQProd = async (pId: string) => {
-    const urlPro: RequestInfo = 'http://localhost:8000/products'
+    const urlPro: RequestInfo = `${configUrl}/products`
     const urlReq: RequestInfo = urlPro + `/${pId}`;
     const requestInit: RequestInit = {
       method: 'GET',
@@ -360,7 +360,7 @@ const Home: React.FC = () => {
   }
 
   const getCash = async () => {
-    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const urlPro: RequestInfo = `${configUrl}/cash`
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
@@ -374,7 +374,7 @@ const Home: React.FC = () => {
   }
 
   const setCash = async (putCash: number, id: string) => {
-    const urlPro: RequestInfo = `http://localhost:8000/cash/${id}`
+    const urlPro: RequestInfo = `${configUrl}/cash/${id}`
     const requestInit: RequestInit = {
       method: 'PUT',
       headers: {
