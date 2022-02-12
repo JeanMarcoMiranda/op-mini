@@ -143,6 +143,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlSearch, requestInit);
@@ -161,6 +164,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(url, requestInit);
@@ -193,6 +199,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlSale, requestInit);
@@ -221,6 +230,9 @@ const SaleView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
         body: JSON.stringify({
           status: 'Anulado',
@@ -258,6 +270,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         date: dateNow,
@@ -284,6 +299,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         cash: putCash + '',
@@ -310,6 +328,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlPro, requestInit);
@@ -326,6 +347,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         stock: (Number(oldProduct.stock) + Number(quantity)) + '',
@@ -347,6 +371,9 @@ const SaleView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlReq, requestInit);

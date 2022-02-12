@@ -9,7 +9,7 @@ import {
   MenuComponent,
   ModalShiftComponent as ShiftModal,
 } from '../common';
-import { toHoverStyle } from '../utils';
+import { configUrl, toHoverStyle } from '../utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 
@@ -57,9 +57,9 @@ const Header: React.FC<HeaderProps> = ({
     (state) => state.shift,
   );
 
-  const urlShift: RequestInfo = 'http://localhost:8000/shifts';
-  const urlOrder: RequestInfo = 'http://localhost:8000/orders';
-  const urlSale: RequestInfo = 'http://localhost:8000/sales';
+  const urlShift: RequestInfo = `${configUrl}/shifts`;
+  const urlOrder: RequestInfo = `${configUrl}/orders`;
+  const urlSale: RequestInfo = `${configUrl}/sales`;
 
   useEffect(() => {
     getCheckLastShift();
@@ -73,6 +73,9 @@ const Header: React.FC<HeaderProps> = ({
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlShift, requestInit);
@@ -121,6 +124,9 @@ const Header: React.FC<HeaderProps> = ({
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         user: userData._id,
@@ -164,6 +170,9 @@ const Header: React.FC<HeaderProps> = ({
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         user: userData._id,
@@ -217,6 +226,9 @@ const Header: React.FC<HeaderProps> = ({
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlOrder, requestInit);
@@ -243,6 +255,9 @@ const Header: React.FC<HeaderProps> = ({
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlSale, requestInit);
@@ -259,12 +274,15 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   const getCash = async () => {
-    const urlPro: RequestInfo = 'http://localhost:8000/cash'
+    const urlPro: RequestInfo = `${configUrl}/cash`
     const requestInit: RequestInit = {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlPro, requestInit);

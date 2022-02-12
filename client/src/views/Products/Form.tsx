@@ -145,6 +145,9 @@ const ProductForm: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       }
     }
     const res = await fetch(urlCat, requestInit)
@@ -158,6 +161,9 @@ const ProductForm: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       }
     }
     const res = await fetch(urlSuppl, requestInit)
@@ -216,6 +222,9 @@ const ProductForm: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         ...data,
@@ -261,6 +270,9 @@ const ProductForm: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         ...data,

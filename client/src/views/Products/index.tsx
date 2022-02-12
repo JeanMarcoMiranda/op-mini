@@ -161,6 +161,9 @@ const ProductsView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlSearch, requestInit);
@@ -178,6 +181,9 @@ const ProductsView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(url, requestInit);
@@ -192,6 +198,9 @@ const ProductsView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlDelete, requestInit);

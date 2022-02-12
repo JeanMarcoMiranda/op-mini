@@ -66,6 +66,9 @@ const OrderView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(url, requestInit);
@@ -269,6 +272,9 @@ const OrderView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
         body: JSON.stringify({
           createdby: orderData[index].createdby._id,
@@ -328,6 +334,9 @@ const OrderView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         date: dateNow,
@@ -354,6 +363,9 @@ const OrderView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         cash: putCash + '',
@@ -380,6 +392,9 @@ const OrderView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlPro, requestInit);
@@ -399,6 +414,9 @@ const OrderView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
         body: JSON.stringify({
           lastpricebuy: quantityProd.pricebuy,
@@ -414,6 +432,9 @@ const OrderView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
         body: JSON.stringify({
           pricebuy: quantityProd.lastpricebuy,
@@ -438,6 +459,9 @@ const OrderView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
     };
     const res = await fetch(urlReq, requestInit);
@@ -469,6 +493,9 @@ const OrderView: React.FC = () => {
       headers: {
         Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
       },
       body: JSON.stringify({
         date: dateNow,
@@ -496,6 +523,9 @@ const OrderView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
         body: JSON.stringify({
           createdby: orderData[index].createdby._id,
@@ -550,6 +580,9 @@ const OrderView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
       };
       const res = await fetch(urlDelete, requestInit);
@@ -600,6 +633,9 @@ const OrderView: React.FC = () => {
         headers: {
           Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
+          "Access-Control-Allow-Headers":	"Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         },
         body: JSON.stringify({
           status: 'Aprobado',

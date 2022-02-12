@@ -166,7 +166,10 @@ const ComponentePrueba: React.FC = () => {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${access_token}`,
-          'Content-TuseEffectype': 'application/json'
+          'Content-TuseEffectype': 'application/json',
+          "Access-Control-Allow-Headers":	"Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE",
         }
       }
 
