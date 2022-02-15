@@ -54,6 +54,7 @@ const OrderView: React.FC = () => {
     const data = await getOrder();
     setOrderData(data);
     setShowBlock(false);
+    setShow(true)
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

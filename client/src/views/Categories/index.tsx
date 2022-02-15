@@ -78,6 +78,7 @@ const CategoryView: React.FC = () => {
 				return newData
 			})
 			setTableData(newTableData);
+      setShow(true)
 		} else {
 			dispatch(setToastData({
         isOpen: true,

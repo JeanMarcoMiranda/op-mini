@@ -79,6 +79,7 @@ const ProductForm: React.FC = () => {
       const supplierData = await getSuppliers()
       prepareSupplOptions(supplierData)
       prepareCatOptions(catData)
+      setShow(true)
     }
     initialRender()
     // eslint-disable-next-line
@@ -302,7 +303,7 @@ const ProductForm: React.FC = () => {
       dispatch(setToastData({
         isOpen: true,
         setisOpen: (prev => !prev),
-        contentText: `Method Create, Error${res.status} : ${res.statusText}`,
+        contentText: `Revise los campos nuevamente. Error: ${res.status}`,
         color: 'warning',
         delay: 5
       }))
