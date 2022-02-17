@@ -177,14 +177,14 @@ const appRoutes: RouteData[] = [
     component: ShiftView,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Empleado']
+    roles: ['Administrador']
   },
   {
     path: '/shift/form',
     component: ShiftForm,
     exact: true,
     type: 'private',
-    roles: ['Administrador', 'Empleado']
+    roles: ['Administrador']
   },
   {
     path: '/shift/form/:id',

@@ -47,19 +47,19 @@ const navRoutes: RouteSideBar[] = [
     label: 'Turnos',
     Icon: ClipboardIcon,
     path: '/shift',
-    roles: ['Administrador', 'Empleado']
+    roles: ['Administrador']
   },
   {
     label: 'Movimientos',
     Icon: PresentationChartBarIcon,
     path: '/activity',
-    roles: ['Administrador', 'Empleado']
+    roles: ['Administrador']
   },
   {
     label: 'Reportes',
     Icon: DocumentReportIcon,
     path: '/reportes/products',
-    roles: ['Administrador', 'Empleado']
+    roles: ['Administrador']
   }
 ]
 

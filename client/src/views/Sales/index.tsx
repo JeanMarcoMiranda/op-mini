@@ -81,7 +81,7 @@ const SaleView: React.FC = () => {
               edit: true,
               more: false,
             }
-          } else {
+          } else if (userData.role.name === 'Administrador'){
             showActions = {
               edit: true,
               more: false,
@@ -89,6 +89,11 @@ const SaleView: React.FC = () => {
                 show: true,
                 action: cancelSale
               }
+            }
+          } else {
+            showActions = {
+              edit: true,
+              more: false,
             }
           }
           let newData: ISaleTableData = {
