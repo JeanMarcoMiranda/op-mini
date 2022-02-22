@@ -128,6 +128,7 @@ const MenuComponent: React.FC = () => {
                 <Menu.Item>
                   {({ active }) => (
                     <button
+                      onClick={() => {window.open('https://docs.google.com/document/d/1P4iJ4TrReIw1VpW1IhmgBcoahwWXuST2dastQrU0jsM/edit?usp=sharing', "_blank")}}
                       className={`${MENU_ITEM_DEFAULT_STYLE} ${
                         active ? 'bg-green-500 text-white' : 'text-gray-900'
                       }`}
