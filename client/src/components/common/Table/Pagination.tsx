@@ -15,7 +15,6 @@ const Pagination: React.FC<IPaginationProps> = ({ fieldsPerPage, totalFields, pa
     let pagesToShow = []
 
     for (let i = 1; i <= Math.ceil(totalFields / fieldsPerPage); i++) {
-        console.log("buebas")
         totalPageNumbers.push(i)
     }
 

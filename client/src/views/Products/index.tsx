@@ -68,7 +68,7 @@ const ProductsView: React.FC = () => {
   }, [searchVal]);
 
   useEffect(() => {
-    if (productData.length === 0) return;
+    //if (productData.length === 0) return;
 
     const prepareTableData = () => {
       let { name: role } = userData.role
@@ -169,6 +169,7 @@ const ProductsView: React.FC = () => {
     const res = await fetch(urlSearch, requestInit);
     const data = await res.json();
     if (res.ok) {
+      console.log(data)
       setProductData(data);
     } else {
       console.log('Error: Unknow error || Server error');
