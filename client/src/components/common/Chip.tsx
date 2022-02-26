@@ -14,7 +14,7 @@ const ChipComponent: React.FC<ChipComponentProps> = ({
   return (
     <span
       className={`
-        bg-${bgColor}-400
+        bg-${bgColor}-500
         text-${txtColor}
         font-medium
         rounded-full text-xs py-1 px-2

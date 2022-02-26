@@ -14,25 +14,23 @@ import {
 import { RootState } from '../../store/store';
 import { configUrl, toHoverStyle } from '../../components/utils';
 
-// SETTING OPTIONS FOR STATIC FIELDS
-const activeOptions: ISelectOption[] = [
-  { label: 'Activo', value: true },
-  { label: 'Inactivo', value: false },
-];
-
-const mesureUnitOptions: ISelectOption[] = [
-  { label: 'Unidad', value: "unidad" },
-  { label: 'Kg', value: "kg" },
-]
-
-
 // API URLS
 const urlPro: RequestInfo = `${configUrl}/products`
 const urlCat: RequestInfo = `${configUrl}/categories`
 const urlSuppl: RequestInfo = `${configUrl}/suppliers`
 
-
 const ProductForm: React.FC = () => {
+
+  // SETTING OPTIONS FOR STATIC FIELDS
+  const activeOptions: ISelectOption[] = [
+    { label: 'Activo', value: true },
+    { label: 'Inactivo', value: false },
+  ];
+
+  const mesureUnitOptions: ISelectOption[] = [
+    { label: 'Unidad', value: "unidad" },
+    { label: 'Kg', value: "kg" },
+  ]
 
   const [show, setShow] = useState(false)
 
