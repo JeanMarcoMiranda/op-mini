@@ -47,6 +47,9 @@ const iconValue = {
 
 const ProductsView: React.FC = () => {
   const dispatch = useDispatch()
+
+  const [searchBool, setSearchBool] = useState(true)
+
   const [ productData, setProductData ] = useState<IProduct[]>([]);
   const [ tableData, setTableData ] = useState<IProductTableData[]>([]);
   const { setValue, control } = useForm<TFormValues<ISearch>>({
@@ -60,9 +63,24 @@ const ProductsView: React.FC = () => {
 
   useEffect(() => {
     if (searchVal.length > 2) {
-      getSearchProduct(searchVal);
+      let isNum = /^\d+$/.test(searchVal);
+      console.log(isNum)
+      console.log(searchVal)
+      if (isNum) {
+        if (searchVal.length === 8 || searchVal.length === 13) {
+          setSearchBool(true)
+          getSearchProduct(searchVal);
+        }
+      } else {
+        setSearchBool(true)
+        getSearchProduct(searchVal);
+      }
+
     } else {
-      getProductData();
+      if(searchBool) {
+        setSearchBool(false)
+        getProductData();
+      }
     }
     // eslint-disable-next-line
   }, [searchVal]);
@@ -249,7 +267,7 @@ const ProductsView: React.FC = () => {
                 <h6 className="text-gray-500 text-2xl font-semibold tracking-normal">
                   Productos
                 </h6>
-                { userData.role.name === "Administrador" &&
+                { (userData.role.name === "Administrador" || userData.role.name === "Almacenero") &&
                   <Link to={`/product/form`}>
                     <Button
                       label="Agregar"
@@ -285,7 +303,7 @@ const ProductsView: React.FC = () => {
             </div>
 
             <div className="mb-3">
-              <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled: true, fieldsPerPage: 5}} />
+              <Table theadData={tableFieldData} tbodyData={tableData} pagination={{enabled: true, fieldsPerPage: 10}} />
             </div>
           </div>
         </div>
