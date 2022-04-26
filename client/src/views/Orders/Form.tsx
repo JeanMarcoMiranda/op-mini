@@ -148,7 +148,7 @@ const OrderForm: React.FC = () => {
 
   const getSearchProduct = async (search: string) => {
     let regex = new RegExp(["^.*", search, ".*$"].join(""), "i");
-    const found = companyProducts.filter(product => product.name.match(regex))
+    const found = companyProducts.filter(product => product.name.match(regex) || product.barcode.match(regex))
     if (found) {
       prepareSearchTableData(found)
     }

@@ -217,6 +217,13 @@ const ComponentePrueba: React.FC = () => {
         b[0].totalorders = total + ''
         setDataExcelFinal(b)
         console.log(b)
+      }else if (reportOf === "products") {
+        let b = configuredTableData.slice() as IProductTableData[]
+        for (let i = 0; i < b.length; i++) {
+          b[i].pricebuy = b[i].pricebuy.replace('S/ ', '')
+          b[i].pricesell = b[i].pricesell.replace('S/ ', '')
+        }
+        setDataExcelFinal(b)
       }
     }
     updateExcelData()
